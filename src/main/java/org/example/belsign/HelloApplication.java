@@ -17,6 +17,7 @@ public class HelloApplication extends Application {
         stage.show();
     }
 // hello from Andra
+    //merge conflict
     public static void main(String[] args) {
         launch();
     }
