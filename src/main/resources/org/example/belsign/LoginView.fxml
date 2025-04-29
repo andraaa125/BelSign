@@ -10,11 +10,11 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="546.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.LoginWindowController">
+<AnchorPane prefHeight="546.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.LoginController">
    <children>
       <TextField fx:id="loginUsername" layoutX="280.0" layoutY="194.0" prefHeight="42.0" prefWidth="257.0" AnchorPane.rightAnchor="283.0" />
       <Label layoutX="281.0" layoutY="337.0" text="Forgot your password ?" />
-      <Button layoutX="280.0" layoutY="393.0" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="42.0" prefWidth="257.0" style="-fx-background-color: #004b88; -fx-text-fill: #f2f2f2;" text="Log in">
+      <Button fx:id="loginBtn" layoutX="280.0" layoutY="393.0" mnemonicParsing="false" onAction="#onLoginBtnClick" prefHeight="42.0" prefWidth="257.0" style="-fx-background-color: #004b88; -fx-text-fill: #f2f2f2;" text="Log in">
          <font>
             <Font size="16.0" />
          </font>

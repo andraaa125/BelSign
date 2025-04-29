@@ -5,6 +5,8 @@ public class Operator {
         private String operatorFirstName;
         private String operatorLastName;
         private int operatorID;
+        private String username;
+        private String password;
 
         public Operator(int operatorID, String operatorFirstName, String operatorLastName) {
             this.operatorID = operatorID;
@@ -35,4 +37,5 @@ public class Operator {
         public void setOperatorID(int operatorID) {
             this.operatorID = operatorID;
         }
+
 }

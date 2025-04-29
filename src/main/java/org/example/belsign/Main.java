@@ -16,7 +16,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
     }
-//hello from Haliimo
+
     public static void main(String[] args) {
         launch();
     }
