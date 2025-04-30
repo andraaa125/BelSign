@@ -13,13 +13,10 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="564.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="org.example.belsign.gui.controllers.OperatorDashboardController">
-
-   <!-- TOP BAR -->
+<BorderPane prefHeight="564.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.OperatorDashboardController">
    <top>
       <AnchorPane prefHeight="50.0" prefWidth="820.0">
          <children>
-
             <Label layoutX="644.0" layoutY="15.0" style="-fx-font-size: 16px;" text="Welcome," />
             <Label fx:id="userName" layoutX="695.0" layoutY="15.0" prefHeight="20.0" prefWidth="35.0" />
             <Label alignment="CENTER" layoutX="75.0" layoutY="7.0" prefHeight="39.0" prefWidth="73.0" style="-fx-text-fill: #004b88;" text="BelSign">
@@ -37,79 +34,78 @@
          </children>
       </AnchorPane>
    </top>
-
-   <!-- CENTER: THREE COLUMNS -->
    <center>
       <HBox prefHeight="472.0" prefWidth="820.0" spacing="5.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="10" left="10" right="10" top="10" />
          </padding>
-
-         <!-- Left Column -->
-         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
-            <content>
-               <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
-                  <padding>
-                     <Insets bottom="10" left="10" right="10" top="10" />
-                  </padding>
-                  <Label prefHeight="23.0" prefWidth="81.0" text="Pending" textFill="#575757">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
-                  <Button text="Left 2" />
-                  <Button text="Left 3" />
-                  <Button text="Left 1" />
-               </FlowPane>
-            </content>
-         </ScrollPane>
-
-         <!-- Center Column -->
-         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
-            <content>
-               <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
-                  <padding>
-                     <Insets bottom="10" left="10" right="10" top="10" />
-                  </padding>
-                  <Label text="In Progress" textFill="#575757">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
-                  <Button text="Center 1" />
-                  <Button text="Center 2" />
-                  <Button text="Center 3" />
-               </FlowPane>
-            </content>
-         </ScrollPane>
-
-         <!-- Right Column -->
-         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
-            <content>
-               <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
-                  <padding>
-                     <Insets bottom="10" left="10" right="10" top="10" />
-                  </padding>
-                  <Label text="Done" textFill="#575757">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
-                  <Button text="Right 1" />
-                  <Button text="Right 2" />
-                  <Button text="Right 3" />
-                  <Button fx:id="documentButton" prefHeight="41.0" prefWidth="74.0" style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Document">
-                     <FlowPane.margin>
-                        <Insets left="160.0" top="260.0" />
-                     </FlowPane.margin>
-                  </Button>
-               </FlowPane>
-            </content>
-         </ScrollPane>
+         <children>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+                        <Label prefHeight="23.0" prefWidth="81.0" text="Pending" textFill="#575757">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
+                        <Button text="Left 2" />
+                        <Button text="Left 3" />
+                        <Button text="Left 1" />
+                     </children>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+                        <Label text="In Progress" textFill="#575757">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
+                        <Button text="Center 1" />
+                        <Button text="Center 2" />
+                        <Button text="Center 3" />
+                     </children>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+                        <Label text="Done" textFill="#575757">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
+                        <Button text="Right 1" />
+                        <Button text="Right 2" />
+                        <Button text="Right 3" />
+                        <Button fx:id="documentButton" prefHeight="41.0" prefWidth="74.0" style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Document">
+                           <FlowPane.margin>
+                              <Insets left="160.0" top="260.0" />
+                           </FlowPane.margin>
+                        </Button>
+                     </children>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+         </children>
       </HBox>
    </center>
-
 </BorderPane>
