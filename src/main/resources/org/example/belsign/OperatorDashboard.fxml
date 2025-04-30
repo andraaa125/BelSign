@@ -1,75 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="546.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.OperatorDashboardController">
-   <children>
-      <Separator layoutX="401.0" layoutY="70.0" orientation="VERTICAL" prefHeight="428.0" prefWidth="20.0" />
-      <Button layoutX="531.0" layoutY="408.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="70.0" style="-fx-background-color: #333535; -fx-text-fill: white;" text="Camera" />
-      <Button layoutX="176.0" layoutY="187.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="109.0" style="-fx-border-color: #338d71; -fx-background-color: transparent; -fx-border-width: 3;" text="46/042025/22" />
-      <Button layoutX="41.0" layoutY="187.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="114.0" style="-fx-border-color: #338d71; -fx-border-width: 3; -fx-background-color: transparent;" text="45/042025/11" />
-      <Button layoutX="134.0" layoutY="311.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="67.0" style="-fx-border-color: #CC9F33; -fx-border-width: 3; -fx-background-color: transparent;" text="Button" />
-      <Line endX="409.0" layoutX="411.0" layoutY="49.0" startX="-411.0" style="-fx-: #004b88;" />
-      <Button layoutX="741.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="69.0" text="Logout">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <Label layoutX="570.0" layoutY="12.0" text="Operator:">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <Button layoutX="668.0" layoutY="408.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="70.0" style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Send" />
-      <Label layoutX="635.0" layoutY="12.0" text="Jens Jensen">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <ImageView fitHeight="53.0" fitWidth="82.0" layoutX="8.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../../../../BELMAN_Logo_264pxl.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="454.0" layoutY="99.0" text="Order Number:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="589.0" layoutY="99.0" text="Label">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="38.0" layoutY="99.0" text="Weld Log">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Button layoutX="152.0" layoutY="413.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="67.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-color: #333535;" text="Button" />
-      <Label layoutX="38.0" layoutY="152.0" text="Done:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="41.0" layoutY="269.0" text="In Progress:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="46.0" layoutY="374.0" text="Pending:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Button layoutX="41.0" layoutY="313.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="67.0" style="-fx-border-color: #CC9F33; -fx-border-width: 3; -fx-background-color: transparent;" text="Button" />
-      <Button layoutX="49.0" layoutY="413.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="67.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-color: #333535;" text="Button" />
-   </children>
-</AnchorPane>
+<BorderPane prefHeight="564.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="org.example.belsign.gui.controllers.OperatorDashboardController">
+
+   <!-- TOP BAR -->
+   <top>
+      <AnchorPane prefHeight="50.0" prefWidth="820.0">
+         <children>
+
+            <Label layoutX="644.0" layoutY="15.0" style="-fx-font-size: 16px;" text="Welcome," />
+            <Label fx:id="userName" layoutX="695.0" layoutY="15.0" prefHeight="20.0" prefWidth="35.0" />
+            <Label alignment="CENTER" layoutX="75.0" layoutY="7.0" prefHeight="39.0" prefWidth="73.0" style="-fx-text-fill: #004b88;" text="BelSign">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Line endX="87.48831176757812" endY="12.211708068847656" layoutX="-20.0" layoutY="-1.0" startX="87.48831176757812" startY="44.59312057495117" stroke="#575700" />
+            <ImageView fitHeight="53.0" fitWidth="63.0" layoutX="8.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/BELMAN_Logo.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="logoutButton" layoutX="745.0" layoutY="12.0" style="-fx-background-color: #333535; -fx-text-fill: white;" text="Log Out" />
+         </children>
+      </AnchorPane>
+   </top>
+
+   <!-- CENTER: THREE COLUMNS -->
+   <center>
+      <HBox prefHeight="472.0" prefWidth="820.0" spacing="5.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="10" left="10" right="10" top="10" />
+         </padding>
+
+         <!-- Left Column -->
+         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+            <content>
+               <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <padding>
+                     <Insets bottom="10" left="10" right="10" top="10" />
+                  </padding>
+                  <Label prefHeight="23.0" prefWidth="81.0" text="Pending" textFill="#575757">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
+                  <Button text="Left 2" />
+                  <Button text="Left 3" />
+                  <Button text="Left 1" />
+               </FlowPane>
+            </content>
+         </ScrollPane>
+
+         <!-- Center Column -->
+         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+            <content>
+               <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <padding>
+                     <Insets bottom="10" left="10" right="10" top="10" />
+                  </padding>
+                  <Label text="In Progress" textFill="#575757">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
+                  <Button text="Center 1" />
+                  <Button text="Center 2" />
+                  <Button text="Center 3" />
+               </FlowPane>
+            </content>
+         </ScrollPane>
+
+         <!-- Right Column -->
+         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+            <content>
+               <FlowPane hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <padding>
+                     <Insets bottom="10" left="10" right="10" top="10" />
+                  </padding>
+                  <Label text="Done" textFill="#575757">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Line endX="140.0" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
+                  <Button text="Right 1" />
+                  <Button text="Right 2" />
+                  <Button text="Right 3" />
+                  <Button fx:id="documentButton" prefHeight="41.0" prefWidth="74.0" style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Document">
+                     <FlowPane.margin>
+                        <Insets left="160.0" top="260.0" />
+                     </FlowPane.margin>
+                  </Button>
+               </FlowPane>
+            </content>
+         </ScrollPane>
+      </HBox>
+   </center>
+
+</BorderPane>

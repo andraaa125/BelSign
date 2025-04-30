@@ -35,17 +35,22 @@
          </font>
       </Label>
       <Label fx:id="incorrectEmailOrPassword" layoutX="278.0" layoutY="462.0" prefHeight="34.0" prefWidth="257.0" wrapText="true" />
-      <Label layoutX="284.0" layoutY="83.0" prefHeight="42.0" prefWidth="242.0" text="Welcome to BelSign">
+      <Label layoutX="284.0" layoutY="83.0" prefHeight="42.0" prefWidth="148.0" text="Welcome to">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>
       </Label>
       <TextField fx:id="visiblePassword" layoutX="280.0" layoutY="293.0" prefHeight="42.0" prefWidth="257.0" visible="false" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="283.0" />
-      <PasswordField fx:id="loginPassword" layoutX="277.0" layoutY="291.0" prefHeight="42.0" prefWidth="257.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="283.0" />
+      <PasswordField fx:id="loginPassword" layoutX="280.0" layoutY="293.0" prefHeight="42.0" prefWidth="257.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="283.0" />
       <Button fx:id="btnShowPassword" contentDisplay="CENTER" layoutX="504.0" layoutY="299.0" maxHeight="26.0" maxWidth="30.0" onAction="#onPasswordVisibility" style="-fx-background-color: transparent;" textAlignment="CENTER">
          <graphic>
             <FontIcon fx:id="eyeIcon" iconLiteral="bi-eye" iconSize="16" text="" textAlignment="CENTER" />
          </graphic>
       </Button>
+      <Label layoutX="432.0" layoutY="87.0" text="BelSign" textFill="#004b88">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
