@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<BorderPane prefHeight="490.0" prefWidth="750.0" style="-fx-background-color: #dadada;" stylesheets="@Images/PhotoDocumentation.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.DocumentationController">
+<BorderPane prefHeight="490.0" prefWidth="750.0" style="-fx-background-color: #dadada;" stylesheets="@Images/CSS/PhotoDocumentation.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.DocumentationController">
    <center>
       <GridPane hgap="20.0" vgap="30.0">
          <columnConstraints>
@@ -28,7 +28,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <StackPane fx:id="image41" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: Dashed;" styleClass="image-box" stylesheets="@Images/PhotoDocumentation.css">
+            <StackPane fx:id="image41" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: Dashed;" styleClass="image-box" stylesheets="@Images/CSS/PhotoDocumentation.css">
                <children>
                   <Label text="+ Add Image">
                      <font>
@@ -74,12 +74,12 @@
                </children>
             </StackPane>
             <VBox alignment="CENTER" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#onClickCancel" prefHeight="60.0" prefWidth="195.0" style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 15;" styleClass=".cancelBtn" stylesheets="@Images/PhotoDocumentation.css" text="Cancel" GridPane.rowIndex="2">
+            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#onClickCancel" prefHeight="60.0" prefWidth="195.0" style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 15;" styleClass=".cancelBtn" stylesheets="@Images/CSS/PhotoDocumentation.css" text="Cancel" GridPane.rowIndex="2">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="btnSend" mnemonicParsing="false" onAction="#onClickSend" prefHeight="60.0" prefWidth="195.0" style="-fx-border-color: #338d71; -fx-background-color: transparent; -fx-border-width: 2; -fx-border-radius: 15;" styleClass=".send" stylesheets="@Images/PhotoDocumentation.css" text="Send" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Button fx:id="btnSend" mnemonicParsing="false" onAction="#onClickSend" prefHeight="60.0" prefWidth="195.0" style="-fx-border-color: #338d71; -fx-background-color: transparent; -fx-border-width: 2; -fx-border-radius: 15;" styleClass=".send" stylesheets="@Images/CSS/PhotoDocumentation.css" text="Send" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>

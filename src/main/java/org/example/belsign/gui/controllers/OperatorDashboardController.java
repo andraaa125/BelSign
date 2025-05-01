@@ -1,20 +1,14 @@
 package org.example.belsign.gui.controllers;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class OperatorDashboardController {
-
-    @FXML
-    private Button btnDocument;
-
 
     public void onClickDocument(ActionEvent actionEvent) throws IOException {
         loadDocumentView();
