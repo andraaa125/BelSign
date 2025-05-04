@@ -27,6 +27,7 @@ import java.util.List;
 public class DocumentationController {
 
     private Order order;
+    private OperatorDashboardController operatorDashboardController;
 
     @FXML private StackPane stackOne;
     @FXML private StackPane stackTwo;
@@ -38,7 +39,6 @@ public class DocumentationController {
     public void onClickSend(ActionEvent actionEvent) {
         try {
             ImageOrderManager manager = new ImageOrderManager();
-
             int slot = 1;
             for (StackPane pane : List.of(stackOne, stackTwo, stackThree, stackFour, stackFive)) {
                 Image image = ImageContext.capturedImages.get(pane);
@@ -49,8 +49,12 @@ public class DocumentationController {
                 }
                 slot++;
             }
-
             ImageContext.capturedImages.clear();
+
+            if (operatorDashboardController != null) {
+                operatorDashboardController.setStatusMessage("Images sent successfully");
+            }
+
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.close();
 
@@ -76,6 +80,10 @@ public class DocumentationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setOperatorDashboardController(OperatorDashboardController controller) {
+        this.operatorDashboardController = controller;
     }
 
     @FXML

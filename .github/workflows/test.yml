@@ -2,9 +2,9 @@ name: RUN UNIT TEST
 
 on:
   push:
-    branches: [ andra ]
+    branches: [ testing ]
   pull_request:
-    branches: [ andra ]
+    branches: [ testing ]
 
 jobs:
   test:

@@ -101,12 +101,16 @@
       </HBox>
    </center>
    <bottom>
-      <HBox prefHeight="45.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="45.0" prefWidth="900.0" BorderPane.alignment="CENTER" spacing="10.0" alignment="CENTER_RIGHT">
          <children>
-            <Region prefHeight="45.0" prefWidth="694.0" />
-            <Region prefHeight="45.0" prefWidth="14.0" />
-            <Button fx:id="btnDocument" onAction="#onClickDocument" prefHeight="33.0" prefWidth="182.0" style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Document" />
+            <Label fx:id="statusLabel" text="" style="-fx-text-fill: green; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnDocument" onAction="#onClickDocument" prefHeight="33.0" prefWidth="182.0"
+                    style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Document" />
          </children>
+         <padding>
+            <Insets left="20.0" right="20.0"/>
+         </padding>
       </HBox>
    </bottom>
+
 </BorderPane>
