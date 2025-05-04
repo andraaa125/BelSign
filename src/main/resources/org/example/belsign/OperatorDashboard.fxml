@@ -56,12 +56,11 @@
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                      <children>
-                        <Label prefHeight="23.0" prefWidth="81.0" text="Pending" textFill="#575757">
+                        <Label prefHeight="23.0" prefWidth="81.0" text="Pending" textFill="#575757" underline="true">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Line endX="-33.95823669433594" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
                      </children>
                   </FlowPane>
                </content>
@@ -73,12 +72,11 @@
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                      <children>
-                        <Label text="In Progress" textFill="#575757">
+                        <Label text="In Progress" textFill="#575757" underline="true">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Line endX="-10.961090087890625" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
                      </children>
                   </FlowPane>
                </content>
@@ -90,12 +88,11 @@
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                      <children>
-                        <Label text="Done" textFill="#575757">
+                        <Label text="Done" textFill="#575757" underline="true">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Line endX="-61.671905517578125" startX="-100.0" stroke="#575757" strokeType="OUTSIDE" />
                      </children>
                   </FlowPane>
                </content>
