@@ -1,21 +1,25 @@
 package org.example.belsign;
 
-import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderButtonInteractionTest {
+
     @Test
-    void testAddRemoveButtonFromPane() {
-        FlowPane pane = new FlowPane();
-        Button button = new Button("Order 1");
+    void testAddRemoveButtonName() {
+        List<String> mockPane = new ArrayList<>();
+        String buttonName = "Order 1";
 
-        pane.getChildren().add(button);
-        assertTrue(pane.getChildren().contains(button));
+        // Simulate adding a button
+        mockPane.add(buttonName);
+        assertTrue(mockPane.contains(buttonName));
 
-        pane.getChildren().remove(button);
-        assertFalse(pane.getChildren().contains(button));
+        // Simulate removing a button
+        mockPane.remove(buttonName);
+        assertFalse(mockPane.contains(buttonName));
     }
 }

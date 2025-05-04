@@ -1,20 +1,29 @@
 package org.example.belsign;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.example.belsign.be.ImageOrder;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-public class ImageOrderPropertiesTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class ImageOrderPropertiesTest {
+
     @Test
     void testImageOrderProperties() {
-        Image dummyImage = new Image("https://via.placeholder.com/150");
-        ImageOrder order = new ImageOrder("ORD123", dummyImage, 1, "ORD123_1.png");
+        BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
 
-        assertEquals("ORD123", order.getOrderId());
-        assertEquals(1, order.getSlotNumber());
-        assertEquals("ORD123_1.png", order.getFileName());
-        assertNotNull(order.getImage());
+        ImageOrder imgOrder = new ImageOrder("WO-123", fxImage, 1, "WO-123_1.png");
+
+        assertEquals("WO-123", imgOrder.getOrderId());
+        assertEquals(1, imgOrder.getSlotNumber());
+        assertEquals("WO-123_1.png", imgOrder.getFileName());
+        assertNotNull(imgOrder.getImage());
     }
 }
