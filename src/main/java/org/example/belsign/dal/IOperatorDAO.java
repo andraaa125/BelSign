@@ -9,8 +9,6 @@ public interface IOperatorDAO {
 
     List<Operator> getAllOperator() throws IOException;
 
-    List<Operator> getAllOperators() throws IOException;
-
     void createNewOperator(Operator operator)  throws IOException;
     void updateOperator(Operator operator)   throws IOException;
 

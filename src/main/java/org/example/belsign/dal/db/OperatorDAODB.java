@@ -40,11 +40,6 @@ public class OperatorDAODB implements IOperatorDAO {
     }
 
     @Override
-    public List<Operator> getAllOperators() throws IOException {
-        return List.of();
-    }
-
-    @Override
     public void createNewOperator(Operator operator) throws IOException {
         String sql = "INSERT INTO Admin (OperatorID, First_Name, Last_Name) VALUES (?, ?, ?)";
 
