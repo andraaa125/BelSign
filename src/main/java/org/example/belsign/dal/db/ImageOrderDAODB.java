@@ -66,4 +66,17 @@ public class ImageOrderDAODB implements IImageOrderDAO {
 
         return images;
     }
+
+    public void deleteImage(String orderId, int slotNumber) throws IOException {
+        String sql = "DELETE FROM ImageOrder WHERE orderId = ? AND slotNumber = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, orderId);
+            ps.setInt(2, slotNumber);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IOException("Failed to delete image", e);
+        }
+    }
+
+
 }

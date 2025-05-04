@@ -33,7 +33,11 @@ public class ImageOrderManager {
         }
     }
 
-    // ✅ FIX: Add this
+    public void deleteImage(String orderId, int slotNumber) throws IOException {
+        imageDAO.deleteImage(orderId, slotNumber);
+    }
+
+
     public List<ImageOrder> getImagesForOrder(String orderId) throws IOException {
         return ((ImageOrderDAODB) imageDAO).getAllImagesForOrder(orderId);
     }
