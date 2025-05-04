@@ -21,6 +21,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.scene.control.Button;
+import org.example.belsign.gui.model.ImageContext;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -88,12 +89,30 @@ public class CameraController implements Initializable {
         webcam.close();
 
         File file = fileChooser.showSaveDialog(imageView.getScene().getWindow());
-        if (file != null)
-            try { // Save picture with .png extension
-                ImageIO.write(SwingFXUtils.fromFXImage(imageView.getImage(), null), "PNG", file);
+        if (file != null) {
+            try {
+                javafx.scene.image.Image fxImage = imageView.getImage();
+                ImageIO.write(SwingFXUtils.fromFXImage(fxImage, null), "PNG", file);
+
+                // Set image in the selected StackPane
+                if (ImageContext.selectedStackPane != null) {
+                    ImageView iv = new ImageView(fxImage);
+                    iv.setPreserveRatio(true);
+                    iv.setFitWidth(180);  // Adjust as needed
+                    iv.setFitHeight(130);
+                    ImageContext.selectedStackPane.getChildren().setAll(iv); // Replace label
+                    ImageContext.capturedImages.put(ImageContext.selectedStackPane, fxImage); // Optional: for later saving
+                }
+
+                // Close camera window
+                Stage stage = (Stage) imageView.getScene().getWindow();
+                stage.close();
+
             } catch (IOException ex) {
-                ex.printStackTrace(); // Can't save picture
+                ex.printStackTrace();
             }
+        }
+
     }
 
     @FXML
