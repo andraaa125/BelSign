@@ -4,8 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.example.belsign.be.Admin;
 import org.example.belsign.be.Operator;
+import org.example.belsign.be.User;
 import org.example.belsign.bll.AdminManager;
 import org.example.belsign.bll.OperatorManager;
+import org.example.belsign.bll.UserManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +19,9 @@ public class BelsignModel {
 
     private final OperatorManager operatorManager = new OperatorManager();
     private final ObservableList<Operator> allOperator = FXCollections.observableArrayList();
+
+    public final UserManager userManager = new UserManager();
+    private final ObservableList<User> allUser = FXCollections.observableArrayList();
 
     /// Admin///
     public ObservableList<Admin> getAllAdmin() throws IOException {

@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.example.belsign.be.User;
+import org.example.belsign.bll.UserManager;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -28,29 +30,42 @@ public class LoginController {
 
     private boolean passwordVisible = false;
 
-    public void onLoginBtnClick(ActionEvent actionEvent) throws IOException {
-        String username = loginUsername.getText().trim();  // Get the username text
-        String password = loginPassword.getText();  // Get the password text
+    private UserManager userManager = new UserManager();
 
-        // Perform the login validation
-        if ("0101".equals(username) && "1234".equals(password)) {
-            loadDashboard();
-        } else {
-            System.out.println("Login failed");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Login Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Invalid username or password.");
-            alert.showAndWait();
+    public void onLoginBtnClick(ActionEvent actionEvent) throws IOException {
+        String username = loginUsername.getText().trim();
+        String password = passwordVisible ? visiblePassword.getText() : loginPassword.getText();
+
+        try {
+            User loggedInUser = userManager.authenticate(username, password);
+            if (loggedInUser != null) {
+                loadDashboard(loggedInUser);
+            } else {
+                showAlert("Invalid username or password.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("An error occurred during login.");
         }
     }
 
+    private void showAlert(String s) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Login Error");
+            alert.setHeaderText(null);
+            alert.setContentText(s);
+            alert.showAndWait();
+    }
 
-    private void loadDashboard() throws IOException {
+    private void loadDashboard(User user) throws IOException {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/OperatorDashboard.fxml"));
             System.out.println(getClass().getResource("OperatorDashboard.fxml"));
             Parent root = fxmlLoader.load();
+
+            OperatorDashboardController controller = fxmlLoader.getController();
+            controller.setUserName(user.getFirstName(), user.getLastName());
+
             Stage stage = new Stage();
             stage.setTitle("Dashboard");
             stage.setScene(new Scene(root));
