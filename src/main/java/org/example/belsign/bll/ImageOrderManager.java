@@ -32,4 +32,9 @@ public class ImageOrderManager {
             saveImage(image);
         }
     }
+
+    // ✅ FIX: Add this
+    public List<ImageOrder> getImagesForOrder(String orderId) throws IOException {
+        return ((ImageOrderDAODB) imageDAO).getAllImagesForOrder(orderId);
+    }
 }
