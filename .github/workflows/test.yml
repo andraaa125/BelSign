@@ -2,16 +2,16 @@ name: RUN UNIT TEST
 
 on:
   push:
-    branches: [ testing ]
+    branches: [ andra ]
   pull_request:
-    branches: [ testing ]
+    branches: [ andra ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name:  Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK
@@ -20,5 +20,20 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build and run tests
+      - name: Run all unit tests
         run: mvn test
+
+      - name: Run ImageOrderSaveTest
+        run: mvn -Dtest=ImageOrderSaveTest test
+
+      - name: Run ImageOrderPropertiesTest
+        run: mvn -Dtest=ImageOrderPropertiesTest test
+
+      - name: Run ImageContextTest
+        run: mvn -Dtest=ImageContextTest test
+
+      - name: Run OrderToStringTest
+        run: mvn -Dtest=OrderToStringTest test
+
+      - name: Run OrderButtonInteractionTest
+        run: mvn -Dtest=OrderButtonInteractionTest test
