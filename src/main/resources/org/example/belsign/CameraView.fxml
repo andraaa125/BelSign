@@ -5,28 +5,46 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.CameraController">
+<BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #7fa8c5;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.CameraController">
 
     <center>
-        <StackPane fx:id="imgContainer" style="-fx-background-color: lightgray;">
+        <StackPane fx:id="imgContainer" style="-fx-background-color: #7fa8c5;">
             <children>
-                <ImageView fx:id="imageView" fitHeight="480.0" fitWidth="640.0" pickOnBounds="true" preserveRatio="true" />
+                <ImageView fx:id="imageView" fitHeight="526.0" fitWidth="771.0" pickOnBounds="true" preserveRatio="true" />
             </children>
         </StackPane>
     </center>
 
     <bottom>
-        <HBox fx:id="bottomHBox" alignment="BOTTOM_CENTER" spacing="20.0" style="-fx-background-color: #EEE;" BorderPane.alignment="CENTER">
+        <HBox fx:id="bottomHBox" alignment="BOTTOM_CENTER" prefHeight="60.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #EEE;" BorderPane.alignment="CENTER_LEFT">
             <padding>
                 <Insets bottom="10" top="10" />
             </padding>
             <children>
-                <Button onAction="#btnReload" text="Reload" />
-                <Button onAction="#btnCapture" text="Capture" />
-                <Button onAction="#btnSave" text="Save" />
-                <Button fx:id="cancelButton" onAction="#btnCancel" text="Cancel" />
+            <Region prefHeight="35.0" prefWidth="30.0" />
+                <Button fx:id="reloadButton" alignment="CENTER" onAction="#btnReload" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #dadada; -fx-border-color: #9d9d9d;" text="Reload">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Region prefHeight="35.0" prefWidth="262.0" HBox.hgrow="ALWAYS" />
+                <Button fx:id="captureButton" onAction="#btnCapture" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #cbe2f7; -fx-border-color: #004b88;" text="Capture">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Region prefHeight="35.0" prefWidth="214.0" HBox.hgrow="ALWAYS" />
+                <Button fx:id="saveButton" onAction="#btnSave" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: cbffb3; -fx-border-color: #2f993d; -fx-background-radius: 10; -fx-border-radius: 10;" text="Save">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+                <Button fx:id="cancelButton" onAction="#btnCancel" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ffd3d3; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #b43434;" text="Cancel">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Region prefHeight="35.0" prefWidth="30.0" />
             </children>
         </HBox>
     </bottom>
