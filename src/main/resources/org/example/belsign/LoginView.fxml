@@ -12,13 +12,12 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.LoginController">
-   <center>
-      <AnchorPane prefHeight="546.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;">
+   <top>
+      <AnchorPane prefHeight="546.0" prefWidth="820.0" style="-fx-background-color: #7fa8c5;" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="loginUsername" layoutX="280.0" layoutY="194.0" prefHeight="42.0" prefWidth="257.0" AnchorPane.rightAnchor="283.0" />
+            <TextField fx:id="loginUsername" layoutX="280.0" layoutY="194.0" prefHeight="42.0" prefWidth="257.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="283.0" />
             <Label layoutX="281.0" layoutY="337.0" text="Forgot your password ?" />
-            <Button fx:id="loginBtn" layoutX="280.0" layoutY="393.0" mnemonicParsing="false" onAction="#onLoginBtnClick"
-                    prefHeight="42.0" prefWidth="257.0" style="-fx-background-color: #004b88; -fx-text-fill: #f2f2f2;" text="Log in">
+            <Button fx:id="loginBtn" layoutX="280.0" layoutY="393.0" mnemonicParsing="false" onAction="#onLoginBtnClick" prefHeight="42.0" prefWidth="257.0" style="-fx-background-color: #004b88; -fx-text-fill: #f2f2f2;" text="Log in" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="283.0">
                <font>
                   <Font size="16.0" />
                </font>
@@ -39,14 +38,14 @@
                </font>
             </Label>
             <Label fx:id="incorrectEmailOrPassword" layoutX="278.0" layoutY="462.0" prefHeight="34.0" prefWidth="257.0" wrapText="true" />
-            <Label layoutX="284.0" layoutY="83.0" prefHeight="42.0" prefWidth="146.0" text="Welcome to">
+            <Label layoutX="278.0" layoutY="86.0" prefHeight="42.0" prefWidth="167.0" text="Welcome to" AnchorPane.bottomAnchor="421.0" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="88.8">
                <font>
-                  <Font name="System Bold" size="28.0" />
+                  <Font name="System Bold" size="27.0" />
                </font>
             </Label>
-            <Label layoutX="430.0" layoutY="87.0" style="-fx-text-fill: #004b88;" text="BelSign">
+            <Label layoutX="440.0" layoutY="91.0" style="-fx-text-fill: #004b88;" text="BelSign" AnchorPane.bottomAnchor="423.4" AnchorPane.rightAnchor="284.0" AnchorPane.topAnchor="91.0">
                <font>
-                  <Font name="System Bold" size="28.0" />
+                  <Font name="System Bold" size="27.0" />
                </font>
             </Label>
             <TextField fx:id="visiblePassword" layoutX="280.0" layoutY="293.0" prefHeight="42.0" prefWidth="257.0" visible="false" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="283.0" />
@@ -58,5 +57,5 @@
             </Button>
          </children>
       </AnchorPane>
-   </center>
+   </top>
 </BorderPane>
