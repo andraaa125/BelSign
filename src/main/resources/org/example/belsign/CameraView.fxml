@@ -30,12 +30,12 @@
                <font>
                   <Font name="System Bold" size="16.0" />
                </font></Button>
-            <Region prefHeight="35.0" prefWidth="262.0" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="54.0" prefWidth="218.0" HBox.hgrow="ALWAYS" />
                 <Button fx:id="captureButton" onAction="#btnCapture" prefHeight="60.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: transparent; -fx-border-color: #004b88; -fx-border-width: 2;" text="Capture" textFill="#575757">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font></Button>
-            <Region prefHeight="35.0" prefWidth="214.0" HBox.hgrow="ALWAYS" />
+            <Region prefHeight="54.0" prefWidth="92.0" HBox.hgrow="ALWAYS" />
                 <Button fx:id="saveButton" onAction="#btnSave" prefHeight="60.0" prefWidth="120.0" style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2;" text="Save" textFill="#575757">
                <font>
                   <Font name="System Bold" size="16.0" />
