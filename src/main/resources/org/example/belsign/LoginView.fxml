@@ -22,7 +22,7 @@
                <children>
                   <Label style="-fx-text-fill: #333535;" text="Welcome to" textFill="#333535">
                      <font>
-                        <Font name="System Bold" size="28.0" />
+                        <Font name="System Bold" size="25.0" />
                      </font>
                      <HBox.margin>
                         <Insets right="10.0" />
@@ -30,7 +30,7 @@
                   </Label>
                   <Label style="-fx-text-fill: #004b88;" text="BelSign">
                      <font>
-                        <Font name="System Bold" size="28.0" />
+                        <Font name="System Bold" size="25.0" />
                      </font>
                   </Label>
                </children>
