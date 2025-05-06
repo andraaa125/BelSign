@@ -67,7 +67,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Region prefHeight="30.0" prefWidth="188.0" />
+                        <Region prefHeight="30.0" prefWidth="148.0" />
                      </children>
                   </FlowPane>
                </content>
@@ -84,7 +84,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Region prefHeight="30.0" prefWidth="164.0" />
+                        <Region prefHeight="30.0" prefWidth="130.0" />
                      </children>
                   </FlowPane>
                </content>
@@ -101,7 +101,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Region prefHeight="30.0" prefWidth="213.0" />
+                        <Region prefHeight="30.0" prefWidth="167.0" />
                      </children>
                   </FlowPane>
                </content>
