@@ -27,17 +27,23 @@
                      </image>
                   </ImageView>
 
-                        <Line endX="53.00001525878906" endY="44.21766662597656" layoutX="25.0" layoutY="1.0" startX="53.00000762939453" startY="5.567007064819336" stroke="#575700" />
+                  <Line endX="53.00001525878906" endY="44.21766662597656" layoutX="25.0" layoutY="1.0" startX="53.00000762939453" startY="5.567007064819336" stroke="#575700" />
 
-                        <Label alignment="CENTER" layoutX="87.0" layoutY="5.0" prefHeight="39.0" prefWidth="73.0" style="-fx-text-fill: #004b88;" text="BelSign" textAlignment="CENTER">
+                  <Label alignment="CENTER" layoutX="87.0" layoutY="5.0" prefHeight="39.0" prefWidth="73.0" style="-fx-text-fill: #004b88;" text="BelSign" textAlignment="CENTER">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
 
-                        <Button fx:id="logoutButton" layoutX="812.0" layoutY="14.0" onAction="#onClickLogout" prefHeight="26.0" prefWidth="77.0" style="-fx-background-color: #333535; -fx-text-fill: white;" text="Log Out" />
+                  <Button fx:id="logoutButton" maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="100.0" onAction="#onClickLogout" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #333535; -fx-text-fill: #e3e3e3;" text="Log Out" AnchorPane.leftAnchor="789.0" AnchorPane.topAnchor="9.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
 
-                        <Label fx:id="userName" layoutX="599.0" layoutY="17.0" style="-fx-font-size: 16px;" />
+                  <Label fx:id="userName" layoutX="599.0" layoutY="17.0" style="-fx-font-size: 16px;">
+                     <font>
+                        <Font size="20.0" />
+                     </font></Label>
                </children>
             </AnchorPane>
          </children>
@@ -51,48 +57,51 @@
          <children>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="pendingPane" hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="pendingPane" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <Label prefHeight="23.0" prefWidth="81.0" text="Pending" textFill="#575757" underline="true">
+                        <Label text="Pending" textFill="#575757" underline="true">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
+                        <Region prefHeight="30.0" prefWidth="188.0" />
                      </children>
                   </FlowPane>
                </content>
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="inProgressPane" hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="inProgressPane" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                      <children>
                         <Label text="In Progress" textFill="#575757" underline="true">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
+                        <Region prefHeight="30.0" prefWidth="164.0" />
                      </children>
                   </FlowPane>
                </content>
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="donePane" hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="donePane" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                      <children>
                         <Label text="Done" textFill="#575757" underline="true">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
+                        <Region prefHeight="30.0" prefWidth="213.0" />
                      </children>
                   </FlowPane>
                </content>
@@ -101,16 +110,15 @@
       </HBox>
    </center>
    <bottom>
-      <HBox prefHeight="45.0" prefWidth="900.0" BorderPane.alignment="CENTER" spacing="10.0" alignment="CENTER_RIGHT">
+      <HBox prefHeight="45.0" prefWidth="900.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="statusLabel" text="" style="-fx-text-fill: green; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnDocument" onAction="#onClickDocument" prefHeight="33.0" prefWidth="182.0"
-                    style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Document" />
+            <Region prefHeight="45.0" prefWidth="694.0" />
+            <Region prefHeight="45.0" prefWidth="14.0" />
+            <Button fx:id="btnDocument" onAction="#onClickDocument" prefHeight="33.0" prefWidth="182.0" style="-fx-background-color: #004b88; -fx-text-fill: #e3e3e3;" text="Document">
+               <font>
+                  <Font size="20.0" />
+               </font></Button>
          </children>
-         <padding>
-            <Insets left="20.0" right="20.0"/>
-         </padding>
       </HBox>
    </bottom>
-
 </BorderPane>
