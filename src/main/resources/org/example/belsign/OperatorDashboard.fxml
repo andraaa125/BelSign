@@ -110,7 +110,7 @@
       </HBox>
    </center>
    <bottom>
-      <HBox prefHeight="45.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="52.0" prefWidth="903.0" BorderPane.alignment="CENTER">
          <children>
             <Region prefHeight="45.0" prefWidth="694.0" />
             <Region prefHeight="45.0" prefWidth="14.0" />
