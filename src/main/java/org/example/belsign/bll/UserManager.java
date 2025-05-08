@@ -19,10 +19,14 @@ public class UserManager {
     public User authenticate(String username, String password) throws IOException, SQLException {
         List<User> users = getAllUsers();
         for (User user : users) {
-            if (PasswordUtil.checkPassword(password, user.getPassword())) {
-                return user; // valid login
+            if (user.getUsername().equals(username)) {
+                if (PasswordUtil.checkPassword(password, user.getPassword())) {
+                    return user; // valid login
+                }
+                break;
             }
         }
         return null; // invalid login
     }
 }
+

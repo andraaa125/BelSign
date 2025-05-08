@@ -27,15 +27,23 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class OperatorDashboardController implements Initializable {
-    @FXML private FlowPane pendingPane;
-    @FXML private FlowPane inProgressPane;
-    @FXML private FlowPane donePane;
-    @FXML private Button btnDocument;
-    @FXML private Label userName;
-    @FXML private Button logoutButton;
-    @FXML private Label statusLabel;
-
+    @FXML
+    private FlowPane pendingPane;
+    @FXML
+    private FlowPane inProgressPane;
+    @FXML
+    private FlowPane donePane;
+    @FXML
+    private Button btnDocument;
+    @FXML
+    private Label userName;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Label statusLabel;
+    @FXML
     private Button selectedOrderButton = null;
+
     private Order selectedOrder = null;
     private final OrderManager orderManager = new OrderManager();
 
@@ -48,12 +56,14 @@ public class OperatorDashboardController implements Initializable {
                 orderButton.setUserData(order);
                 orderButton.setStyle(getStyleForStatus(order.getStatus()));
                 orderButton.setOnAction(e -> handleOrderClick(order));
+
                 setupDragEvents(orderButton);
 
                 switch (order.getStatus()) {
                     case "Pending" -> pendingPane.getChildren().add(orderButton);
                     case "InProgress" -> inProgressPane.getChildren().add(orderButton);
                     case "Done" -> donePane.getChildren().add(orderButton);
+                    default -> System.out.println("Unknown status: " + order.getStatus());
                 }
             }
 
@@ -205,11 +215,13 @@ public class OperatorDashboardController implements Initializable {
     public void onClickLogout(ActionEvent actionEvent) throws IOException {
         Stage currentStage = (Stage) logoutButton.getScene().getWindow();
         currentStage.close();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/LoginView.fxml"));
         Parent root = fxmlLoader.load();
         Stage loginStage = new Stage();
         loginStage.setTitle("Login");
         loginStage.setScene(new Scene(root));
+
         loginStage.show();
     }
 }
