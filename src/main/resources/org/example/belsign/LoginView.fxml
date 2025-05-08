@@ -118,7 +118,7 @@
    <top>
       <ImageView fitHeight="93.0" fitWidth="149.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_LEFT">
          <image>
-            <Image url="@Images/BELMAN_Logo.png" />
+            <Image url="@Images/Images/BELMAN_Logo.png" />
          </image>
          <BorderPane.margin>
             <Insets left="10.0" />

@@ -38,9 +38,8 @@ public class OperatorDashboardController implements Initializable {
     @FXML
     private Button logoutButton;
     @FXML
-
     private Button selectedOrderButton = null;
-    // To track the selected order button
+
     private Order selectedOrder = null;
 
     private final OrderManager orderManager = new OrderManager();

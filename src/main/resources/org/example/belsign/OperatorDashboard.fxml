@@ -23,7 +23,7 @@
                <children>
                   <ImageView fitHeight="53.0" fitWidth="63.0" layoutX="8.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@Images/BELMAN_Logo.png" />
+                        <Image url="@Images/Images/BELMAN_Logo.png" />
                      </image>
                   </ImageView>
 
