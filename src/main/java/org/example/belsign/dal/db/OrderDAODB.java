@@ -37,7 +37,7 @@ public class OrderDAODB implements IOrderDAO {
     @Override
     public List<Order> getAllOrders() throws IOException {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name, Image_1, Image_2, Image_3, Image_4, Image_5 FROM [Order]";
+        String sql = "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name, Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM FROM [Order]";
 
         try (Connection connection = con.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
@@ -48,11 +48,12 @@ public class OrderDAODB implements IOrderDAO {
                 String status = rs.getString("Status");
                 String operator_first_name = rs.getString("Operator_First_Name");
                 String operator_last_name = rs.getString("Operator_Last_Name");
-                String image_1 = rs.getString("Image_1");
-                String image_2 = rs.getString("Image_2");
-                String image_3 = rs.getString("Image_3");
-                String image_4 = rs.getString("Image_4");
-                String image_5 = rs.getString("Image_5");
+                String image_front = rs.getString("Image_FRONT");
+                String image_back = rs.getString("Image_BACK");
+                String image_right = rs.getString("Image_RIGHT");
+                String image_left = rs.getString("Image_LEFT");
+                String image_top = rs.getString("Image_TOP");
+                String image_bottom = rs.getString("Image_BOTTOM");
 
                 // Debugging output
                 System.out.println("Fetched order ID: " + orderId + ", Status: " + status);
@@ -63,7 +64,7 @@ public class OrderDAODB implements IOrderDAO {
                 }
 
                 // Create Order object with more fields, including images
-                orders.add(new Order(orderId, status, operator_first_name, operator_last_name, image_1, image_2, image_3, image_4, image_5));
+                orders.add(new Order(orderId, status, operator_first_name, operator_last_name, image_front, image_back, image_right, image_left, image_top, image_bottom));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch orders", e);

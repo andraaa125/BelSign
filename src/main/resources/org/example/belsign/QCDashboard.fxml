@@ -66,7 +66,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="searchComboBox" prefHeight="26.0" prefWidth="183.0" />
+                        <ComboBox fx:id="searchComboBox" prefHeight="26.0" prefWidth="154.0" />
                      </children>
                   </FlowPane>
                </content>
