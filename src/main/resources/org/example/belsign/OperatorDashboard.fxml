@@ -15,6 +15,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.VBox?>
 <BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #7fa8c5;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.OperatorDashboardController">
    <top>
       <StackPane BorderPane.alignment="CENTER">
@@ -110,15 +111,30 @@
       </HBox>
    </center>
    <bottom>
-      <HBox prefHeight="52.0" prefWidth="903.0" BorderPane.alignment="CENTER">
-         <children>
-            <Region prefHeight="45.0" prefWidth="694.0" />
-            <Region prefHeight="45.0" prefWidth="14.0" />
-            <Button fx:id="btnDocument" onAction="#onClickDocument" prefHeight="33.0" prefWidth="182.0" style="-fx-background-color: #004b88; -fx-text-fill: #e3e3e3;" text="Document">
-               <font>
-                  <Font size="20.0" />
-               </font></Button>
-         </children>
+      <HBox spacing="10.0" alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets top="10.0" bottom="10.0" left="20.0" right="20.0"/>
+         </padding>
+
+         <!-- Flexible spacer pushes everything to the right -->
+         <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+
+         <!-- Status Label aligned just to the left of the button -->
+         <Label fx:id="statusLabel" text=""
+                style="-fx-text-fill: #338d71; -fx-font-size: 14px; -fx-font-weight: bold;" />
+
+
+         <!-- The Document button stays on the far right -->
+         <Button fx:id="btnDocument" onAction="#onClickDocument"
+                 prefHeight="33.0" prefWidth="182.0"
+                 style="-fx-background-color: #004b88; -fx-text-fill: #e3e3e3;"
+                 text="Document">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Button>
       </HBox>
    </bottom>
+
+
 </BorderPane>

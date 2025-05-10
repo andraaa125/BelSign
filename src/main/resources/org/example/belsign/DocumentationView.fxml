@@ -3,103 +3,114 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="490.0" prefWidth="750.0" style="-fx-background-color: #dadada;" stylesheets="@Images/CSS/PhotoDocumentation.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.DocumentationController">
-   <center>
-      <GridPane hgap="20.0" vgap="30.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-         <children>
-            <StackPane fx:id="stackOne" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: Dashed;" styleClass="image-box" stylesheets="@Images/CSS/PhotoDocumentation.css">
-               <children>
-                  <Label text="+ Add Image">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-               </children>
-            </StackPane>
-            <StackPane fx:id="stackFour" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: Dashed;" styleClass="image-box" GridPane.rowIndex="1">
-               <children>
-                  <Label text="+ Add Image">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-               </children>
-            </StackPane>
-            <StackPane fx:id="stackFive" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <Label text="+ Add Image">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-               </children>
-            </StackPane>
-            <StackPane fx:id="stackTwo" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-radius: 5; -fx-border-width: 2; -fx-border-style: Dashed;" styleClass="image-box" GridPane.columnIndex="1">
-               <children>
-                  <Label text="+ Add Image">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-               </children>
-            </StackPane>
-            <StackPane fx:id="stackThree" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-color: #333535; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="2">
-               <children>
-                  <Label text="+ Add Image">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-               </children>
-            </StackPane>
-            <VBox alignment="CENTER" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#onClickCancel" prefHeight="60.0" prefWidth="195.0" style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 15;" styleClass=".cancelBtn" stylesheets="@Images/CSS/PhotoDocumentation.css" text="Cancel" GridPane.rowIndex="2">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Button>
-            <Button fx:id="btnSend" mnemonicParsing="false" onAction="#onClickSend" prefHeight="60.0" prefWidth="195.0" style="-fx-border-color: #338d71; -fx-background-color: transparent; -fx-border-width: 2; -fx-border-radius: 15;" styleClass=".send" stylesheets="@Images/CSS/PhotoDocumentation.css" text="Send" GridPane.columnIndex="2" GridPane.rowIndex="2">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Button>
-         </children>
-      </GridPane>
-   </center>
+<BorderPane prefHeight="650.0" prefWidth="950.0" style="-fx-background-color: #dadada;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.DocumentationController">
+
    <top>
-      <Label style="-fx-text-fill: #004b88;" text="Photo Documentation" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="28.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets bottom="20.0" top="15.0" />
-         </BorderPane.margin>
+      <Label text="Photo Documentation" style="-fx-text-fill: #004b88;" BorderPane.alignment="CENTER">
+         <font><Font size="28.0" /></font>
+         <BorderPane.margin><Insets top="15.0" bottom="20.0" /></BorderPane.margin>
       </Label>
    </top>
+
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+         <GridPane fx:id="imageGrid" hgap="20.0" vgap="30.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="150.0" vgrow="NEVER" />
+               <RowConstraints minHeight="150.0" vgrow="NEVER" />
+               <RowConstraints minHeight="150.0" vgrow="NEVER" />
+               <RowConstraints minHeight="150.0" vgrow="ALWAYS" />
+            </rowConstraints>
+
+            <!-- Default Image Slots -->
+            <StackPane fx:id="stackOne" GridPane.columnIndex="0" GridPane.rowIndex="0" onMouseClicked="#openCameraView"
+                       prefWidth="200.0" prefHeight="150.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;">
+               <children>
+                  <Label text="+ Front Image"><font><Font size="16.0" /></font></Label>
+               </children>
+            </StackPane>
+
+            <StackPane fx:id="stackTwo" GridPane.columnIndex="1" GridPane.rowIndex="0" onMouseClicked="#openCameraView"
+                       prefWidth="200.0" prefHeight="150.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;">
+               <children>
+                  <Label text="+ Back Image"><font><Font size="16.0" /></font></Label>
+               </children>
+            </StackPane>
+
+            <StackPane fx:id="stackThree" GridPane.columnIndex="2" GridPane.rowIndex="0" onMouseClicked="#openCameraView"
+                       prefWidth="200.0" prefHeight="150.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;">
+               <children>
+                  <Label text="+ Left Image"><font><Font size="16.0" /></font></Label>
+               </children>
+            </StackPane>
+
+            <StackPane fx:id="stackFour" GridPane.columnIndex="0" GridPane.rowIndex="1" onMouseClicked="#openCameraView"
+                       prefWidth="200.0" prefHeight="150.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;">
+               <children>
+                  <Label text="+ Right Image"><font><Font size="16.0" /></font></Label>
+               </children>
+            </StackPane>
+
+            <StackPane fx:id="stackFive" GridPane.columnIndex="1" GridPane.rowIndex="1" onMouseClicked="#openCameraView"
+                       prefWidth="200.0" prefHeight="150.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;">
+               <children>
+                  <Label text="+ Top Image"><font><Font size="16.0" /></font></Label>
+               </children>
+            </StackPane>
+
+            <StackPane fx:id="stackSix" GridPane.columnIndex="2" GridPane.rowIndex="1" onMouseClicked="#openCameraView"
+                       prefWidth="200.0" prefHeight="150.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;">
+               <children>
+                  <Label text="+ Bottom Image"><font><Font size="16.0" /></font></Label>
+               </children>
+            </StackPane>
+
+         </GridPane>
+      </ScrollPane>
+   </center>
+
+   <bottom>
+      <HBox alignment="CENTER" spacing="30" BorderPane.alignment="CENTER">
+         <padding><Insets top="20" bottom="20" left="20" right="20" /></padding>
+
+         <Button fx:id="btnCancel" text="Cancel" onAction="#onClickCancel" prefWidth="195.0" prefHeight="60.0"
+                 style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 15;">
+            <font><Font name="System Bold" size="20.0" /></font>
+         </Button>
+
+         <Button fx:id="btnAddImage" text="Additional Image" onAction="#onClickAddImage" prefWidth="195.0" prefHeight="60.0"
+                 style="-fx-background-color: transparent; -fx-border-color: #004b88; -fx-border-width: 2; -fx-border-radius: 15;">
+            <font><Font name="System Bold" size="20.0" /></font>
+         </Button>
+
+         <Button fx:id="btnSend" text="Send" onAction="#onClickSend" prefWidth="195.0" prefHeight="60.0"
+                 style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-border-width: 2; -fx-border-radius: 15;">
+            <font><Font name="System Bold" size="20.0" /></font>
+         </Button>
+      </HBox>
+   </bottom>
+
    <left>
-      <Region prefHeight="310.0" prefWidth="21.0" BorderPane.alignment="CENTER" />
+      <Region prefWidth="20.0" />
    </left>
+
    <right>
-      <Region prefHeight="310.0" prefWidth="21.0" BorderPane.alignment="CENTER" />
+      <Region prefWidth="20.0" />
    </right>
 </BorderPane>

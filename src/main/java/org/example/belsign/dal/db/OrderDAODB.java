@@ -73,6 +73,111 @@ public class OrderDAODB implements IOrderDAO {
         return orders;
     }
 
+    @Override
+    public void saveDefaultImage(String orderId, String columnName, byte[] imageData) throws IOException {
+        String sql = "UPDATE [Order] SET " + columnName + " = ? WHERE OrderID = ?";
+        try (Connection connection = con.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setBytes(1, imageData);
+            ps.setString(2, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IOException("Failed to save default image: " + columnName, e);
+        }
+    }
+
+    @Override
+    public void saveAdditionalImageColumn(String columnName) throws IOException {
+        String checkColumn = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Order' AND COLUMN_NAME = ?";
+        String alterTable = "ALTER TABLE [Order] ADD " + columnName + " VARBINARY(MAX)";
+        try (Connection connection = con.getConnection();
+             PreparedStatement check = connection.prepareStatement(checkColumn)) {
+            check.setString(1, columnName);
+            ResultSet rs = check.executeQuery();
+            if (!rs.next()) {
+                try (PreparedStatement alter = connection.prepareStatement(alterTable)) {
+                    alter.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new IOException("Failed to create column: " + columnName, e);
+        }
+    }
+
+    @Override
+    public void saveAdditionalImageData(String orderId, String columnName, byte[] imageData) throws IOException {
+        String sql = "UPDATE [Order] SET " + columnName + " = ? WHERE OrderID = ?";
+        try (Connection connection = con.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setBytes(1, imageData);
+            ps.setString(2, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IOException("Failed to save additional image in column: " + columnName, e);
+        }
+    }
+
+    @Override
+    public void addColumnToOrderTable(String columnName) throws IOException {
+        String sql = "ALTER TABLE [Order] ADD [" + columnName + "] VARBINARY(MAX)";
+        try (Connection conn = con.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            // Optional: only ignore if it's a "duplicate column" error
+            if (!e.getMessage().toLowerCase().contains("duplicate")) {
+                throw new IOException("Failed to add column to table: " + columnName, e);
+            }
+        }
+    }
+
+    @Override
+    public boolean doesColumnExist(String columnName) throws IOException {
+        String query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Order' AND COLUMN_NAME = ?";
+        try (Connection conn = con.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, columnName);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();  // true if column exists
+            }
+        } catch (SQLException e) {
+            throw new IOException("Failed to check column existence: " + columnName, e);
+        }
+    }
+
+    @Override
+    public void updateOrderImageColumn(String orderId, String columnName, byte[] imageData) throws IOException {
+        // Reuse your existing logic
+        saveAdditionalImageData(orderId, columnName, imageData);
+    }
+    @Override
+    public byte[] getImageData(String orderId, String columnName) throws IOException {
+        String sql = "SELECT " + columnName + " FROM [Order] WHERE OrderID = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBytes(columnName);
+            }
+        } catch (SQLException e) {
+            throw new IOException("Failed to load image from DB", e);
+        }
+        return null;
+    }
+    public void deleteImageData(String orderId, String columnName) throws IOException {
+        String sql = "UPDATE [Order] SET " + columnName + " = NULL WHERE OrderId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, orderId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new IOException("Failed to delete image from column: " + columnName, e);
+        }
+    }
+
+
+
 
 }
 

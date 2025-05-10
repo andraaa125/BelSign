@@ -47,6 +47,8 @@ public class OperatorDashboardController implements Initializable {
     private Order selectedOrder = null;
     private final OrderManager orderManager = new OrderManager();
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -79,7 +81,7 @@ public class OperatorDashboardController implements Initializable {
 
     public void setStatusMessage(String message) {
         statusLabel.setText(message);
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        PauseTransition pause = new PauseTransition(Duration.seconds(7));
         pause.setOnFinished(e -> statusLabel.setText(""));
         pause.play();
     }

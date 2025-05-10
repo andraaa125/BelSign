@@ -89,7 +89,10 @@ public class CameraController implements Initializable {
         public void run() {
             while (!isCapture) {
                 try {
-                    imageView.setImage(SwingFXUtils.toFXImage(webcam.getImage(), null));
+                    java.awt.image.BufferedImage bimg = webcam.getImage();
+                    if (bimg != null) {
+                        imageView.setImage(SwingFXUtils.toFXImage(bimg, null));
+                    }
                     sleep(30);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CameraController.class.getName()).log(Level.SEVERE, null, ex);
@@ -97,4 +100,5 @@ public class CameraController implements Initializable {
             }
         }
     }
+
 }
