@@ -4,24 +4,26 @@ public class Order {
     private String orderId;
     private String operatorFirstName;
     private String operatorLastName;
-    private String image_1;
-    private String image_2;
-    private String image_3;
-    private String image_4;
-    private String image_5;
+    private String image_front;
+    private String image_back;
+    private String image_right;
+    private String image_left;
+    private String image_top;
+    private String image_bottom;
     private String status;
 
 
-    public Order(String orderId, String status, String operatorFirstName, String operatorLastName, String image_1, String image_2, String image_3, String image_4, String image_5) {
+    public Order(String orderId, String status, String operatorFirstName, String operatorLastName, String image_front, String image_back, String image_right, String image_left, String image_top, String image_bottom) {
         this.orderId = orderId;
         this.status = status;
         this.operatorFirstName = operatorFirstName;
         this.operatorLastName = operatorLastName;
-        this.image_1 = image_1;
-        this.image_2 = image_2;
-        this.image_3 = image_3;
-        this.image_4 = image_4;
-        this.image_5 = image_5;
+        this.image_front = image_front;
+        this.image_back = image_back;
+        this.image_right = image_right;
+        this.image_left = image_left;
+        this.image_top = image_top;
+        this.image_bottom = image_bottom;
     }
 
     public String getOrderId() {
@@ -56,44 +58,52 @@ public class Order {
         this.operatorLastName = operatorLastName;
     }
 
-    public String getImage1() {
-        return image_1;
+    public String getImage_front() {
+        return image_front;
     }
 
-    public void setImage1(String image1) {
-        this.image_1 = image1;
+    public void setImage_front(String image_front) {
+        this.image_front = image_front;
     }
 
-    public String getImage2() {
-        return image_2;
+    public String getImage_back() {
+        return image_back;
     }
 
-    public void setImage2(String image2) {
-        this.image_2 = image2;
+    public void setImage_back(String image_back) {
+        this.image_back = image_back;
     }
 
-    public String getImage3() {
-        return image_3;
+    public String getImage_right() {
+        return image_right;
     }
 
-    public void setImage3(String image3) {
-        this.image_3 = image3;
+    public void setImage_right(String image_right) {
+        this.image_right = image_right;
     }
 
-    public String getImage4() {
-        return image_4;
+    public String getImage_left() {
+        return image_left;
     }
 
-    public void setImage4(String image4) {
-        this.image_4 = image4;
+    public void setImage_left(String image_left) {
+        this.image_left = image_left;
     }
 
-    public String getImage5() {
-        return image_5;
+    public String getImage_top() {
+        return image_top;
     }
 
-    public void setImage5(String image5) {
-        this.image_5 = image5;
+    public void setImage_top(String image_top) {
+        this.image_top = image_top;
+    }
+
+    public String getImage_bottom() {
+        return image_bottom;
+    }
+
+    public void setImage_bottom(String image_bottom) {
+        this.image_bottom = image_bottom;
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.sql.Connection;
 
 public class DBConnection {
-    public Connection getConnection() throws SQLServerException {
+    public static Connection getConnection() throws SQLServerException {
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setDatabaseName("BelsignAH");
         ds.setServerName("EASV-DB4");

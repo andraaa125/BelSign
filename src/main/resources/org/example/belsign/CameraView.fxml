@@ -20,29 +20,29 @@
     </center>
 
     <bottom>
-        <HBox fx:id="bottomHBox" alignment="BOTTOM_CENTER" prefHeight="60.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #EEE;" BorderPane.alignment="CENTER_LEFT">
+        <HBox fx:id="bottomHBox" alignment="BOTTOM_CENTER" prefHeight="74.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #EEE;" BorderPane.alignment="CENTER_LEFT">
             <padding>
                 <Insets bottom="10" top="10" />
             </padding>
             <children>
             <Region prefHeight="35.0" prefWidth="30.0" />
-                <Button fx:id="reloadButton" alignment="CENTER" onAction="#btnReload" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #dadada; -fx-border-color: #9d9d9d;" text="Reload">
+                <Button fx:id="reloadButton" alignment="CENTER" onAction="#btnReload" prefHeight="60.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: transparent; -fx-border-color: #9d9d9d; -fx-border-width: 2;" text="Reload" textFill="#575757">
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="16.0" />
                </font></Button>
-            <Region prefHeight="35.0" prefWidth="262.0" HBox.hgrow="ALWAYS" />
-                <Button fx:id="captureButton" onAction="#btnCapture" prefHeight="40.0" prefWidth="90.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #cbe2f7; -fx-border-color: #004b88;" text="Capture">
+            <Region prefHeight="54.0" prefWidth="218.0" HBox.hgrow="ALWAYS" />
+                <Button fx:id="captureButton" onAction="#btnCapture" prefHeight="60.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: transparent; -fx-border-color: #004b88; -fx-border-width: 2;" text="Capture" textFill="#575757">
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="16.0" />
                </font></Button>
-            <Region prefHeight="35.0" prefWidth="214.0" HBox.hgrow="ALWAYS" />
-                <Button fx:id="saveButton" onAction="#btnSave" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: cbffb3; -fx-border-color: #2f993d; -fx-background-radius: 10; -fx-border-radius: 10;" text="Save">
+            <Region prefHeight="54.0" prefWidth="92.0" HBox.hgrow="ALWAYS" />
+                <Button fx:id="saveButton" onAction="#btnSave" prefHeight="60.0" prefWidth="120.0" style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2;" text="Save" textFill="#575757">
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="16.0" />
                </font></Button>
-                <Button fx:id="cancelButton" onAction="#btnCancel" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ffd3d3; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #b43434;" text="Cancel">
+                <Button fx:id="cancelButton" onAction="#btnCancel" prefHeight="60.0" prefWidth="120.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #880000; -fx-border-width: 2;" text="Cancel" textFill="#575757">
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="16.0" />
                </font></Button>
             <Region prefHeight="35.0" prefWidth="30.0" />
             </children>
