@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.example.belsign.be.Order;
 import org.example.belsign.bll.OrderManager;
 
 import java.io.IOException;
@@ -23,10 +24,28 @@ public class QCDashboardController {
     private Button logoutButton;
     @FXML
     private ComboBox<String> searchComboBox;
+    @FXML
+    private Button approvalButton;
+
+    private Order selectedOrder;
+
 
     private OrderManager orderManager = new OrderManager();
 
     private final ObservableList<String> searchResults = FXCollections.observableArrayList();
+
+    @FXML
+    public void onClickApproval(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage stage = new Stage();
+        stage.setTitle("Approval Pane");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+
 
     @FXML
     private void initialize() {
@@ -97,4 +116,8 @@ public class QCDashboardController {
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
     }
+
+
+
+
 }
