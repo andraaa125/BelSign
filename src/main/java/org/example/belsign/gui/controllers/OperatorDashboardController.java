@@ -84,6 +84,13 @@ public class OperatorDashboardController implements Initializable {
         stage.show();
     }
 
+    public void setStatusMessage(String message) {
+        statusLabel.setText(message);
+        PauseTransition pause = new PauseTransition(Duration.seconds(7));
+        pause.setOnFinished(e -> statusLabel.setText(""));
+        pause.play();
+    }
+
     public void onClickLogout(ActionEvent actionEvent) throws IOException {
         Stage currentStage = (Stage) logoutButton.getScene().getWindow();
         currentStage.close();
