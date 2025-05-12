@@ -11,26 +11,26 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class OperatorDashboardController implements Initializable {
     @FXML
-    private FlowPane pendingPane;
+    private FlowPane searchPane;
     @FXML
-    private FlowPane inProgressPane;
+    private FlowPane productPane;
+    @FXML
+    private TextField searchField;
     @FXML
     private FlowPane donePane;
     @FXML
@@ -42,152 +42,24 @@ public class OperatorDashboardController implements Initializable {
     @FXML
     private Label statusLabel;
     @FXML
+    private Label incorrectOrderID;
+    @FXML
+    private Label lblError;
+    @FXML
     private Button selectedOrderButton = null;
+
+    private Button selectedButton = null;
 
     private Order selectedOrder = null;
     private final OrderManager orderManager = new OrderManager();
 
-    @Override
+    private final Map<String, VBox> orderVBoxMap = new HashMap<>();
+
+    @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            List<Order> orders = orderManager.getAllOrders();
-            for (Order order : orders) {
-                Button orderButton = new Button(order.getOrderId());
-                orderButton.setUserData(order);
-                orderButton.setStyle(getStyleForStatus(order.getStatus()));
-                orderButton.setOnAction(e -> handleOrderClick(order));
-
-                setupDragEvents(orderButton);
-
-                switch (order.getStatus()) {
-                    case "Pending" -> pendingPane.getChildren().add(orderButton);
-                    case "InProgress" -> inProgressPane.getChildren().add(orderButton);
-                    case "Done" -> donePane.getChildren().add(orderButton);
-                    default -> System.out.println("Unknown status: " + order.getStatus());
-                }
-            }
-
-            setupDropZone(pendingPane, "Pending");
-            setupDropZone(inProgressPane, "InProgress");
-            setupDropZone(donePane, "Done");
-
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
         btnDocument.setDisable(true);
     }
 
-    public void setStatusMessage(String message) {
-        statusLabel.setText(message);
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(e -> statusLabel.setText(""));
-        pause.play();
-    }
-
-    private void setupDragEvents(Button orderButton) {
-        orderButton.setOnDragDetected(event -> {
-            Dragboard db = orderButton.startDragAndDrop(TransferMode.MOVE);
-            ClipboardContent content = new ClipboardContent();
-            Order order = (Order) orderButton.getUserData();
-            content.putString(order.getOrderId());
-            db.setContent(content);
-            db.setDragView(orderButton.snapshot(null, null));
-            orderButton.setStyle(orderButton.getStyle() + "; -fx-opacity: 0.6; -fx-border-style: dashed;");
-            event.consume();
-        });
-
-        orderButton.setOnDragDone(event -> {
-            Order order = (Order) orderButton.getUserData();
-            orderButton.setStyle(getStyleForStatus(order.getStatus()));
-            event.consume();
-        });
-    }
-
-    private void setupDropZone(FlowPane pane, String status) {
-        pane.setOnDragOver(event -> {
-            if (event.getGestureSource() != pane && event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
-        });
-
-        pane.setOnDragDropped(event -> {
-            Dragboard db = event.getDragboard();
-            String orderId = db.getString();
-            Button draggedButton = findAndRemoveOrderButton(orderId);
-            if (draggedButton != null) {
-                Order order = (Order) draggedButton.getUserData();
-                order.setStatus(status);
-                orderManager.updateOrderStatus(order.getOrderId(), status);
-                draggedButton.setStyle(getStyleForStatus(status));
-                pane.getChildren().add(draggedButton);
-            }
-            event.setDropCompleted(true);
-            event.consume();
-        });
-    }
-
-    private Button findAndRemoveOrderButton(String orderId) {
-        for (FlowPane pane : List.of(pendingPane, inProgressPane, donePane)) {
-            for (Node node : new ArrayList<>(pane.getChildren())) {
-                if (node instanceof Button button) {
-                    Order order = (Order) button.getUserData();
-                    if (order.getOrderId().equals(orderId)) {
-                        pane.getChildren().remove(button);
-                        return button;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getStyleForStatus(String status) {
-        String baseStyle = "-fx-padding: 15; -fx-border-width: 2; -fx-border-radius: 5;";
-        return switch (status) {
-            case "Pending" -> baseStyle + " -fx-background-color: transparent; -fx-border-color: #575757; -fx-font-size: 15px";
-            case "InProgress" -> baseStyle + " -fx-background-color: transparent; -fx-border-color: #DAA520; -fx-font-size: 15px";
-            case "Done" -> baseStyle + " -fx-background-color:  transparent; -fx-border-color:  #338d71; -fx-font-size: 15px";
-            default -> baseStyle + " -fx-background-color: transparent; -fx-border-color: #575757";
-        };
-    }
-
-    private void handleOrderClick(Order order) {
-        if (!"Done".equals(order.getStatus())) return;
-
-        if (selectedOrderButton != null && selectedOrderButton.getUserData().equals(order)) {
-            selectedOrderButton.setStyle(getStyleForStatus(order.getStatus()));
-            selectedOrderButton = null;
-            selectedOrder = null;
-            btnDocument.setDisable(true);
-            return;
-        }
-
-        if (selectedOrderButton != null) {
-            selectedOrderButton.setStyle(getStyleForStatus(((Order) selectedOrderButton.getUserData()).getStatus()));
-        }
-
-        Button orderButton = findOrderButtonByOrderId(order.getOrderId());
-        orderButton.setStyle("-fx-background-color: #338d71; -fx-text-fill: white; -fx-padding: 15; -fx-font-size: 15px; -fx-border-width: 2; -fx-border-radius: 5;-fx-border-color: #338d71;");
-        selectedOrderButton = orderButton;
-        selectedOrder = order;
-        btnDocument.setDisable(false);
-        orderButton.setUserData(order);
-    }
-
-    private Button findOrderButtonByOrderId(String orderId) {
-        for (FlowPane pane : List.of(pendingPane, inProgressPane, donePane)) {
-            for (Node node : pane.getChildren()) {
-                if (node instanceof Button button) {
-                    Order order = (Order) button.getUserData();
-                    if (order != null && order.getOrderId().equals(orderId)) {
-                        return button;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
     public void onClickDocument(ActionEvent actionEvent) throws IOException {
         if (selectedOrder != null) {
@@ -208,7 +80,7 @@ public class OperatorDashboardController implements Initializable {
 
         DocumentationController controller = fxmlLoader.getController();
         controller.setOrder(order);
-        controller.setOperatorDashboardController(this);
+        //controller.setOperatorDashboardController(this);
         stage.show();
     }
 
@@ -223,5 +95,100 @@ public class OperatorDashboardController implements Initializable {
         loginStage.setScene(new Scene(root));
 
         loginStage.show();
+    }
+
+    public void onClickSearch(ActionEvent actionEvent) {
+        lblError.setText("");
+        incorrectOrderID.setText("");
+
+        String searchId = searchField.getText().trim();
+        if (searchId.isEmpty()) return;
+
+        if (orderVBoxMap.containsKey(searchId)) {
+            lblError.setText(" Order already displayed!");
+            System.out.println("Order already displayed: " + searchId);
+            return;
+        }
+
+        Iterator<Map.Entry<String, VBox>> iterator = orderVBoxMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, VBox> entry = iterator.next();
+            VBox box = entry.getValue();
+            productPane.getChildren().remove(box);
+            iterator.remove();
+        }
+
+        try {
+            List<Order> allOrders = orderManager.getAllOrders();
+
+            for (Order order : allOrders) {
+                if (order.getOrderId().equalsIgnoreCase(searchId)) {
+                    displayProductsForOrder(order);
+                    return;
+                }
+            }
+
+            incorrectOrderID.setText("Invalid Order ID");
+            System.out.println("Order not found: " + searchId);
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void displayProductsForOrder(Order order) {
+//        productPane.getChildren().clear();
+        try {
+            if (order.getProducts() == null || order.getProducts().isEmpty()) {
+                List<Product> products = orderManager.getProductsForOrder(order.getOrderId());
+                order.setProducts(products);
+            }
+
+            VBox orderBox = new VBox(15);
+            orderBox.setStyle("-fx-padding: 15; -fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-radius: 5;");
+
+            double buttonWidth = 200;
+            double buttonHeight = 40;
+
+            // Order button
+            Button orderButton = new Button("OrderID: " + order.getOrderId());
+            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15;");
+            orderButton.setUserData(order);
+            orderButton.setPrefWidth(buttonWidth);
+            orderButton.setPrefHeight(buttonHeight);
+            orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
+            orderBox.getChildren().add(orderButton);
+
+            for (Product product : order.getProducts()) {
+                Button productButton = new Button(product.getName());
+                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                productButton.setUserData(product);
+                productButton.setPrefWidth(buttonWidth);
+                productButton.setPrefHeight(buttonHeight);
+                productButton.setOnAction(e -> handleSelection(productButton, orderBox, order));
+                orderBox.getChildren().add(productButton);
+            }
+
+            productPane.getChildren().add(orderBox);
+            orderVBoxMap.put(order.getOrderId(), orderBox);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
+
+        for (Node node : orderBox.getChildren()) {
+            if (node instanceof Button) {
+                ((Button) node).setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+            }
+        }
+
+        clickedButton.setStyle("-fx-border-color:  #9d9d9d; -fx-background-color:  #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
+
+        selectedButton = clickedButton;
+        selectedOrder = order;
+        btnDocument.setDisable(false);
     }
 }

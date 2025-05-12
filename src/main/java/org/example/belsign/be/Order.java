@@ -1,5 +1,7 @@
 package org.example.belsign.be;
 
+import java.util.List;
+
 public class Order {
     private String orderId;
     private String operatorFirstName;
@@ -12,6 +14,7 @@ public class Order {
     private String image_bottom;
     private String status;
 
+    private List<Product> products;
 
     public Order(String orderId, String status, String operatorFirstName, String operatorLastName, String image_front, String image_back, String image_right, String image_left, String image_top, String image_bottom) {
         this.orderId = orderId;
@@ -106,9 +109,16 @@ public class Order {
         this.image_bottom = image_bottom;
     }
 
+    public  List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
     @Override
     public String toString() {
         return "OrderID: " + orderId + ", Status: " + status;
     }
-
 }
