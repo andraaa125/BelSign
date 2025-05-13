@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.belsign.be.Order;
 import org.example.belsign.bll.OrderManager;
+import org.example.belsign.factory.ReportPreviewFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -88,23 +89,9 @@ public class ApprovalController {
 
     @FXML
     private void onClickApprove() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Quality Control Report");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            // Optional: Close this window
-            btnApprove.getScene().getWindow().hide();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Could not load ReportPreview.fxml");
-        }
+        ReportPreviewFactory.showReportWindow(order);
     }
+
 
 
 
