@@ -120,6 +120,7 @@ public class OperatorDashboardController implements Initializable {
             return;
         }
 
+
         if (orderVBoxMap.containsKey(searchId)) {
             lblError.setText(" Order already displayed!");
             System.out.println("Order already displayed: " + searchId);
