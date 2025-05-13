@@ -56,7 +56,7 @@
          <children>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="pendingPane" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="pendingPane" alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -73,19 +73,26 @@
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="inProgressPane" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="productPane" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                      <children>
-                        <Region prefHeight="30.0" prefWidth="164.0" />
+                        <Label text="Product" textFill="#575757" underline="true">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
+                        </Label>
                      </children>
                   </FlowPane>
                </content>
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="donePane" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="donePane" alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
@@ -94,8 +101,10 @@
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
                         </Label>
-                        <Region prefHeight="30.0" prefWidth="213.0" />
                      </children>
                   </FlowPane>
                </content>
