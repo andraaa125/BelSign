@@ -60,23 +60,21 @@ public class OrderManager {
 
         String sql = "SELECT * FROM Product WHERE OrderID = ?";
 
-        try (Connection conn = getConnection(); // Your DB connection
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, orderId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                // Assuming you want to extract 4 products from Product_1 to Product_4
-                for (int i = 1; i <= 4; i++) {
-                    String productName = rs.getString("Product_" + i);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String productName = rs.getString("Product");
 
                     if (productName != null && !productName.isEmpty()) {
-                        products.add(new Product(productName, productName)); // Adjust constructor if needed
+                        products.add(new Product(productName));
                     }
                 }
             }
         }
+
         return products;
     }
 }

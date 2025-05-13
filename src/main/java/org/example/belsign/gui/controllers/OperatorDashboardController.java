@@ -57,6 +57,7 @@ public class OperatorDashboardController implements Initializable {
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
+
         btnDocument.setDisable(true);
     }
 
@@ -108,8 +109,13 @@ public class OperatorDashboardController implements Initializable {
         lblError.setText("");
         incorrectOrderID.setText("");
 
+
         String searchId = searchField.getText().trim();
-        if (searchId.isEmpty()) return;
+        if (searchId.isEmpty()) {
+            hideOrderVBoxes();
+            lblError.setText("Please enter Order ID!");
+            return;
+        }
 
         if (orderVBoxMap.containsKey(searchId)) {
             lblError.setText(" Order already displayed!");
@@ -143,6 +149,21 @@ public class OperatorDashboardController implements Initializable {
         }
     }
 
+    private void hideOrderVBoxes() {
+        Iterator<Map.Entry<String, VBox>> iterator = orderVBoxMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, VBox> entry = iterator.next();
+            VBox box = entry.getValue();
+            productPane.getChildren().remove(box);
+            iterator.remove();
+        }
+
+        selectedOrder = null;
+        selectedButton = null;
+
+        btnDocument.setDisable(true);
+    }
+
     private void displayProductsForOrder(Order order) {
 //        productPane.getChildren().clear();
         try {
@@ -159,7 +180,7 @@ public class OperatorDashboardController implements Initializable {
 
             // Order button
             Button orderButton = new Button("OrderID: " + order.getOrderId());
-            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15;");
+            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15; -fx-font-weight: bold;");
             orderButton.setUserData(order);
             orderButton.setPrefWidth(buttonWidth);
             orderButton.setPrefHeight(buttonHeight);
@@ -185,17 +206,37 @@ public class OperatorDashboardController implements Initializable {
     }
 
     private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
-
+        if (clickedButton.equals(selectedButton)) {
+            for (Node node : orderBox.getChildren()) {
+                if (node instanceof Button) {
+                    Button button = (Button) node;
+                    if (button.getText().startsWith("OrderID:")) {
+                        button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
+                    } else {
+                        button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                    }
+                }
+            }
+            selectedButton = null;
+            selectedOrder = null;
+            btnDocument.setDisable(true);
+            return;
+        }
         for (Node node : orderBox.getChildren()) {
             if (node instanceof Button) {
-                ((Button) node).setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                Button button = (Button) node;
+                if (button.getText().startsWith("OrderID:")) {
+                    button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
+                } else {
+                    button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                }
             }
         }
-
-        clickedButton.setStyle("-fx-border-color:  #9d9d9d; -fx-background-color:  #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
+        clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
 
         selectedButton = clickedButton;
         selectedOrder = order;
+
         btnDocument.setDisable(false);
     }
 }
