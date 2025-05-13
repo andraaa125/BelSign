@@ -2,6 +2,9 @@ package org.example.belsign.gui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -11,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.example.belsign.be.Order;
 import org.example.belsign.bll.OrderManager;
 
@@ -84,9 +88,24 @@ public class ApprovalController {
 
     @FXML
     private void onClickApprove() {
-        //  Update DB status, generate report
-        System.out.println("Approved & Report Generated for order: " + order.getOrderId());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Quality Control Report");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Optional: Close this window
+            btnApprove.getScene().getWindow().hide();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Could not load ReportPreview.fxml");
+        }
     }
+
 
 
     @FXML
