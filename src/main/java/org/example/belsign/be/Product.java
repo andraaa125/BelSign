@@ -2,11 +2,9 @@ package org.example.belsign.be;
 
 public class Product {
     private String productName;
-    private String productImage;
 
-    public Product(String productName, String productImage) {
+    public Product(String productName) {
         this.productName = productName;
-        this.productImage = productImage;
     }
 
 
@@ -15,12 +13,6 @@ public class Product {
     }
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-    public String getProductImage() {
-        return productImage;
-    }
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
     }
 
     public String getName() {

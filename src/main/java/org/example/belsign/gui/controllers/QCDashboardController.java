@@ -112,7 +112,7 @@ public class QCDashboardController {
 
         Button orderButton = findOrderButtonByOrderId(order.getOrderId());
         orderButton.setStyle("-fx-background-color: #9d9d9d; -fx-text-fill: white; " +
-                "-fx-padding: 15; -fx-font-size: 15px; -fx-border-width: 2; " +
+                "-fx-padding: 15; -fx-font-size: 15px; -fx-border-width: 2;" +
                 "-fx-border-radius: 5; -fx-border-color: #9d9d9d;");
 
         selectedOrderButton = orderButton;
@@ -176,9 +176,13 @@ public class QCDashboardController {
             double buttonWidth = 200;
             double buttonHeight = 40;
 
+            Label operatorLabel = new Label("Operator: " + order.getOperatorFirstName() + " " + order.getOperatorLastName());
+            operatorLabel.setStyle("-fx-font-style: italic; -fx-font-size: 14px; -fx-text-fill: #333;");
+            orderBox.getChildren().add(operatorLabel);
+
             // Order Button
             Button orderButton = new Button("OrderID: " + order.getOrderId());
-            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15;");
+            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15; -fx-font-weight: bold");
             orderButton.setPrefWidth(buttonWidth);
             orderButton.setPrefHeight(buttonHeight);
             orderButton.setUserData(order);
@@ -208,17 +212,32 @@ public class QCDashboardController {
     }
 
     private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
+        if (clickedButton.equals(selectedButton)) {
+            for (Node node : orderBox.getChildren()) {
+                if (node instanceof Button) {
+                    Button button = (Button) node;
+                    if (button.getText().startsWith("OrderID:")) {
+                        button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
+                    } else {
+                        button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                    }
+                }
+            }
+            selectedButton = null;
+            selectedOrder = null;
+            btnDocument.setDisable(true);
+            return;
+        }
         for (Node node : orderBox.getChildren()) {
             if (node instanceof Button) {
-                ((Button) node).setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                Button button = (Button) node;
+                if (button.getText().startsWith("OrderID:")) {
+                    button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
+                } else {
+                    button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                }
             }
         }
-
-        clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
-
-        selectedButton = clickedButton;
-        selectedOrder = order;
-
         clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
 
         selectedButton = clickedButton;
