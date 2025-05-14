@@ -1,14 +1,13 @@
 package org.example.belsign.util;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Region;
+import javafx.scene.transform.Transform;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,36 +23,47 @@ public class PdfExporter {
                 parent.layout();
             }
 
-            double scaleFactor = 3.0; // Increase for higher DPI
+            double scale = 2.0; // High quality
             double width = node.getBoundsInParent().getWidth();
             double height = node.getBoundsInParent().getHeight();
 
-            int scaledWidth = (int) Math.ceil(width * scaleFactor);
-            int scaledHeight = (int) Math.ceil(height * scaleFactor);
+            int imageWidth = (int) Math.ceil(width * scale);
+            int imageHeight = (int) Math.ceil(height * scale);
 
-            WritableImage fxImage = new WritableImage(scaledWidth, scaledHeight);
+            WritableImage fxImage = new WritableImage(imageWidth, imageHeight);
             SnapshotParameters params = new SnapshotParameters();
-            params.setTransform(javafx.scene.transform.Transform.scale(scaleFactor, scaleFactor));
-
+            params.setTransform(Transform.scale(scale, scale));
             node.snapshot(params, fxImage);
-            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(fxImage, null);
 
-            // PDF export
-            Document document = new Document(PageSize.A4);
+            BufferedImage fullImage = SwingFXUtils.fromFXImage(fxImage, null);
+
+            Document document = new Document(PageSize.A4, 20, 20, 20, 20);
             PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
 
-            com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(bufferedImage, null);
-            pdfImage.scaleToFit(PageSize.A4.getWidth() - 40, PageSize.A4.getHeight() - 40);
-            document.add(pdfImage);
+            float pdfWidth = PageSize.A4.getWidth() - 40;
+            float pdfHeight = PageSize.A4.getHeight() - 40;
+
+            int y = 0;
+            while (y < fullImage.getHeight()) {
+                int remainingHeight = fullImage.getHeight() - y;
+                int sliceHeight = Math.min(remainingHeight, (int) (pdfHeight));
+
+                BufferedImage slice = fullImage.getSubimage(0, y, fullImage.getWidth(), sliceHeight);
+                com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(slice, null);
+                pdfImage.scaleToFit(pdfWidth, pdfHeight);
+                document.add(pdfImage);
+                document.newPage();
+
+                y += sliceHeight;
+            }
 
             document.close();
-            System.out.println("PDF exported to: " + file.getAbsolutePath());
+            System.out.println("PDF exported successfully to: " + file.getAbsolutePath());
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("PDF export failed: " + e.getMessage());
         }
     }
-
-
 }
