@@ -21,6 +21,7 @@ import org.example.belsign.factory.ReportPreviewFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApprovalController {
@@ -52,20 +53,31 @@ public class ApprovalController {
 
 
     private void loadImagesForApproval() {
-        List<String> imageColumns = List.of(
-                "Image_FRONT", "Image_BACK", "Image_LEFT",
-                "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
-        );
+        List<String> imageColumns = new ArrayList<>();
+
+        // Default 6 sides
+        imageColumns.add("Image_FRONT");
+        imageColumns.add("Image_BACK");
+        imageColumns.add("Image_LEFT");
+        imageColumns.add("Image_RIGHT");
+        imageColumns.add("Image_TOP");
+        imageColumns.add("Image_BOTTOM");
+
+        // Additional images: Additional_1 to Additional_20
+        for (int i = 1; i <= 20; i++) {
+            imageColumns.add("Additional_" + i);
+        }
 
         int col = 0, row = 0;
         for (String column : imageColumns) {
             try {
-                byte[] imageData = orderManager.getImageData(order.getOrderId(), column);
-                if (imageData != null) {
-                    ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(imageData)));
+                byte[] data = orderManager.getImageData(order.getOrderId(), column);
+                if (data != null && data.length > 0) {
+                    ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(data)));
                     imageView.setFitWidth(200);
                     imageView.setPreserveRatio(true);
                     imageGrid.add(new StackPane(imageView), col, row);
+
                     col++;
                     if (col > 2) {
                         col = 0;
@@ -73,10 +85,12 @@ public class ApprovalController {
                     }
                 }
             } catch (IOException e) {
+                System.out.println("Failed to load image for column: " + column);
                 e.printStackTrace();
             }
         }
     }
+
 
 
 
