@@ -2,9 +2,7 @@ package org.example.belsign.gui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -14,15 +12,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.example.belsign.be.Order;
 import org.example.belsign.bll.OrderManager;
 import org.example.belsign.factory.ReportPreviewFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ApprovalController {
 
@@ -34,7 +29,6 @@ public class ApprovalController {
     @FXML private TextArea commentTextArea;
     @FXML private Label commentLabel;
 
-
     private Order order;
     private final OrderManager orderManager = new OrderManager();
 
@@ -43,93 +37,99 @@ public class ApprovalController {
         loadImagesForApproval();
     }
 
-
-
     private QCDashboardController qcDashboardController;
 
     public void setQCDashboardController(QCDashboardController controller) {
         this.qcDashboardController = controller;
     }
 
-
     private void loadImagesForApproval() {
-        List<String> imageColumns = new ArrayList<>();
+        imageGrid.getChildren().clear();
 
-        // Default 6 sides
-        imageColumns.add("Image_FRONT");
-        imageColumns.add("Image_BACK");
-        imageColumns.add("Image_LEFT");
-        imageColumns.add("Image_RIGHT");
-        imageColumns.add("Image_TOP");
-        imageColumns.add("Image_BOTTOM");
+        String[] defaultColumns = {
+                "Image_FRONT", "Image_BACK", "Image_LEFT",
+                "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
+        };
 
-        // Additional images: Additional_1 to Additional_20
-        for (int i = 1; i <= 20; i++) {
-            imageColumns.add("Additional_" + i);
-        }
+        String[] defaultLabels = {
+                "Front Image", "Back Image", "Left Image",
+                "Right Image", "Top Image", "Bottom Image"
+        };
 
         int col = 0, row = 0;
-        for (String column : imageColumns) {
-            try {
-                byte[] data = orderManager.getImageData(order.getOrderId(), column);
-                if (data != null && data.length > 0) {
-                    ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(data)));
-                    imageView.setFitWidth(200);
-                    imageView.setPreserveRatio(true);
-                    imageGrid.add(new StackPane(imageView), col, row);
 
-                    col++;
-                    if (col > 2) {
-                        col = 0;
-                        row++;
-                    }
-                }
-            } catch (IOException e) {
-                System.out.println("Failed to load image for column: " + column);
-                e.printStackTrace();
+        // Load default images
+        for (int i = 0; i < defaultColumns.length; i++) {
+            addImageToGrid(defaultColumns[i], defaultLabels[i], col, row);
+            col++;
+            if (col > 2) {
+                col = 0;
+                row++;
+            }
+        }
+
+        // Load additional images
+        for (int i = 1; i <= 20; i++) {
+            String column = "Additional_" + i;
+            addImageToGrid(column, "Additional Image", col, row);
+            col++;
+            if (col > 2) {
+                col = 0;
+                row++;
             }
         }
     }
 
+    private void addImageToGrid(String column, String labelText, int col, int row) {
+        try {
+            byte[] data = orderManager.getImageData(order.getOrderId(), column);
+            if (data != null && data.length > 0) {
+                ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(data)));
+                imageView.setFitWidth(180);
+                imageView.setPreserveRatio(true);
 
+                StackPane borderedPane = new StackPane(imageView);
+                borderedPane.setPrefSize(200, 150);
+                borderedPane.setStyle("-fx-border-color: #333333; -fx-border-width: 1; -fx-border-radius: 5; -fx-border-style: solid;");
 
+                Label label = new Label(labelText);
+                label.setStyle("-fx-text-fill: #333333; -fx-font-size: 13px;");
+                label.setMaxWidth(Double.MAX_VALUE);
+                label.setAlignment(Pos.CENTER);
 
+                VBox vbox = new VBox(5, label, borderedPane);
+                vbox.setAlignment(Pos.CENTER);
+
+                imageGrid.add(vbox, col, row);
+            }
+        } catch (IOException e) {
+            System.out.println("Could not load image from: " + column);
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void onClickCancel(ActionEvent event) {
-        // Close the current window
         Button source = (Button) event.getSource();
         source.getScene().getWindow().hide();
     }
-
 
     @FXML
     private void onClickApprove() {
         ReportPreviewFactory.showReportWindow(order);
     }
 
-
-
-
     @FXML
     private void onClickDecline(ActionEvent event) {
-        commentSection.setVisible(true); // Shows the section ONLY after clicking Decline
+        commentSection.setVisible(true);
         commentLabel.setText("Add Optional Comments\nfor Operator");
-
     }
-
 
     @FXML
     private void onClickSendComment(ActionEvent event) {
         String comment = commentTextArea.getText();
         System.out.println("Declined with comment: " + comment);
-
-        // Hide comment box and optionally clear it
         commentBox.setVisible(false);
         commentTextArea.clear();
-
-        // You can also update the database here or notify QC backend
-        // Example: orderManager.markAsDeclined(orderId, comment);
     }
-
 }
