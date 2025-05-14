@@ -1,0 +1,15 @@
+.numberButton {
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-border-color: #575757;
+    -fx-border-radius: 5;
+    -fx-text-fill: #575757 ;
+}
+
+.clear {
+    -fx-background-color: transparent;
+    -fx-border-color: #004b88;
+    -fx-border-radius: 5;
+    -fx-text-fill: #004b88 ;
+}
+
