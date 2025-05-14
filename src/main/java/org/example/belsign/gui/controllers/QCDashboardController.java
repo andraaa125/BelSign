@@ -42,16 +42,37 @@ public class QCDashboardController {
 
     private final ObservableList<String> searchResults = FXCollections.observableArrayList();
 
-    @FXML
-    public void onClickApproval(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
-        Parent root = fxmlLoader.load();
 
-        Stage stage = new Stage();
-        stage.setTitle("Approval Pane");
-        stage.setScene(new Scene(root));
-        stage.show();
+
+    @FXML
+    private void onOpenApproval(ActionEvent event) {
+        if (selectedOrder == null) {
+            showAlert("Please select an order first.");
+            return;
+        }
+
+        try {
+            // Optionally re-fetch from DB to ensure latest data
+            Order fullOrder = orderManager.getOrderById(selectedOrder.getOrderId());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
+            Parent root = loader.load();
+
+            ApprovalController controller = loader.getController();
+            controller.setOrder(fullOrder); // Pass the order with the correct ID
+
+            Stage stage = new Stage();
+            stage.setTitle("Approval Panel");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Failed to open report preview.");
+        }
     }
+
+
 
 
 

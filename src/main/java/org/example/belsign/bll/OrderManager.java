@@ -98,7 +98,8 @@ public class OrderManager {
                     String productName = rs.getString("Product");
 
                     if (productName != null && !productName.isEmpty()) {
-                        products.add(new Product(productName));
+                        products.add(new Product(orderId, productName));
+
                     }
                 }
             }
@@ -106,4 +107,14 @@ public class OrderManager {
 
         return products;
     }
+
+    public Order getOrderById(String orderId) throws SQLException {
+        try {
+            return orderDAO.getOrderById(orderId);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to retrieve order", e);
+        }
+    }
+
+
 }

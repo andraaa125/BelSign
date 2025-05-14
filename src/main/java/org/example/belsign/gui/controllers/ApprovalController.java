@@ -43,6 +43,7 @@ public class ApprovalController {
     }
 
 
+
     private QCDashboardController qcDashboardController;
 
     public void setQCDashboardController(QCDashboardController controller) {
@@ -54,19 +55,17 @@ public class ApprovalController {
         List<String> imageColumns = List.of(
                 "Image_FRONT", "Image_BACK", "Image_LEFT",
                 "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
-                // optionally loop for "Additional_1" to "Additional_20"
         );
 
         int col = 0, row = 0;
         for (String column : imageColumns) {
             try {
-                byte[] data = orderManager.getImageData(order.getOrderId(), column);
-                if (data != null) {
-                    ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(data)));
+                byte[] imageData = orderManager.getImageData(order.getOrderId(), column);
+                if (imageData != null) {
+                    ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(imageData)));
                     imageView.setFitWidth(200);
                     imageView.setPreserveRatio(true);
                     imageGrid.add(new StackPane(imageView), col, row);
-
                     col++;
                     if (col > 2) {
                         col = 0;
@@ -78,6 +77,9 @@ public class ApprovalController {
             }
         }
     }
+
+
+
 
     @FXML
     private void onClickCancel(ActionEvent event) {
