@@ -243,4 +243,21 @@ public class OperatorDashboardController implements Initializable {
 
         btnDocument.setDisable(false);
     }
+
+    public void onNumberClick(ActionEvent actionEvent) {
+        Button clickedButton = (Button) actionEvent.getSource();
+        String value = clickedButton.getText();
+        searchField.appendText(value);
+    }
+
+    public void onClickClear(ActionEvent actionEvent) {
+        searchField.clear();
+    }
+
+    public void onClickBackspace(ActionEvent actionEvent) {
+        String currentText = searchField.getText();
+        if (!currentText.isEmpty()) {
+            searchField.setText(currentText.substring(0, currentText.length() - 1));
+        }
+    }
 }
