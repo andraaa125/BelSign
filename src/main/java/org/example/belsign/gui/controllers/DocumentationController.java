@@ -21,7 +21,7 @@ import org.example.belsign.be.Order;
 import org.example.belsign.bll.OrderManager;
 import org.example.belsign.gui.model.ImageContext;
 import org.example.belsign.util.ImageColumn;
-import org.example.belsign.util.ImageSlotFactory;
+import org.example.belsign.factory.ImageSlotFactory;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;

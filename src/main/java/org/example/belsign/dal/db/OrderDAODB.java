@@ -176,6 +176,39 @@ public class OrderDAODB implements IOrderDAO {
         }
     }
 
+    @Override
+    public Order getOrderById(String orderId) throws IOException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name, " +
+                             "Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM " +
+                             "FROM [Order] WHERE OrderID = ?")) {
+
+            stmt.setString(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Order(
+                        rs.getString("OrderID"),
+                        rs.getString("Status"),
+                        rs.getString("Operator_First_Name"),
+                        rs.getString("Operator_Last_Name"),
+                        rs.getString("Image_FRONT"),
+                        rs.getString("Image_BACK"),
+                        rs.getString("Image_RIGHT"),
+                        rs.getString("Image_LEFT"),
+                        rs.getString("Image_TOP"),
+                        rs.getString("Image_BOTTOM")
+                );
+            }
+        } catch (SQLException e) {
+            throw new IOException("Failed to fetch order by ID", e);
+        }
+        return null;
+    }
+
+
+
 
 
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #dadada;"
+            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.belsign.gui.controllers.ApprovalController">
+
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="10" BorderPane.alignment="CENTER">
+            <children>
+                <Region prefWidth="14.0"/>
+                <Label style="-fx-text-fill: #004b88;" text="Approval Panel">
+                    <font><Font name="System Bold" size="28.0"/></font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnCancel" onAction="#onClickCancel" prefHeight="40.0" prefWidth="100.0"
+                        style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 10;"
+                        text="Cancel">
+                    <font><Font name="System Bold" size="14.0"/></font>
+                </Button>
+                <Region prefWidth="11.0"/>
+            </children>
+            <padding><Insets right="10.0" top="10.0"/></padding>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <GridPane fx:id="imageGrid" hgap="20.0" vgap="30.0">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                </columnConstraints>
+            </GridPane>
+
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="15" BorderPane.alignment="CENTER">
+            <padding><Insets bottom="20" left="20" right="20" top="10"/></padding>
+            <children>
+                <Button fx:id="btnDecline" onAction="#onClickDecline" prefHeight="48.0" prefWidth="150.0"
+                        style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 10;"
+                        text="Decline">
+                    <font><Font name="System Bold" size="16.0"/></font>
+                </Button>
+
+                <Region prefHeight="88.0" prefWidth="14.0"/>
+
+                <HBox fx:id="commentSection" alignment="CENTER" spacing="10.0" visible="false">
+                    <Label fx:id="commentLabel" prefHeight="40.0" prefWidth="143.0"
+                           style="-fx-text-fill: #004b88;" wrapText="true"/>
+                    <TextArea fx:id="commentTextArea" prefHeight="88.0" prefWidth="230.0"
+                              style="-fx-control-inner-background: #ffffff; -fx-border-color: #575757;" wrapText="true"/>
+                    <Button fx:id="btnSendComment" onAction="#onClickSendComment" prefHeight="43.0" prefWidth="77.0"
+                            style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Send">
+                        <font><Font name="System Bold" size="12.0"/></font>
+                    </Button>
+                </HBox>
+
+                <Region prefHeight="88.0" prefWidth="20.0" HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="btnApprove" onAction="#onClickApprove" prefHeight="48.0" prefWidth="180.0"
+                        style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-border-width: 2; -fx-border-radius: 10;"
+                        text="Generate Report">
+                    <font><Font name="System Bold" size="16.0"/></font>
+                </Button>
+            </children>
+        </HBox>
+    </bottom>
+
+    <left><Region prefWidth="20.0"/></left>
+    <right><Region prefWidth="20.0"/></right>
+</BorderPane>

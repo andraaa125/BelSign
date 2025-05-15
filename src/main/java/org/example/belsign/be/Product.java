@@ -22,7 +22,8 @@ public class Product {
 
     }
 
-    public Product(String productName) {
+    public Product(String orderId, String productName) {
+        this.orderId = orderId;
         this.productName = productName;
     }
 

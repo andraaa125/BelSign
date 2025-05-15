@@ -29,6 +29,11 @@ public class Order {
         this.image_bottom = image_bottom;
     }
 
+    public Order() {
+        // Required for DAO usage or frameworks like JavaFX or Jackson
+    }
+
+
     public String getOrderId() {
         return orderId;
     }

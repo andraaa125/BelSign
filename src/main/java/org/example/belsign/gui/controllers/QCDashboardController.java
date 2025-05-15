@@ -26,24 +26,16 @@ import java.util.List;
 import java.util.Map;
 
 public class QCDashboardController {
-    @FXML
-    private Label userName;
-    @FXML
-    private Button btnDocument;
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private ComboBox<String> searchComboBox;
-    @FXML
-    private FlowPane pendingPane;
-    @FXML
-    private FlowPane productPane;
-    @FXML
-    private Button selectedOrderButton = null;
+    @FXML private Label userName;
+    @FXML private Button approvalButton;
+    @FXML private Button logoutButton;
+    @FXML private ComboBox<String> searchComboBox;
+    @FXML private FlowPane pendingPane;
+    @FXML private FlowPane productPane;
+    @FXML private Button selectedOrderButton;
+    @FXML private Order selectedOrder;
+    @FXML private Button selectedButton = null;
 
-    private Order selectedOrder = null;
-
-    private Button selectedButton = null;
 
     private final Map<String, VBox> orderVBoxMap = new HashMap<>();
 
@@ -51,9 +43,43 @@ public class QCDashboardController {
 
     private final ObservableList<String> searchResults = FXCollections.observableArrayList();
 
+
+
+    @FXML
+    private void onOpenApproval(ActionEvent event) {
+        if (selectedOrder == null) {
+            showAlert("Please select an order first.");
+            return;
+        }
+
+        try {
+            // Optionally re-fetch from DB to ensure latest data
+            Order fullOrder = orderManager.getOrderById(selectedOrder.getOrderId());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
+            Parent root = loader.load();
+
+            ApprovalController controller = loader.getController();
+            controller.setOrder(fullOrder); // Pass the order with the correct ID
+
+            Stage stage = new Stage();
+            stage.setTitle("Approval Panel");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Failed to open report preview.");
+        }
+    }
+
+
+
+
+
     @FXML
     private void initialize() {
-        btnDocument.setDisable(true);
+        approvalButton.setDisable(true);
         searchComboBox.setEditable(true); // Allow text input
         searchComboBox.setPromptText("Search Order Number...");
         searchComboBox.setVisibleRowCount(8);
@@ -97,7 +123,7 @@ public class QCDashboardController {
             if (boxToRemove != null) {
                 productPane.getChildren().remove(boxToRemove);
             }
-            btnDocument.setDisable(true);
+            approvalButton.setDisable(true);
             System.out.println("Order unselected: " + order.getOrderId());
             return;
         }
@@ -119,7 +145,7 @@ public class QCDashboardController {
         selectedOrder = order;
 
         displayProductsForOrder(order);
-        btnDocument.setDisable(true);
+        approvalButton.setDisable(true);
     }
 
     private Button findOrderButtonByOrderId(String orderId) {
@@ -225,7 +251,7 @@ public class QCDashboardController {
             }
             selectedButton = null;
             selectedOrder = null;
-            btnDocument.setDisable(true);
+            approvalButton.setDisable(true);
             return;
         }
         for (Node node : orderBox.getChildren()) {
@@ -243,7 +269,7 @@ public class QCDashboardController {
         selectedButton = clickedButton;
         selectedOrder = order;
 
-        btnDocument.setDisable(false);
+        approvalButton.setDisable(false);
     }
 
     private ObservableList<String> searchOrders(String query) {
