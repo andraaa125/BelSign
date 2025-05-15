@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #7fa8c5;" stylesheets="@Images/CSS/OperatorCSS.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.OperatorDashboardController">
+   <top>
+      <StackPane BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane>
+               <children>
+                  <ImageView fitHeight="53.0" fitWidth="63.0" layoutX="8.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/Images/BELMAN_Logo.png" />
+                     </image>
+                  </ImageView>
+
+                  <Line endX="53.00001525878906" endY="44.21766662597656" layoutX="25.0" layoutY="1.0" startX="53.00000762939453" startY="5.567007064819336" stroke="#575700" />
+
+                  <Label alignment="CENTER" layoutX="87.0" layoutY="5.0" prefHeight="39.0" prefWidth="73.0" style="-fx-text-fill: #004b88;" text="BelSign" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+
+                  <Button fx:id="logoutButton" maxHeight="40.0" maxWidth="100.0" minHeight="40.0" minWidth="100.0" onAction="#onClickLogout" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #333535; -fx-text-fill: #e3e3e3;" text="Log Out" AnchorPane.leftAnchor="789.0" AnchorPane.topAnchor="9.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+
+                  <Label fx:id="userName" layoutX="599.0" layoutY="17.0" style="-fx-font-size: 16px;">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
+   </top>
+   <center>
+      <HBox prefHeight="583.0" prefWidth="900.0" spacing="5.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="10" left="10" right="10" top="10" />
+         </padding>
+         <children>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <FlowPane fx:id="searchPane" alignment="CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <TextField fx:id="searchField" alignment="CENTER" prefHeight="34.0" prefWidth="267.0" promptText="Enter Order ID...">
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <GridPane prefHeight="309.0" prefWidth="254.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="1" GridPane.rowIndex="2" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="3" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="4" GridPane.rowIndex="3" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="5" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="6" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="7" GridPane.rowIndex="4" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="8" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="9" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="/" GridPane.rowIndex="5" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="-" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                              <Button mnemonicParsing="false" onAction="#onClickClear" prefHeight="40.0" prefWidth="75.0" styleClass="clear" text="Clear" GridPane.rowIndex="1" />
+                              <Button mnemonicParsing="false" onAction="#onClickBackspace" prefHeight="40.0" prefWidth="75.0" style="-fx-background-color: transparent;" styleClass="numberButton" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <graphic>
+                                    <ImageView fitHeight="22.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@Images/Images/backspace.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </GridPane>
+                        <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#onClickSearch" prefHeight="33.0" prefWidth="185.0" style="-fx-border-color: #004b88; -fx-background-color: transparent; -fx-border-width: 1.5; -fx-border-radius: 4; -fx-text-fill: #004b88;" text="Search">
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Button>
+                        <StackPane prefHeight="31.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="lblError" alignment="CENTER" style="-fx-text-fill: #880000;" />
+                              <Label fx:id="incorrectOrderID" alignment="CENTER" style="-fx-text-fill: #880000;" />
+                           </children>
+                        </StackPane>
+                     </children>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <FlowPane fx:id="productPane" alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+                        <Label text="Products" textAlignment="CENTER" textFill="#575757" underline="true">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
+                        </Label>
+                     </children>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <FlowPane fx:id="donePane" alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                     </padding>
+                     <children>
+                        <Label text="Done" textFill="#575757" underline="true">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <FlowPane.margin>
+                              <Insets />
+                           </FlowPane.margin>
+                        </Label>
+                     </children>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
+   </center>
+   <bottom>
+      <HBox spacing="10.0" alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets top="10.0" bottom="10.0" left="20.0" right="20.0"/>
+         </padding>
+         <children>
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <Label fx:id="statusLabel" text=""
+                   style="-fx-text-fill: #338d71; -fx-font-size: 14px; -fx-font-weight: bold;" />
+            <Button fx:id="btnDocument" onAction="#onClickDocument"
+                    prefHeight="33.0" prefWidth="182.0"
+                    style="-fx-background-color: #004b88; -fx-text-fill: #e3e3e3;"
+                    text="Document">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
