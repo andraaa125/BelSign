@@ -73,7 +73,7 @@
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane fx:id="productPane" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
+                  <FlowPane fx:id="productPane" columnHalignment="CENTER" hgap="10.0" orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
@@ -105,7 +105,27 @@
                               <Insets />
                            </FlowPane.margin>
                         </Label>
+                        <StackPane prefHeight="44.0" prefWidth="55.0">
+                           <children>
+                              <ImageView fitHeight="53.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/Images/printer.png" />
+                                 </image>
+                              </ImageView>
+                              <Button fx:id="btnGenerateReport" prefHeight="39.0" prefWidth="52.0" visible="false">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <FlowPane.margin>
+                              <Insets left="150.0" />
+                           </FlowPane.margin>
+                        </StackPane>
                      </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </FlowPane>
                </content>
             </ScrollPane>
@@ -117,11 +137,6 @@
          <children>
             <Region prefHeight="45.0" prefWidth="694.0" />
             <Region prefHeight="45.0" prefWidth="14.0" />
-            <Button fx:id="approvalButton" onAction="#onOpenApproval" prefHeight="33.0" prefWidth="182.0" style="-fx-background-color: #004b88; -fx-text-fill: #e3e3e3;" text="Generate Report">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Button>
          </children>
       </HBox>
    </bottom>

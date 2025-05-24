@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.AdminDashboardController">
+   <left>
+      <StackPane BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="207.0" style="-fx-background-color: dadada;">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <ImageView fitHeight="83.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/Images/BELMAN_Logo.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Region prefHeight="76.0" prefWidth="207.0" />
+                  <StackPane prefHeight="57.0" prefWidth="207.0">
+                     <children>
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onClickOrder" prefHeight="48.0" prefWidth="156.0" style="-fx-background-color: transparent;" text="Orders">
+                           <font>
+                              <Font name="System Bold" size="22.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="27.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/Images/order.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </StackPane>
+                  <Region prefHeight="32.0" prefWidth="207.0" />
+                  <StackPane prefHeight="57.0" prefWidth="207.0">
+                     <children>
+                        <Button alignment="CENTER" graphicTextGap="7.0" mnemonicParsing="false" onAction="#onClickUser" prefHeight="48.0" prefWidth="156.0" style="-fx-background-color: transparent;" text="Users">
+                           <font>
+                              <Font name="System Bold" size="22.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="28.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/Images/user.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </StackPane>
+                  <Region prefHeight="148.0" prefWidth="207.0" />
+                  <StackPane prefHeight="117.0" prefWidth="207.0">
+                     <children>
+                        <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="47.0" prefWidth="118.0" style="-fx-background-color: 575757; -fx-border-color: #9d9d9d;" text=" Logout">
+                           <graphic>
+                              <ImageView fitHeight="41.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@Images/Images/logout.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </left>
+   <center>
+      <GridPane prefHeight="583.0" prefWidth="693.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.700439453125" minWidth="10.0" prefWidth="208.700439453125" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="319.55096435546875" minWidth="10.0" prefWidth="245.1622314453125" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.8377685546875" minWidth="10.0" prefWidth="190.8377685546875" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="107.2626724243164" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="172.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Create New User" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label text="First Name:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label text="Last Name:" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label text="Username:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label text="Password:" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtFirstName" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextField fx:id="txtLastName" prefHeight="35.0" prefWidth="346.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <TextField fx:id="txtUsername" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <TextField fx:id="txtPassword" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onClickSave" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-border-radius: 2;" text="Save" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
+            <Label GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label prefHeight="17.0" prefWidth="59.0" GridPane.rowIndex="1" />
+            <Label fx:id="userName" prefHeight="38.0" prefWidth="180.0" GridPane.columnIndex="3">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onClickCancel" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-radius: 2;" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
+            <Label text="Role:" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="role" prefHeight="35.0" prefWidth="240.0" promptText="Select role" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <Label fx:id="lblMessage" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>

@@ -26,15 +26,24 @@ import java.util.List;
 import java.util.Map;
 
 public class QCDashboardController {
-    @FXML private Label userName;
-    @FXML private Button approvalButton;
-    @FXML private Button logoutButton;
-    @FXML private ComboBox<String> searchComboBox;
-    @FXML private FlowPane pendingPane;
-    @FXML private FlowPane productPane;
-    @FXML private Button selectedOrderButton;
-    @FXML private Order selectedOrder;
-    @FXML private Button selectedButton = null;
+    @FXML
+    private Label userName;
+    @FXML
+    private Button btnGenerateReport;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private ComboBox<String> searchComboBox;
+    @FXML
+    private FlowPane pendingPane;
+    @FXML
+    private FlowPane productPane;
+    @FXML
+    private Button selectedOrderButton;
+    @FXML
+    private Order selectedOrder;
+    @FXML
+    private Button selectedButton = null;
 
 
     private final Map<String, VBox> orderVBoxMap = new HashMap<>();
@@ -79,7 +88,7 @@ public class QCDashboardController {
 
     @FXML
     private void initialize() {
-        approvalButton.setDisable(true);
+        btnGenerateReport.setDisable(true);
         searchComboBox.setEditable(true); // Allow text input
         searchComboBox.setPromptText("Search Order Number...");
         searchComboBox.setVisibleRowCount(8);
@@ -123,7 +132,7 @@ public class QCDashboardController {
             if (boxToRemove != null) {
                 productPane.getChildren().remove(boxToRemove);
             }
-            approvalButton.setDisable(true);
+            btnGenerateReport.setDisable(true);
             System.out.println("Order unselected: " + order.getOrderId());
             return;
         }
@@ -145,7 +154,7 @@ public class QCDashboardController {
         selectedOrder = order;
 
         displayProductsForOrder(order);
-        approvalButton.setDisable(true);
+        btnGenerateReport.setDisable(true);
     }
 
     private Button findOrderButtonByOrderId(String orderId) {
@@ -251,7 +260,7 @@ public class QCDashboardController {
             }
             selectedButton = null;
             selectedOrder = null;
-            approvalButton.setDisable(true);
+            btnGenerateReport.setDisable(true);
             return;
         }
         for (Node node : orderBox.getChildren()) {
@@ -269,7 +278,7 @@ public class QCDashboardController {
         selectedButton = clickedButton;
         selectedOrder = order;
 
-        approvalButton.setDisable(false);
+        btnGenerateReport.setDisable(false);
     }
 
     private ObservableList<String> searchOrders(String query) {
