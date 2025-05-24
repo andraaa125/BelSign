@@ -313,5 +313,6 @@ public class QCDashboardController {
 
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
+        userName.setStyle("-fx-font-size: 20");
     }
 }

@@ -135,10 +135,22 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="txtFirstName" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <TextField fx:id="txtLastName" prefHeight="35.0" prefWidth="346.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <TextField fx:id="txtUsername" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <TextField fx:id="txtPassword" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <TextField fx:id="txtFirstName" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font size="18.0" />
+               </font></TextField>
+            <TextField fx:id="txtLastName" prefHeight="35.0" prefWidth="346.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <font>
+                  <Font size="18.0" />
+               </font></TextField>
+            <TextField fx:id="txtUsername" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+               <font>
+                  <Font size="18.0" />
+               </font></TextField>
+            <TextField fx:id="txtPassword" prefHeight="35.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <font>
+                  <Font size="18.0" />
+               </font></TextField>
             <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onClickSave" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-border-radius: 2;" text="Save" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7">
                <font>
                   <Font size="20.0" />
@@ -146,7 +158,7 @@
             </Button>
             <Label GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <Label prefHeight="17.0" prefWidth="59.0" GridPane.rowIndex="1" />
-            <Label fx:id="userName" prefHeight="38.0" prefWidth="180.0" GridPane.columnIndex="3">
+            <Label fx:id="userName" prefHeight="49.0" prefWidth="180.0" GridPane.columnIndex="3">
                <font>
                   <Font size="15.0" />
                </font>

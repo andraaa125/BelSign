@@ -137,7 +137,8 @@ public class AdminDashboardController {
     }
 
     public void setUserName(String firstName, String lastName) {
-        userName.setText("Welcome, " + firstName + " " + lastName + "!");
+        userName.setText("Welcome, " + lastName + "!");
+        userName.setStyle("-fx-font-size: 20");
     }
 
     public void onClickCancel(ActionEvent actionEvent) {
