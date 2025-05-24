@@ -29,7 +29,7 @@ public class QCDashboardController {
     @FXML
     private Label userName;
     @FXML
-    private Button btnDocument;
+    private Button btnGenerateReport;
     @FXML
     private Button logoutButton;
     @FXML
@@ -53,7 +53,7 @@ public class QCDashboardController {
 
     @FXML
     private void initialize() {
-        btnDocument.setDisable(true);
+        btnGenerateReport.setDisable(true);
         searchComboBox.setEditable(true); // Allow text input
         searchComboBox.setPromptText("Search Order Number...");
         searchComboBox.setVisibleRowCount(8);
@@ -97,7 +97,7 @@ public class QCDashboardController {
             if (boxToRemove != null) {
                 productPane.getChildren().remove(boxToRemove);
             }
-            btnDocument.setDisable(true);
+            btnGenerateReport.setDisable(true);
             System.out.println("Order unselected: " + order.getOrderId());
             return;
         }
@@ -119,7 +119,7 @@ public class QCDashboardController {
         selectedOrder = order;
 
         displayProductsForOrder(order);
-        btnDocument.setDisable(true);
+        btnGenerateReport.setDisable(true);
     }
 
     private Button findOrderButtonByOrderId(String orderId) {
@@ -225,7 +225,7 @@ public class QCDashboardController {
             }
             selectedButton = null;
             selectedOrder = null;
-            btnDocument.setDisable(true);
+            btnGenerateReport.setDisable(true);
             return;
         }
         for (Node node : orderBox.getChildren()) {
@@ -243,7 +243,7 @@ public class QCDashboardController {
         selectedButton = clickedButton;
         selectedOrder = order;
 
-        btnDocument.setDisable(false);
+        btnGenerateReport.setDisable(false);
     }
 
     private ObservableList<String> searchOrders(String query) {

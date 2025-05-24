@@ -79,6 +79,13 @@ public class LoginController {
                     qcController.setUserName(user.getFirstName(), user.getLastName());
                     break;
 
+                case "Admin":
+                    fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/AdminDashboard.fxml"));
+                    root = fxmlLoader.load();
+                    AdminDashboardController adminController = fxmlLoader.getController();
+                    adminController.setUserName(user.getFirstName(), user.getLastName());
+                    break;
+
                 default:
                     showAlert("Unknown role " + role);
                     return;

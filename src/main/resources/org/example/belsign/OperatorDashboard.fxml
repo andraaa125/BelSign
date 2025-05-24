@@ -89,19 +89,58 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="1" GridPane.rowIndex="2" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="3" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="4" GridPane.rowIndex="3" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="5" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="6" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="7" GridPane.rowIndex="4" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="8" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="9" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="/" GridPane.rowIndex="5" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="-" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                              <Button mnemonicParsing="false" onAction="#onClickClear" prefHeight="40.0" prefWidth="75.0" styleClass="clear" text="Clear" GridPane.rowIndex="1" />
+                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="1" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="2" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="3" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="4" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="6" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="7" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="8" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="9" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="/" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#onNumberClick" prefHeight="55.0" prefWidth="75.0" styleClass="numberButton" stylesheets="@Images/CSS/OperatorCSS.css" text="-" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font></Button>
+                              <Button alignment="CENTER" mnemonicParsing="false" onAction="#onClickClear" prefHeight="40.0" prefWidth="75.0" styleClass="clear" text="Clear" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font></Button>
                               <Button mnemonicParsing="false" onAction="#onClickBackspace" prefHeight="40.0" prefWidth="75.0" style="-fx-background-color: transparent;" styleClass="numberButton" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                  <graphic>
                                     <ImageView fitHeight="22.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
@@ -118,7 +157,7 @@
                               <Insets />
                            </FlowPane.margin>
                            <font>
-                              <Font size="18.0" />
+                              <Font size="22.0" />
                            </font>
                         </Button>
                         <StackPane prefHeight="31.0" prefWidth="200.0">

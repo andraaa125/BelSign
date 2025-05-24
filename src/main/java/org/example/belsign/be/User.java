@@ -22,6 +22,14 @@ public class User {
         this.role = role;
     }
 
+    public User(String firstName, String lastName, String username, String password, String role) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.role = role;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -47,4 +47,35 @@ public class UserDAODB implements IUserDAO {
         return user;
     }
 
+
+    public void insertUser(User user) throws SQLException {
+        String sql = "INSERT INTO [User] (Username, Password, First_Name, Last_Name, Role) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection connection = con.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getFirstName());
+            ps.setString(4, user.getLastName());
+            ps.setString(5, user.getRole());
+
+            ps.executeUpdate();
+        }
+    }
+
+    public boolean usernameExists(String username) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM [User] WHERE Username = ?";
+        try (Connection connection = con.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        }
+        return false;
+    }
+
 }
