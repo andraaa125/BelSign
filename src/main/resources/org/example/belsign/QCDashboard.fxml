@@ -75,7 +75,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="searchComboBox" prefHeight="26.0" prefWidth="154.0" />
+                        <ComboBox fx:id="searchComboBox" prefHeight="26.0" prefWidth="170.0" />
                      </children>
                   </FlowPane>
                </content>
@@ -102,9 +102,6 @@
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
                   <FlowPane fx:id="donePane" alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
-                     <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
-                     </padding>
                      <children>
                         <Label text="Done" textFill="#575757" underline="true">
                            <font>
