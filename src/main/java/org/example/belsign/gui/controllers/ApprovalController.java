@@ -1,8 +1,10 @@
 package org.example.belsign.gui.controllers;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -12,18 +14,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.example.belsign.be.Order;
 import org.example.belsign.bll.OrderManager;
-import org.example.belsign.factory.ReportPreviewFactory;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApprovalController {
 
     @FXML private GridPane imageGrid;
     @FXML private Button btnApprove;
-    @FXML private Button btnDecline;
+    @FXML private Button btnDisapprove;
     @FXML private HBox commentSection;
     @FXML private VBox commentBox;
     @FXML private TextArea commentTextArea;
@@ -31,6 +36,16 @@ public class ApprovalController {
 
     private Order order;
     private final OrderManager orderManager = new OrderManager();
+    private final List<VBox> disapprovedBoxes = new ArrayList<>();
+    private boolean disapproveMode = false;
+
+    private Button productButton;
+
+    public void setProductButton(Button productButton) {
+        this.productButton = productButton;
+    }
+
+
 
     public void setOrder(Order order) {
         this.order = order;
@@ -52,8 +67,8 @@ public class ApprovalController {
         };
 
         String[] defaultLabels = {
-                "Front Image", "Back Image", "Left Image",
-                "Right Image", "Top Image", "Bottom Image"
+                "Front", "Back", "Left",
+                "Right", "Top", "Bottom"
         };
 
         int col = 0, row = 0;
@@ -99,6 +114,25 @@ public class ApprovalController {
 
                 VBox vbox = new VBox(5, label, borderedPane);
                 vbox.setAlignment(Pos.CENTER);
+                vbox.setStyle("-fx-cursor: hand;");
+
+                // 🔴 Click to disapprove (highlight red border)
+                vbox.setOnMouseClicked(e -> {
+                    if (!disapproveMode) return;
+
+                    StackPane imagePane = (StackPane) vbox.getChildren().get(1);
+
+                    if (disapprovedBoxes.contains(vbox)) {
+                        // Already selected: unselect
+                        disapprovedBoxes.remove(vbox);
+                        imagePane.setStyle("-fx-border-color: #333333; -fx-border-width: 1; -fx-border-radius: 5; -fx-border-style: solid;");
+                    } else {
+                        // Select
+                        disapprovedBoxes.add(vbox);
+                        imagePane.setStyle("-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 5;");
+                    }
+                });
+
 
                 imageGrid.add(vbox, col, row);
             }
@@ -108,6 +142,7 @@ public class ApprovalController {
         }
     }
 
+
     @FXML
     private void onClickCancel(ActionEvent event) {
         Button source = (Button) event.getSource();
@@ -116,20 +151,53 @@ public class ApprovalController {
 
     @FXML
     private void onClickApprove() {
-        ReportPreviewFactory.showReportWindow(order);
+        if (productButton != null) {
+            productButton.setStyle("-fx-background-color: #338d71; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 15px;");
+        }
+
+        commentSection.getChildren().clear();
+        Label confirmationLabel = new Label("✅ Product images approved successfully.");
+        confirmationLabel.setStyle("-fx-text-fill: #057017; -fx-font-size: 14px; -fx-font-weight: bold;");
+        commentSection.getChildren().add(confirmationLabel);
+        commentSection.setVisible(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(7));
+        pause.setOnFinished(e -> commentSection.setVisible(false));
+        pause.play();
     }
 
+
+
     @FXML
-    private void onClickDecline(ActionEvent event) {
+    private void onClickDisapprove(ActionEvent event) {
+        disapproveMode = true;
         commentSection.setVisible(true);
         commentLabel.setText("Add Optional Comments\nfor Operator");
+        disapprovedBoxes.clear();
     }
+
+
 
     @FXML
     private void onClickSendComment(ActionEvent event) {
         String comment = commentTextArea.getText();
-        System.out.println("Declined with comment: " + comment);
-        commentBox.setVisible(false);
+        System.out.println("Disapproved with comment: " + comment);
+
+        // Clear the comment box UI
         commentTextArea.clear();
+        commentSection.getChildren().clear();
+
+        // Show confirmation message
+        Label confirmationLabel = new Label("✅ Sent successfully to the operator.");
+        confirmationLabel.setStyle("-fx-text-fill: #057017; -fx-font-size: 14px; -fx-font-weight: bold;");
+        commentSection.getChildren().add(confirmationLabel);
+        commentSection.setVisible(true);
+
+        // Hide the message after 10 seconds
+        PauseTransition pause = new PauseTransition(Duration.seconds(7));
+        pause.setOnFinished(e -> commentSection.setVisible(false));
+        pause.play();
     }
+
+
 }
