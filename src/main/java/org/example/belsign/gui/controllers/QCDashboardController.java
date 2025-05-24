@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
@@ -26,14 +25,14 @@ import java.util.Map;
 public class QCDashboardController {
 
     @FXML private Label userName;
-    @FXML private Button approvalButton;
+    @FXML private Button btnGenerateReport;
     @FXML private Button logoutButton;
     @FXML private ComboBox<String> searchComboBox;
     @FXML private FlowPane pendingPane;
     @FXML private FlowPane productPane;
     @FXML private Button selectedOrderButton;
-    @FXML private Button selectedButton = null;
 
+    private Button selectedButton;
     private Order selectedOrder;
     private final OrderManager orderManager = new OrderManager();
     private final Map<String, VBox> orderVBoxMap = new HashMap<>();
@@ -41,7 +40,7 @@ public class QCDashboardController {
 
     @FXML
     private void initialize() {
-        approvalButton.setDisable(false);
+        btnGenerateReport.setDisable(false);
         searchComboBox.setEditable(true);
         searchComboBox.setPromptText("Search Order Number...");
         searchComboBox.setVisibleRowCount(8);
@@ -80,8 +79,11 @@ public class QCDashboardController {
             selectedOrderButton = null;
             selectedOrder = null;
             VBox boxToRemove = orderVBoxMap.remove(order.getOrderId());
-            if (boxToRemove != null) productPane.getChildren().remove(boxToRemove);
-            approvalButton.setDisable(true);
+            if (boxToRemove != null) {
+                productPane.getChildren().remove(boxToRemove);
+            }
+            btnGenerateReport.setDisable(true);
+            System.out.println("Order unselected: " + order.getOrderId());
             return;
         }
 
@@ -97,7 +99,7 @@ public class QCDashboardController {
         selectedOrder = order;
 
         displayProductsForOrder(order);
-        approvalButton.setDisable(true);
+        btnGenerateReport.setDisable(true);
     }
 
     private Button findOrderButtonByOrderId(String orderId) {
@@ -108,6 +110,21 @@ public class QCDashboardController {
             }
         }
         return null;
+    }
+
+    private void updateSearchResults(String query) {
+        searchResults.clear();
+        try {
+            ObservableList<String> results = FXCollections.observableArrayList(orderManager.searchOrders(query));
+            searchResults.addAll(results);
+            searchComboBox.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getStyleForStatus(String status) {
+        return "-fx-padding: 15; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: transparent; -fx-border-color: #575757; -fx-font-size: 15px;";
     }
 
     private void displayProductsForOrder(Order order) {
@@ -161,33 +178,28 @@ public class QCDashboardController {
     }
 
     private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
-        // Skip if the clicked button is the OrderID button
         if (clickedButton.getText().startsWith("OrderID:")) {
-            return; // Do nothing for OrderID button
+            return;
         }
 
-        // If clicking the same button again → toggle off
         if (clickedButton.equals(selectedButton)) {
             resetButtonStyles(orderBox);
             selectedButton = null;
             selectedOrder = null;
+            btnGenerateReport.setDisable(true);
             return;
         }
 
-        // Unhighlight all buttons in this order box
         resetButtonStyles(orderBox);
 
-        // Highlight clicked button
         clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
-
         selectedButton = clickedButton;
         selectedOrder = order;
     }
 
     private void resetButtonStyles(VBox orderBox) {
         for (Node node : orderBox.getChildren()) {
-            if (node instanceof Button) {
-                Button button = (Button) node;
+            if (node instanceof Button button) {
                 if (button.getText().startsWith("OrderID:")) {
                     button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
                 } else {
@@ -196,7 +208,6 @@ public class QCDashboardController {
             }
         }
     }
-
 
     private String getDefaultProductStyle(Button button) {
         if (button.getText().startsWith("OrderID:")) {
@@ -213,7 +224,6 @@ public class QCDashboardController {
             ApprovalController controller = loader.getController();
             controller.setOrder(order);
 
-            // Pass selected button
             if (selectedButton != null && !selectedButton.getText().startsWith("OrderID:")) {
                 controller.setProductButton(selectedButton);
             }
@@ -227,22 +237,6 @@ public class QCDashboardController {
             ex.printStackTrace();
             showAlert("Failed to open Approval View.");
         }
-    }
-
-
-    private void updateSearchResults(String query) {
-        searchResults.clear();
-        try {
-            ObservableList<String> results = FXCollections.observableArrayList(orderManager.searchOrders(query));
-            searchResults.addAll(results);
-            searchComboBox.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String getStyleForStatus(String status) {
-        return "-fx-padding: 15; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: transparent; -fx-border-color: #575757; -fx-font-size: 15px;";
     }
 
     private void showAlert(String message) {
@@ -266,6 +260,7 @@ public class QCDashboardController {
 
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
+        userName.setStyle("-fx-font-size: 20");
     }
 
     @FXML

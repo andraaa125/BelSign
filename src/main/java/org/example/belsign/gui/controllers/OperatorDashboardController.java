@@ -75,6 +75,7 @@ public class OperatorDashboardController implements Initializable {
 
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
+        userName.setStyle("-fx-font-size: 20");
     }
 
     private void loadDocumentView(Product product) throws IOException {
