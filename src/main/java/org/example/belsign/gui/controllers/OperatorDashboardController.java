@@ -66,27 +66,32 @@ public class OperatorDashboardController implements Initializable {
 
 
     public void onClickDocument(ActionEvent actionEvent) throws IOException {
-        if (selectedOrder != null) {
-            loadDocumentView(selectedOrder);
+        if (selectedButton != null && !selectedButton.getText().startsWith("OrderID:")) {
+            Product selectedProduct = (Product) selectedButton.getUserData();
+            loadDocumentView(selectedProduct);
         }
     }
+
 
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
     }
 
-    private void loadDocumentView(Order order) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/DocumentationView.fxml"));
-        Parent root = fxmlLoader.load();
+    private void loadDocumentView(Product product) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/DocumentationView.fxml"));
+        Parent root = loader.load();
+
+        DocumentationController controller = loader.getController();
+        controller.setProduct(product);
+        controller.setOperatorDashboardController(this); // optional
+
         Stage stage = new Stage();
         stage.setTitle("Photo Documentation");
         stage.setScene(new Scene(root));
-
-        DocumentationController controller = fxmlLoader.getController();
-        controller.setOrder(order);
-        //controller.setOperatorDashboardController(this);
         stage.show();
     }
+
+
 
     public void setStatusMessage(String message) {
         statusLabel.setText(message);
@@ -192,7 +197,7 @@ public class OperatorDashboardController implements Initializable {
             orderBox.getChildren().add(orderButton);
 
             for (Product product : order.getProducts()) {
-                Button productButton = new Button(product.getName());
+                Button productButton = new Button(product.getProduct());
                 productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
                 productButton.setPrefWidth(buttonWidth);
@@ -226,6 +231,7 @@ public class OperatorDashboardController implements Initializable {
             btnDocument.setDisable(true);
             return;
         }
+
         for (Node node : orderBox.getChildren()) {
             if (node instanceof Button) {
                 Button button = (Button) node;
@@ -236,13 +242,15 @@ public class OperatorDashboardController implements Initializable {
                 }
             }
         }
+
         clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
 
         selectedButton = clickedButton;
         selectedOrder = order;
-
-        btnDocument.setDisable(false);
+        btnDocument.setDisable(clickedButton.getText().startsWith("OrderID:")); // Only enable for product selection
     }
+
+
 
     public void onNumberClick(ActionEvent actionEvent) {
         Button clickedButton = (Button) actionEvent.getSource();

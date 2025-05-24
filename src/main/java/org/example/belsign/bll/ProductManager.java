@@ -2,18 +2,92 @@ package org.example.belsign.bll;
 
 import org.example.belsign.be.Product;
 import org.example.belsign.dal.IProductDAO;
+import org.example.belsign.dal.db.DBConnection;
 import org.example.belsign.dal.db.ProductDAODB;
 
-import java.sql.SQLException;
-import java.util.Map;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductManager {
-    private Map<String, Product> products;
-    private final IProductDAO productDAODB = new ProductDAODB();
+    private final IProductDAO productDAO = new ProductDAODB();
 
-    public void saveProductImage(Product product, String slotType, String imagePath) throws SQLException {
-        productDAODB.updateProductImage(product, slotType, imagePath);
+    /**
+     * Save an image to the specified slot in the Product table.
+     * The slotType should match the database column (e.g., "Image_FRONT", "Additional_5").
+     */
+    public void saveProductImage(Product product, String slotType, byte[] imageData) throws SQLException {
+        productDAO.updateProductImage(product, slotType, imageData);
+
+        // Also update the in-memory product object
+        if (slotType.startsWith("Additional_")) {
+            product.setAdditionalImage(slotType, imageData);
+        } else {
+            switch (slotType) {
+                case "Image_FRONT" -> product.setImageFront(imageData);
+                case "Image_BACK" -> product.setImageBack(imageData);
+                case "Image_LEFT" -> product.setImageLeft(imageData);
+                case "Image_RIGHT" -> product.setImageRight(imageData);
+                case "Image_TOP" -> product.setImageTop(imageData);
+                case "Image_BOTTOM" -> product.setImageBottom(imageData);
+                default -> throw new IllegalArgumentException("Unsupported image slot: " + slotType);
+            }
+        }
     }
 
+    public byte[] getImageData(Product product, String columnName) {
+        if (columnName.startsWith("Additional_")) {
+            return product.getAdditionalImage(columnName);
+        }
 
+        return switch (columnName) {
+            case "Image_FRONT" -> product.getImageFront();
+            case "Image_BACK" -> product.getImageBack();
+            case "Image_LEFT" -> product.getImageLeft();
+            case "Image_RIGHT" -> product.getImageRight();
+            case "Image_TOP" -> product.getImageTop();
+            case "Image_BOTTOM" -> product.getImageBottom();
+            default -> null;
+        };
+    }
+
+    /**
+     * Retrieves all products for a given orderId.
+     */
+    public List<Product> getProductsForOrder(String orderId) throws SQLException {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM Product WHERE OrderID = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, orderId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Product product = new Product();
+                    product.setOrderId(rs.getString("OrderID"));
+                    product.setProductId(rs.getString("ProductId"));
+                    product.setProduct(rs.getString("Product"));
+                    product.setStatus(rs.getString("Status"));
+
+                    product.setImageFront(rs.getBytes("Image_FRONT"));
+                    product.setImageBack(rs.getBytes("Image_BACK"));
+                    product.setImageLeft(rs.getBytes("Image_LEFT"));
+                    product.setImageRight(rs.getBytes("Image_RIGHT"));
+                    product.setImageTop(rs.getBytes("Image_TOP"));
+                    product.setImageBottom(rs.getBytes("Image_BOTTOM"));
+
+                    for (int i = 1; i <= 20; i++) {
+                        String col = "Additional_" + i;
+                        product.setAdditionalImage(col, rs.getBytes(col));
+                    }
+
+                    products.add(product);
+                }
+            }
+        }
+
+        return products;
+    }
 }

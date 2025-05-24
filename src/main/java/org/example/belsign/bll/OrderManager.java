@@ -2,20 +2,15 @@ package org.example.belsign.bll;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
-import org.example.belsign.dal.db.DBConnection;
 import org.example.belsign.dal.db.OrderDAODB;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.example.belsign.dal.db.DBConnection.getConnection;
 
@@ -35,34 +30,8 @@ public class OrderManager {
         }
     }
 
-    public void saveImageToColumn(String orderId, String columnName, byte[] imageData) {
-        try {
-            if (!orderDAO.doesColumnExist(columnName)) {
-                orderDAO.addColumnToOrderTable(columnName);
-            }
-            orderDAO.updateOrderImageColumn(orderId, columnName, imageData);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save image to column: " + columnName, e);
-        }
-    }
-
-    public Image getImageFromColumn(String orderId, String columnName) throws IOException {
-        byte[] imageData = orderDAO.getImageData(orderId, columnName);
-        if (imageData != null && imageData.length > 0) {
-            return new Image(new ByteArrayInputStream(imageData));
-        }
-        return null;
-    }
-    public byte[] getImageData(String orderId, String columnName) throws IOException {
-        return orderDAO.getImageData(orderId, columnName);
-    }
-    public void deleteImageFromColumn(String orderId, String columnName) throws IOException {
-        orderDAO.deleteImageData(orderId, columnName);
-    }
-
-
     public ObservableList<String> searchOrders(String query) {
-        ObservableList<String> orderID = FXCollections.observableArrayList();
+        ObservableList<String> orderIDs = FXCollections.observableArrayList();
 
         String sql = "SELECT OrderID FROM [Order] WHERE Status = 'Done' AND OrderID LIKE ?";
 
@@ -73,7 +42,7 @@ public class OrderManager {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    orderID.add(rs.getString("OrderID"));
+                    orderIDs.add(rs.getString("OrderID"));
                 }
             }
 
@@ -81,7 +50,7 @@ public class OrderManager {
             e.printStackTrace();
         }
 
-        return orderID;
+        return orderIDs;
     }
 
     public List<Product> getProductsForOrder(String orderId) throws SQLException {
@@ -93,14 +62,30 @@ public class OrderManager {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, orderId);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    String productName = rs.getString("Product");
+                    Product product = new Product();
 
-                    if (productName != null && !productName.isEmpty()) {
-                        products.add(new Product(orderId, productName));
+                    product.setOrderId(rs.getString("OrderID"));
+                    product.setProductId(rs.getString("ProductId"));
+                    product.setProduct(rs.getString("Product"));
+                    product.setStatus(rs.getString("Status"));
 
+                    product.setImageFront(rs.getBytes("Image_FRONT"));
+                    product.setImageBack(rs.getBytes("Image_BACK"));
+                    product.setImageLeft(rs.getBytes("Image_LEFT"));
+                    product.setImageRight(rs.getBytes("Image_RIGHT"));
+                    product.setImageTop(rs.getBytes("Image_TOP"));
+                    product.setImageBottom(rs.getBytes("Image_BOTTOM"));
+
+                    for (int i = 1; i <= 20; i++) {
+                        String colName = "Additional_" + i;
+                        product.setAdditionalImage(colName, rs.getBytes(colName));
                     }
+
+
+                    products.add(product);
                 }
             }
         }
@@ -115,6 +100,4 @@ public class OrderManager {
             throw new RuntimeException("Failed to retrieve order", e);
         }
     }
-
-
 }

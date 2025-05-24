@@ -135,7 +135,7 @@ public class QCDashboardController {
             orderBox.getChildren().add(orderBtn);
 
             for (Product product : order.getProducts()) {
-                Button productButton = new Button(product.getName());
+                Button productButton = new Button(product.getProduct());
                 productButton.setPrefWidth(200);
                 productButton.setPrefHeight(40);
                 productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");

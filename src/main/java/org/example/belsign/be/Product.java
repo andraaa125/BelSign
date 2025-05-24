@@ -1,98 +1,29 @@
 package org.example.belsign.be;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Product {
-    private String productName;
-    private String imageFront;
-    private String imageBack;
-    private String imageRight;
-    private String imageLeft;
-    private String imageTop;
-    private String imageBottom;
     private String orderId;
+    private String productId;
     private String product;
+    private String status;
 
-    public Product(String productName, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom) {
-        this.productName = productName;
-        this.imageFront = imageFront;
-        this.imageBack = imageBack;
-        this.imageRight = imageRight;
-        this.imageLeft = imageLeft;
-        this.imageTop = imageTop;
-        this.imageBottom = imageBottom;
+    // Now use byte[] for images instead of String paths
+    private byte[] imageFront;
+    private byte[] imageBack;
+    private byte[] imageLeft;
+    private byte[] imageRight;
+    private byte[] imageTop;
+    private byte[] imageBottom;
 
-    }
+    private Map<String, byte[]> additionalImages = new HashMap<>();
 
-    public Product(String orderId, String productName) {
-        this.orderId = orderId;
-        this.productName = productName;
-    }
+    public Product() {}
 
-    public Product(String orderId, String product, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom) {
-        this.imageFront = imageFront;
-        this.imageBack = imageBack;
-        this.imageRight = imageRight;
-        this.imageLeft = imageLeft;
-        this.imageTop = imageTop;
-        this.imageBottom = imageBottom;
+    public Product(String orderId, String product) {
         this.orderId = orderId;
         this.product = product;
-    }
-
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getImageFront() {
-        return imageFront;
-    }
-
-    public void setImageFront(String imageFront) {
-        this.imageFront = imageFront;
-    }
-
-    public String getImageBack() {
-        return imageBack;
-    }
-
-    public void setImageBack(String imageBack) {
-        this.imageBack = imageBack;
-    }
-
-    public String getImageRight() {
-        return imageRight;
-    }
-
-    public void setImageRight(String imageRight) {
-        this.imageRight = imageRight;
-    }
-
-    public String getImageLeft() {
-        return imageLeft;
-    }
-
-    public void setImageLeft(String imageLeft) {
-        this.imageLeft = imageLeft;
-    }
-
-    public String getImageTop() {
-        return imageTop;
-    }
-
-    public void setImageTop(String imageTop) {
-        this.imageTop = imageTop;
-    }
-
-    public String getImageBottom() {
-        return imageBottom;
-    }
-
-    public void setImageBottom(String imageBottom) {
-        this.imageBottom = imageBottom;
     }
 
     public String getOrderId() {
@@ -103,6 +34,14 @@ public class Product {
         this.orderId = orderId;
     }
 
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
     public String getProduct() {
         return product;
     }
@@ -111,7 +50,85 @@ public class Product {
         this.product = product;
     }
 
-    public String getName() {
-        return productName;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public byte[] getImageFront() {
+        return imageFront;
+    }
+
+    public void setImageFront(byte[] imageFront) {
+        this.imageFront = imageFront;
+    }
+
+    public byte[] getImageBack() {
+        return imageBack;
+    }
+
+    public void setImageBack(byte[] imageBack) {
+        this.imageBack = imageBack;
+    }
+
+    public byte[] getImageLeft() {
+        return imageLeft;
+    }
+
+    public void setImageLeft(byte[] imageLeft) {
+        this.imageLeft = imageLeft;
+    }
+
+    public byte[] getImageRight() {
+        return imageRight;
+    }
+
+    public void setImageRight(byte[] imageRight) {
+        this.imageRight = imageRight;
+    }
+
+    public byte[] getImageTop() {
+        return imageTop;
+    }
+
+    public void setImageTop(byte[] imageTop) {
+        this.imageTop = imageTop;
+    }
+
+    public byte[] getImageBottom() {
+        return imageBottom;
+    }
+
+    public void setImageBottom(byte[] imageBottom) {
+        this.imageBottom = imageBottom;
+    }
+
+    public Map<String, byte[]> getAdditionalImages() {
+        return additionalImages;
+    }
+
+    public void setAdditionalImages(Map<String, byte[]> additionalImages) {
+        this.additionalImages = additionalImages;
+    }
+
+    public void setAdditionalImage(String key, byte[] value) {
+        this.additionalImages.put(key, value);
+    }
+
+    public byte[] getAdditionalImage(String key) {
+        return this.additionalImages.get(key);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "orderId='" + orderId + '\'' +
+                ", productId='" + productId + '\'' +
+                ", product='" + product + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

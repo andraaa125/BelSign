@@ -1,5 +1,6 @@
 package org.example.belsign.gui.controllers;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,30 +9,28 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.example.belsign.be.Order;
-import org.example.belsign.bll.OrderManager;
+import org.example.belsign.be.Product;
+import org.example.belsign.bll.ProductManager;
+import org.example.belsign.factory.ImageSlotFactory;
 import org.example.belsign.gui.model.ImageContext;
 import org.example.belsign.util.ImageColumn;
-import org.example.belsign.factory.ImageSlotFactory;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
 public class DocumentationController {
 
-    private Order order;
+    private Product product;
     private OperatorDashboardController operatorDashboardController;
 
     @FXML private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
@@ -46,11 +45,11 @@ public class DocumentationController {
             "Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
     );
 
-    private final OrderManager orderManager = new OrderManager();
+    private final ProductManager productManager = new ProductManager();
 
     @FXML
     public void onClickAddImage(ActionEvent actionEvent) {
-        if (additionalImageCount > ImageColumn.MAX_ADDITIONAL_IMAGES) {
+        if (additionalImageCount > 20) {
             operatorDashboardController.setStatusMessage("You can only add up to 20 additional images.");
             return;
         }
@@ -58,7 +57,6 @@ public class DocumentationController {
         String labelText = "Additional " + additionalImageCount;
         StackPane newSlot = createInteractiveSlot(labelText);
         addSlotToGrid(newSlot);
-
         ImageContext.capturedImages.put(newSlot, null);
         additionalImageCount++;
     }
@@ -71,8 +69,8 @@ public class DocumentationController {
                 StackPane pane = slots.get(i);
                 Image image = ImageContext.capturedImages.get(pane);
                 if (image != null) {
-                    byte[] imageData = convertToBytes(image);
-                    orderManager.saveImageToColumn(order.getOrderId(), columnNames.get(i), imageData);
+                    String column = columnNames.get(i);
+                    productManager.saveProductImage(product, column, convertToBytes(image));
                 }
             }
 
@@ -81,28 +79,25 @@ public class DocumentationController {
                 if (node instanceof VBox vbox && vbox.getChildren().get(0) instanceof StackPane pane &&
                         !getDefaultSlots().contains(pane)) {
 
-                    if (additionalIndex > ImageColumn.MAX_ADDITIONAL_IMAGES) break;
+                    if (additionalIndex > 20) break;
 
                     Image image = ImageContext.capturedImages.get(pane);
                     if (image != null) {
-                        byte[] imageData = convertToBytes(image);
-                        String column = ImageColumn.getAdditionalColumnName(additionalIndex);
-                        orderManager.saveImageToColumn(order.getOrderId(), column, imageData);
+                        String column = "Additional_" + additionalIndex;
+                        productManager.saveProductImage(product, column, convertToBytes(image));
                         additionalIndex++;
                     }
                 }
             }
 
             ImageContext.capturedImages.clear();
-
             if (operatorDashboardController != null) {
                 operatorDashboardController.setStatusMessage("Images sent successfully to QC!");
             }
 
-
             ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -113,44 +108,37 @@ public class DocumentationController {
         ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setProduct(Product product) {
+        this.product = product;
 
-        try {
-            // Load default slots
-            List<StackPane> slots = getDefaultSlots();
-            for (int i = 0; i < slots.size(); i++) {
-                String column = columnNames.get(i);
-                byte[] imageBytes = orderManager.getImageData(order.getOrderId(), column);
-                if (imageBytes != null) {
-                    Image image = new Image(new ByteArrayInputStream(imageBytes));
-                    StackPane slot = slots.get(i);
-                    loadImageIntoSlot(slot, image, column.replace("Image_", ""));
-                    ImageContext.capturedImages.put(slot, image);
-                }
+        List<StackPane> slots = getDefaultSlots();
+        for (int i = 0; i < slots.size(); i++) {
+            String column = columnNames.get(i);
+            byte[] data = productManager.getImageData(product, column);
+            if (data != null) {
+                Image image = new Image(new java.io.ByteArrayInputStream(data));
+                StackPane slot = slots.get(i);
+                loadImageIntoSlot(slot, image, column.replace("Image_", ""));
+                ImageContext.capturedImages.put(slot, image);
             }
+        }
 
-            // Load additional images
-            int additionalIndex = 1;
-            while (additionalIndex <= ImageColumn.MAX_ADDITIONAL_IMAGES) {
-                String column = ImageColumn.getAdditionalColumnName(additionalIndex);
-                byte[] imageBytes = orderManager.getImageData(order.getOrderId(), column);
-                if (imageBytes == null) break;
+        int additionalIndex = 1;
+        while (additionalIndex <= 20) {
+            String column = "Additional_" + additionalIndex;
+            byte[] data = productManager.getImageData(product, column);
+            if (data == null) break;
 
-                Image image = new Image(new ByteArrayInputStream(imageBytes));
-                String label = "Additional " + additionalIndex;
-                StackPane newSlot = createInteractiveSlot(label);
-                loadImageIntoSlot(newSlot, image, label);
+            Image image = new Image(new java.io.ByteArrayInputStream(data));
+            String label = "Additional " + additionalIndex;
+            StackPane newSlot = createInteractiveSlot(label);
+            loadImageIntoSlot(newSlot, image, label);
 
-                addSlotToGrid(newSlot);
-                ImageContext.capturedImages.put(newSlot, image);
+            addSlotToGrid(newSlot);
+            ImageContext.capturedImages.put(newSlot, image);
 
-                additionalIndex++;
-                additionalImageCount++;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            additionalIndex++;
+            additionalImageCount++;
         }
     }
 
@@ -168,10 +156,9 @@ public class DocumentationController {
                         ? ImageColumn.getAdditionalColumnName(Integer.parseInt(label.replaceAll("[^0-9]", "")))
                         : ImageColumn.getDefaultColumnName(label);
 
-                orderManager.deleteImageFromColumn(order.getOrderId(), column);
+                productManager.saveProductImage(product, column, null);
                 System.out.println("Deleted from DB: " + column);
-
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
@@ -239,9 +226,10 @@ public class DocumentationController {
     }
 
     private byte[] convertToBytes(Image fxImage) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(javafx.embed.swing.SwingFXUtils.fromFXImage(fxImage, null), "png", baos);
-        return baos.toByteArray();
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(fxImage, null);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", outputStream);
+        return outputStream.toByteArray();
     }
 
     private List<StackPane> getDefaultSlots() {

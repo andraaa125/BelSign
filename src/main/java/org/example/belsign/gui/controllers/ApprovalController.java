@@ -16,7 +16,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
+import org.example.belsign.bll.ProductManager;
 
 
 import java.io.ByteArrayInputStream;
@@ -38,6 +40,8 @@ public class ApprovalController {
     private final OrderManager orderManager = new OrderManager();
     private final List<VBox> disapprovedBoxes = new ArrayList<>();
     private boolean disapproveMode = false;
+    private final ProductManager productManager = new ProductManager();
+    private List<Product> products;
 
     private Button productButton;
 
@@ -49,8 +53,18 @@ public class ApprovalController {
 
     public void setOrder(Order order) {
         this.order = order;
+        try {
+            this.products = order.getProducts(); // Assuming products are pre-fetched
+            if (this.products == null) {
+                this.products = productManager.getProductsForOrder(order.getOrderId()); // fallback
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.products = new ArrayList<>();
+        }
         loadImagesForApproval();
     }
+
 
     private QCDashboardController qcDashboardController;
 
@@ -60,55 +74,44 @@ public class ApprovalController {
 
     private void loadImagesForApproval() {
         imageGrid.getChildren().clear();
-
-        String[] defaultColumns = {
-                "Image_FRONT", "Image_BACK", "Image_LEFT",
-                "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
-        };
-
-        String[] defaultLabels = {
-                "Front", "Back", "Left",
-                "Right", "Top", "Bottom"
-        };
-
         int col = 0, row = 0;
 
-        // Load default images
-        for (int i = 0; i < defaultColumns.length; i++) {
-            addImageToGrid(defaultColumns[i], defaultLabels[i], col, row);
-            col++;
-            if (col > 2) {
-                col = 0;
-                row++;
-            }
-        }
+        for (Product product : products) {
+            // Add standard images
+            String[] columns = {"Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"};
+            String[] labels = {"Front", "Back", "Left", "Right", "Top", "Bottom"};
 
-        // Load additional images
-        for (int i = 1; i <= 20; i++) {
-            String column = "Additional_" + i;
-            addImageToGrid(column, "Additional Image", col, row);
-            col++;
-            if (col > 2) {
-                col = 0;
-                row++;
+            for (int i = 0; i < columns.length; i++) {
+                addImageToGrid(product, columns[i], labels[i], col, row);
+                col++;
+                if (col > 2) { col = 0; row++; }
+            }
+
+            // Add additional images
+            for (int i = 1; i <= 20; i++) {
+                String colName = "Additional_" + i;
+                addImageToGrid(product, colName, "Additional " + i, col, row);
+                col++;
+                if (col > 2) { col = 0; row++; }
             }
         }
     }
 
-    private void addImageToGrid(String column, String labelText, int col, int row) {
+
+    private void addImageToGrid(Product product, String columnName, String labelText, int col, int row) {
         try {
-            byte[] data = orderManager.getImageData(order.getOrderId(), column);
-            if (data != null && data.length > 0) {
-                ImageView imageView = new ImageView(new Image(new ByteArrayInputStream(data)));
+            byte[] imageData = productManager.getImageData(product, columnName);
+            if (imageData != null && imageData.length > 0) {
+                Image image = new Image(new ByteArrayInputStream(imageData));
+                ImageView imageView = new ImageView(image);
                 imageView.setFitWidth(180);
                 imageView.setPreserveRatio(true);
 
                 StackPane borderedPane = new StackPane(imageView);
                 borderedPane.setPrefSize(200, 150);
-                borderedPane.setStyle("-fx-border-color: #333333; -fx-border-width: 1; -fx-border-radius: 5; -fx-border-style: solid;");
+                borderedPane.setStyle("-fx-border-color: #333333; -fx-border-width: 1; -fx-border-radius: 5;");
 
-                Label label = new Label(labelText);
-                label.setStyle("-fx-text-fill: #333333; -fx-font-size: 13px;");
+                Label label = new Label(labelText + " (" + product.getProduct() + ")");
                 label.setMaxWidth(Double.MAX_VALUE);
                 label.setAlignment(Pos.CENTER);
 
@@ -116,31 +119,27 @@ public class ApprovalController {
                 vbox.setAlignment(Pos.CENTER);
                 vbox.setStyle("-fx-cursor: hand;");
 
-                // 🔴 Click to disapprove (highlight red border)
                 vbox.setOnMouseClicked(e -> {
                     if (!disapproveMode) return;
-
                     StackPane imagePane = (StackPane) vbox.getChildren().get(1);
 
                     if (disapprovedBoxes.contains(vbox)) {
-                        // Already selected: unselect
                         disapprovedBoxes.remove(vbox);
-                        imagePane.setStyle("-fx-border-color: #333333; -fx-border-width: 1; -fx-border-radius: 5; -fx-border-style: solid;");
+                        imagePane.setStyle("-fx-border-color: #333333;");
                     } else {
-                        // Select
                         disapprovedBoxes.add(vbox);
-                        imagePane.setStyle("-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 5;");
+                        imagePane.setStyle("-fx-border-color: red;");
                     }
                 });
 
-
                 imageGrid.add(vbox, col, row);
             }
-        } catch (IOException e) {
-            System.out.println("Could not load image from: " + column);
+        } catch (Exception e) {
+            System.out.println("Could not load image for: " + columnName);
             e.printStackTrace();
         }
     }
+
 
 
     @FXML
