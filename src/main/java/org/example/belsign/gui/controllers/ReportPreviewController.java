@@ -122,6 +122,7 @@ public class ReportPreviewController {
             exportButtons.setVisible(false);
             exportButtons.setManaged(false);
 
+            rootVBox.requestFocus();
             rootVBox.applyCss();
             rootVBox.layout();
 

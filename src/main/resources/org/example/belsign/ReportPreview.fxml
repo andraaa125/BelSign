@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -40,7 +39,7 @@
 
             <Label text="Order Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <Label fx:id="lblOrderNumber" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <Label text="Product Name / No.:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label text="Product Name :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Label fx:id="lblProductName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          <rowConstraints>
             <RowConstraints />
@@ -50,14 +49,17 @@
 
         <VBox spacing="5">
             <Label text="Additional Comments:" />
-            <TextArea fx:id="txtComments" prefRowCount="3" style="-fx-control-inner-background: #f2f2f2;" wrapText="true" />
+            <TextArea fx:id="txtComments" prefHeight="69.5" prefRowCount="3" prefWidth="55.5" style="-fx-control-inner-background: #f2f2f2;" wrapText="true" VBox.vgrow="NEVER" />
         </VBox>
-
-        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
-            <FlowPane fx:id="imageContainer" hgap="10" prefWrapLength="480" style="-fx-border-color: #888; -fx-border-width: 1;" vgap="10">
-                <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
-            </FlowPane>
-        </ScrollPane>
+      <VBox>
+         <children>
+               <FlowPane fx:id="imageContainer" hgap="10" prefWidth="555.0" prefWrapLength="480" style="-fx-border-color: #888; -fx-border-width: 1;" vgap="10">
+                   <padding>
+                  <Insets bottom="10" left="10" right="10" top="10" />
+               </padding>
+               </FlowPane>
+         </children>
+      </VBox>
 
         <HBox fx:id="exportButtons" alignment="CENTER_RIGHT" spacing="10">
             <Button fx:id="btnSendEmail" onAction="#onSendEmail" style="-fx-background-color: #004b88; -fx-text-fill: white;" text="Send Email" />
