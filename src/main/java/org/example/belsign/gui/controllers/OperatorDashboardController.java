@@ -34,8 +34,6 @@ public class OperatorDashboardController implements Initializable {
     @FXML
     private FlowPane donePane;
     @FXML
-    private Button btnDocument;
-    @FXML
     private Label userName;
     @FXML
     private Button logoutButton;
@@ -61,7 +59,6 @@ public class OperatorDashboardController implements Initializable {
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
 
-        btnDocument.setDisable(true);
     }
 
 
@@ -165,8 +162,6 @@ public class OperatorDashboardController implements Initializable {
 
         selectedOrder = null;
         selectedButton = null;
-
-        btnDocument.setDisable(true);
     }
 
     private void displayProductsForOrder(Order order) {
@@ -198,7 +193,14 @@ public class OperatorDashboardController implements Initializable {
                 productButton.setUserData(product);
                 productButton.setPrefWidth(buttonWidth);
                 productButton.setPrefHeight(buttonHeight);
-                productButton.setOnAction(e -> handleSelection(productButton, orderBox, order));
+                productButton.setOnAction(e -> {
+                    handleSelection(productButton, orderBox, order);
+                    try {
+                        loadDocumentView(order);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
                 orderBox.getChildren().add(productButton);
             }
 
@@ -224,7 +226,6 @@ public class OperatorDashboardController implements Initializable {
             }
             selectedButton = null;
             selectedOrder = null;
-            btnDocument.setDisable(true);
             return;
         }
         for (Node node : orderBox.getChildren()) {
@@ -241,8 +242,6 @@ public class OperatorDashboardController implements Initializable {
 
         selectedButton = clickedButton;
         selectedOrder = order;
-
-        btnDocument.setDisable(false);
     }
 
     public void onNumberClick(ActionEvent actionEvent) {
