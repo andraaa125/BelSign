@@ -227,9 +227,12 @@ public class DocumentationController {
 
     private byte[] convertToBytes(Image fxImage) throws IOException {
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(fxImage, null);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "png", outputStream);
-        return outputStream.toByteArray();
+        if (bufferedImage == null) throw new IOException("BufferedImage is null");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos); // Write directly to memory
+        baos.flush(); // Ensure all data is pushed
+        return baos.toByteArray(); // Return clean PNG bytes
     }
 
     private List<StackPane> getDefaultSlots() {
