@@ -120,6 +120,11 @@ public class ApprovalController {
     @FXML
     private void onClickApprove() throws SQLException {
         orderManager.updateProductStatus(product.getProductId(), "Approved");
+        product.setStatus("Approved");
+
+        if (qcDashboardController != null) {
+            qcDashboardController.updateProductColor(product);
+        }
         ReportPreviewFactory.showReportWindow(order);
     }
 
@@ -137,5 +142,12 @@ public class ApprovalController {
         System.out.println("Declined with comment: " + comment);
         commentBox.setVisible(false);
         commentTextArea.clear();
+
+        orderManager.updateProductStatus(product.getProductId(), "Disapproved");
+        product.setStatus("Disapproved");
+
+        if (qcDashboardController != null) {
+            qcDashboardController.updateProductColor(product);
+        }
     }
 }

@@ -290,6 +290,16 @@ public class QCDashboardController {
             return FXCollections.observableArrayList();
         }
     }
+    public void updateProductColor(Product product) {
+        VBox productBox = orderVBoxMap.get(product);
+        if (productBox != null) {
+            switch (product.getStatus()) {
+                case "Approved" -> productBox.setStyle("-fx-background-color: #C8E6C9;");
+                case "Disapproved" -> productBox.setStyle("-fx-background-color: #FFCDD2;");
+                default -> productBox.setStyle("");
+            }
+        }
+    }
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
