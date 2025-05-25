@@ -82,10 +82,6 @@ public class QCDashboardController {
         }
     }
 
-
-
-
-
     @FXML
     private void initialize() {
         btnGenerateReport.setDisable(true);
@@ -225,18 +221,23 @@ public class QCDashboardController {
             orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
             orderBox.getChildren().add(orderButton);
 
-            // Product Buttons
             for (Product product : order.getProducts()) {
                 Button productButton = new Button(product.getProductName());
-                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
                 productButton.setPrefWidth(buttonWidth);
                 productButton.setPrefHeight(buttonHeight);
 
+                // Apply status color:
+                String baseStyle = "-fx-padding: 15px; -fx-font-size: 16px; -fx-border-color: #333535;";
+                switch (product.getStatus()) {
+                    case "Approved" -> productButton.setStyle(baseStyle + " -fx-background-color: #338d71; -fx-text-fill: white;");
+                    case "Disapproved" -> productButton.setStyle(baseStyle + " -fx-background-color: #880000; -fx-text-fill: white;");
+                    default -> productButton.setStyle(baseStyle + " -fx-background-color: transparent;");
+                }
+
                 productButton.setOnAction(e -> handleSelection(productButton, orderBox, order));
                 orderBox.getChildren().add(productButton);
             }
-
             productPane.getChildren().add(orderBox);
             orderVBoxMap.put(order.getOrderId(), orderBox);
 
@@ -290,13 +291,21 @@ public class QCDashboardController {
             return FXCollections.observableArrayList();
         }
     }
+
     public void updateProductColor(Product product) {
-        VBox productBox = orderVBoxMap.get(product);
-        if (productBox != null) {
-            switch (product.getStatus()) {
-                case "Approved" -> productBox.setStyle("-fx-background-color: #C8E6C9;");
-                case "Disapproved" -> productBox.setStyle("-fx-background-color: #FFCDD2;");
-                default -> productBox.setStyle("");
+        VBox box = orderVBoxMap.get(product.getOrderId());
+        if (box == null) return;
+
+        for (Node node : box.getChildren()) {
+            if (node instanceof Button btn && btn.getUserData() instanceof Product p) {
+                if (p.getProductName().equals(product.getProductName())) {
+                    String baseStyle = "-fx-padding: 15px; -fx-font-size: 16px; -fx-border-color: #333535;";
+                    switch (product.getStatus()) {
+                        case "Approved" -> btn.setStyle(baseStyle + " -fx-background-color: #338d71; -fx-text-fill: white;");
+                        case "Disapproved" -> btn.setStyle(baseStyle + " -fx-background-color: #880000; -fx-text-fill: white;");
+                        default -> btn.setStyle(baseStyle + " -fx-background-color: transparent;");
+                    }
+                }
             }
         }
     }

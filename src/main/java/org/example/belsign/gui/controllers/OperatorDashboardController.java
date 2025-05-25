@@ -185,10 +185,10 @@ public class OperatorDashboardController implements Initializable {
                 Button productButton = new Button(product.getName());
 
                 String borderColor = switch (product.getStatus().toLowerCase()) {
-                    case "pending_approval" -> "#22c55e"; // green
-                    case "approved"         -> "#22c55e"; // green (after QC)
-                    case "disapproved"      -> "#ef4444"; // red
-                    default                 -> "#9ca3af"; // grey
+                    case "pending_approval" -> "#338d71";
+                    case "approved"         -> "#338d71";
+                    case "disapproved"      -> "#880000";
+                    default                 -> "#9ca3af";
                 };
 
                 productButton.setStyle("-fx-border-color: " + borderColor +
@@ -277,7 +277,7 @@ public class OperatorDashboardController implements Initializable {
                 if (p.getProductId() == product.getProductId()) {
                     product.setStatus("Pending approval");
                     button.setText(product.getName() + " (" + product.getStatus() + ")");
-                    button.setStyle("-fx-border-color: #22c55e;" +
+                    button.setStyle("-fx-border-color: #338d71;" +
                             " -fx-padding: 15px;" +
                             " -fx-background-color: transparent;" +
                             " -fx-font-size: 16px;");
