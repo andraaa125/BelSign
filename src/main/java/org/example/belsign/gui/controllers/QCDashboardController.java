@@ -334,4 +334,14 @@ public class QCDashboardController {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
         userName.setStyle("-fx-font-size: 20");
     }
+
+    public void onClickGenerateReport(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = new Stage();
+        stage.setTitle("Report");
+        stage.setScene(new Scene(root));
+
+        stage.show();
+    }
 }

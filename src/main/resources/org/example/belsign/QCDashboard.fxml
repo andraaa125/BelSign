@@ -118,7 +118,7 @@
                                     <Image url="@Images/Images/printer.png" />
                                  </image>
                               </ImageView>
-                              <Button fx:id="btnGenerateReport" prefHeight="39.0" prefWidth="52.0" style="-fx-background-color: transparent;">
+                              <Button fx:id="btnGenerateReport" onAction="#onClickGenerateReport" prefHeight="39.0" prefWidth="52.0" style="-fx-background-color: transparent;">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
