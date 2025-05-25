@@ -17,13 +17,15 @@ public class ProductDAODB implements IProductDAO {
     @Override
     public List<Product> getAllProduct() throws SQLException, IOException {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT OrderID, Product, Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM FROM [Product]";
+        String sql = "SELECT OrderID, Product, Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM, ProductId, Status FROM [Product]";
 
         try (Connection connection = con.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
+                int productId = rs.getInt("ProductId");
+                String status = rs.getString("Status");
                 String orderId = rs.getString("OrderID");
                 String product = rs.getString("Product");
                 String image_front = rs.getString("Image_FRONT");
@@ -35,7 +37,7 @@ public class ProductDAODB implements IProductDAO {
 
                 System.out.println("Fetched order ID: " + orderId + ", Product: " + product);
 
-                products.add(new Product(orderId, product, image_front, image_back, image_right, image_left, image_top, image_bottom));
+                products.add(new Product(orderId, product, image_front, image_back, image_right, image_left, image_top, image_bottom, productId, status));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch orders", e);
@@ -65,6 +67,16 @@ public class ProductDAODB implements IProductDAO {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void updateProductStatus(int productId, String newStatus) throws SQLException {
+        String sql = "UPDATE Product SET status = ? WHERE productId = ?";
+        try (Connection conn =  con.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
         }
     }
 }

@@ -14,6 +14,8 @@ public class ProductManager {
     public void saveProductImage(Product product, String slotType, String imagePath) throws SQLException {
         productDAODB.updateProductImage(product, slotType, imagePath);
     }
-
+    public void updateProductStatus(int productId, String newStatus) throws SQLException {
+        productDAODB.updateProductStatus(productId, newStatus);
+    }
 
 }

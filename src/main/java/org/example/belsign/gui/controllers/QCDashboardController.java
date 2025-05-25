@@ -104,7 +104,7 @@ public class QCDashboardController {
         try {
             List<Order> orders = orderManager.getAllOrders();
             for (Order order : orders) {
-                if ("Done".equals(order.getStatus())) {  // Only show "Done" orders
+                if ("Done".equals(order.getStatus())) {
                     Button orderButton = new Button(order.getOrderId());
                     orderButton.setUserData(order);
                     orderButton.setStyle(getStyleForStatus(order.getStatus()));
@@ -227,7 +227,7 @@ public class QCDashboardController {
 
             // Product Buttons
             for (Product product : order.getProducts()) {
-                Button productButton = new Button(product.getName());
+                Button productButton = new Button(product.getProductName());
                 productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
                 productButton.setPrefWidth(buttonWidth);

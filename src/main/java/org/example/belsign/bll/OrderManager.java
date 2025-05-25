@@ -96,9 +96,10 @@ public class OrderManager {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     String productName = rs.getString("Product");
+                    String status  = rs.getString("Status");
 
                     if (productName != null && !productName.isEmpty()) {
-                        products.add(new Product(orderId, productName));
+                        products.add(new Product(orderId, productName, status));
 
                     }
                 }
@@ -115,6 +116,21 @@ public class OrderManager {
             throw new RuntimeException("Failed to retrieve order", e);
         }
     }
+
+
+    public void updateProductStatus(int productId, String newStatus) throws SQLException {
+        String sql = "UPDATE Product SET status = ? WHERE productId = ?";
+        try (Connection conn =  getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
+        }
+    }
+
+//    public List<Order> getOrdersFromProducts() throws SQLException {
+//        return orderDAO.getOrdersFromProducts();
+//    }
 
 
 }

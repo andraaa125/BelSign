@@ -10,4 +10,6 @@ public interface IProductDAO {
     List<Product> getAllProduct() throws SQLException, IOException;
 
     void updateProductImage(Product product, String slotType, String imagePath);
+
+    void updateProductStatus(int productId, String newStatus) throws SQLException;
 }

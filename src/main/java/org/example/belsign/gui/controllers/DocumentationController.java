@@ -18,7 +18,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
+import org.example.belsign.bll.ProductManager;
 import org.example.belsign.gui.model.ImageContext;
 import org.example.belsign.util.ImageColumn;
 import org.example.belsign.factory.ImageSlotFactory;
@@ -27,6 +29,7 @@ import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DocumentationController {
@@ -38,6 +41,12 @@ public class DocumentationController {
     @FXML private GridPane imageGrid;
     @FXML private Button btnAddImage;
 
+    private Product product;
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     private int nextSlotColumn = 0;
     private int nextSlotRow = 3;
     private int additionalImageCount = 1;
@@ -47,6 +56,7 @@ public class DocumentationController {
     );
 
     private final OrderManager orderManager = new OrderManager();
+    private final ProductManager productManager = new ProductManager();
 
     @FXML
     public void onClickAddImage(ActionEvent actionEvent) {
@@ -95,15 +105,23 @@ public class DocumentationController {
 
             ImageContext.capturedImages.clear();
 
+            product.setStatus("pending_approval");
+            productManager.updateProductStatus(product.getProductId(), "Pending approval");
+
+
             if (operatorDashboardController != null) {
                 operatorDashboardController.setStatusMessage("Images sent successfully to QC!");
             }
+
+//            orderManager.updateProductStatus(product.getProductId(), "Pending approval");
 
 
             ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

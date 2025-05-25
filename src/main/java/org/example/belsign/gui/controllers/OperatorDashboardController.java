@@ -61,19 +61,12 @@ public class OperatorDashboardController implements Initializable {
 
     }
 
-
-    public void onClickDocument(ActionEvent actionEvent) throws IOException {
-        if (selectedOrder != null) {
-            loadDocumentView(selectedOrder);
-        }
-    }
-
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
         userName.setStyle("-fx-font-size: 20");
     }
 
-    private void loadDocumentView(Order order) throws IOException {
+    private void loadDocumentView(Order order, Product product) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/DocumentationView.fxml"));
         Parent root = fxmlLoader.load();
         Stage stage = new Stage();
@@ -82,6 +75,7 @@ public class OperatorDashboardController implements Initializable {
 
         DocumentationController controller = fxmlLoader.getController();
         controller.setOrder(order);
+        controller.setProduct(product);
         //controller.setOperatorDashboardController(this);
         stage.show();
     }
@@ -189,14 +183,27 @@ public class OperatorDashboardController implements Initializable {
 
             for (Product product : order.getProducts()) {
                 Button productButton = new Button(product.getName());
-                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+
+                String borderColor = switch (product.getStatus().toLowerCase()) {
+                    case "pending_approval" -> "#22c55e"; // green
+                    case "approved"         -> "#22c55e"; // green (after QC)
+                    case "disapproved"      -> "#ef4444"; // red
+                    default                 -> "#9ca3af"; // grey
+                };
+
+                productButton.setStyle("-fx-border-color: " + borderColor +
+                        "; -fx-padding: 15px;" +
+                        " -fx-background-color: transparent;" +
+                        " -fx-font-size: 16px;");
+
+//                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
                 productButton.setPrefWidth(buttonWidth);
                 productButton.setPrefHeight(buttonHeight);
                 productButton.setOnAction(e -> {
                     handleSelection(productButton, orderBox, order);
                     try {
-                        loadDocumentView(order);
+                        loadDocumentView(order, product);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -258,6 +265,25 @@ public class OperatorDashboardController implements Initializable {
         String currentText = searchField.getText();
         if (!currentText.isEmpty()) {
             searchField.setText(currentText.substring(0, currentText.length() - 1));
+        }
+    }
+
+    public void markProductAsSent(Product product) {
+        VBox orderBox = orderVBoxMap.get(product.getOrderId());
+        if (orderBox == null) return;
+
+        for (Node node : orderBox.getChildren()) {
+            if (node instanceof Button button && button.getUserData() instanceof Product p) {
+                if (p.getProductId() == product.getProductId()) {
+                    product.setStatus("Pending approval");
+                    button.setText(product.getName() + " (" + product.getStatus() + ")");
+                    button.setStyle("-fx-border-color: #22c55e;" +
+                            " -fx-padding: 15px;" +
+                            " -fx-background-color: transparent;" +
+                            " -fx-font-size: 16px;");
+                    break;
+                }
+            }
         }
     }
 }

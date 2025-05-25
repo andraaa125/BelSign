@@ -58,7 +58,7 @@ public class ReportPreviewController {
 
             StringBuilder productNames = new StringBuilder();
             for (Product product : order.getProducts()) {
-                productNames.append(product.getProductName()).append("\n");
+                productNames.append(product.getProduct()).append("\n");
             }
             lblProductName.setText(productNames.toString().trim());
         } catch (Exception e) {

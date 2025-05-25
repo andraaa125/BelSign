@@ -10,8 +10,10 @@ public class Product {
     private String imageBottom;
     private String orderId;
     private String product;
+    private String status;
+    private int productId;
 
-    public Product(String productName, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom) {
+    public Product(String productName, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom, String status, int productId) {
         this.productName = productName;
         this.imageFront = imageFront;
         this.imageBack = imageBack;
@@ -19,15 +21,18 @@ public class Product {
         this.imageLeft = imageLeft;
         this.imageTop = imageTop;
         this.imageBottom = imageBottom;
+        this.status = status;
+        this.productId = productId;
 
     }
 
-    public Product(String orderId, String productName) {
+    public Product(String orderId, String productName, String status) {
         this.orderId = orderId;
         this.productName = productName;
+        this.status = status;
     }
 
-    public Product(String orderId, String product, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom) {
+    public Product(String orderId, String product, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom, String status,  int productId) {
         this.imageFront = imageFront;
         this.imageBack = imageBack;
         this.imageRight = imageRight;
@@ -36,15 +41,21 @@ public class Product {
         this.imageBottom = imageBottom;
         this.orderId = orderId;
         this.product = product;
+        this.status = status;
+        this.productId = productId;
     }
 
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public Product(String orderId, String product, String imageFront, String imageBack, String imageRight, String imageLeft, String imageTop, String imageBottom, int productId, String status) {
+        this.orderId = orderId;
+        this.product = product;
+        this.imageFront = imageFront;
+        this.imageBack = imageBack;
+        this.imageRight = imageRight;
+        this.imageLeft = imageLeft;
+        this.imageTop = imageTop;
+        this.imageBottom = imageBottom;
+        this.productId = productId;
+        this.status = status;
     }
 
     public String getImageFront() {
@@ -111,7 +122,32 @@ public class Product {
         this.product = product;
     }
 
-    public String getName() {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
         return productName;
     }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getName() {
+        return  productName;
+    }
 }
+

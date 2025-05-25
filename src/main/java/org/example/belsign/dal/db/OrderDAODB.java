@@ -1,6 +1,8 @@
 package org.example.belsign.dal.db;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
 
 import java.io.IOException;
@@ -150,6 +152,7 @@ public class OrderDAODB implements IOrderDAO {
         // Reuse your existing logic
         saveAdditionalImageData(orderId, columnName, imageData);
     }
+
     @Override
     public byte[] getImageData(String orderId, String columnName) throws IOException {
         String sql = "SELECT " + columnName + " FROM [Order] WHERE OrderID = ?";
@@ -165,6 +168,7 @@ public class OrderDAODB implements IOrderDAO {
         }
         return null;
     }
+
     public void deleteImageData(String orderId, String columnName) throws IOException {
         String sql = "UPDATE [Order] SET " + columnName + " = NULL WHERE OrderId = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -206,12 +210,64 @@ public class OrderDAODB implements IOrderDAO {
         }
         return null;
     }
-
-
-
-
-
-
 }
+//
+//    public List<Order> getOrdersFromProducts() {
+//        List<Order> orders = new ArrayList<>();
+//        String sql = "SELECT DISTINCT OrderID FROM Product WHERE Status = 'Pending approval'";
+//
+//        try (Connection conn = DBConnection.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//
+//            while (rs.next()) {
+//                String orderId = rs.getString("OrderID");
+//                Order order = getOrderById(orderId);
+//                if (order != null) {
+//                    List<Product> products = getProductsForOrder(orderId);
+//                    order.setProducts(products);
+//                    order.setStatus("Pending approval");
+//                    orders.add(order);
+//                }
+//            }
+//        } catch (IOException | SQLServerException e) {
+//            throw new RuntimeException(e);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return orders;
+//    }
+//
+//    private List<Product> getProductsForOrder(String orderId) throws  SQLException {
+//        List<Product> products = new ArrayList<>();
+//        String sql = "SELECT OrderID, Product, Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM, ProductId, Status " +
+//                "FROM [Product] WHERE OrderID = ?";
+//
+//        try (Connection conn = DBConnection.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setString(1, orderId);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) {
+//                    int productId = rs.getInt("ProductId");
+//                    String status = rs.getString("Status");
+//                    String orderID = rs.getString("OrderID");
+//                    String productName = rs.getString("Product");
+//                    String image_front = rs.getString("Image_FRONT");
+//                    String image_back = rs.getString("Image_BACK");
+//                    String image_right = rs.getString("Image_RIGHT");
+//                    String image_left = rs.getString("Image_LEFT");
+//                    String image_top = rs.getString("Image_TOP");
+//                    String image_bottom = rs.getString("Image_BOTTOM");
+//
+//                    Product product = new Product(orderID, productName, image_front, image_back, image_right, image_left, image_top, image_bottom, productId, status);
+//                    products.add(product);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return products;
+//    }
 
 

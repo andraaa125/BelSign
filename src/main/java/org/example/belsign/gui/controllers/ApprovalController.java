@@ -13,11 +13,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
 import org.example.belsign.factory.ReportPreviewFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class ApprovalController {
 
@@ -29,6 +31,7 @@ public class ApprovalController {
     @FXML private TextArea commentTextArea;
     @FXML private Label commentLabel;
 
+    private Product product;
     private Order order;
     private final OrderManager orderManager = new OrderManager();
 
@@ -115,18 +118,21 @@ public class ApprovalController {
     }
 
     @FXML
-    private void onClickApprove() {
+    private void onClickApprove() throws SQLException {
+        orderManager.updateProductStatus(product.getProductId(), "Approved");
         ReportPreviewFactory.showReportWindow(order);
     }
 
     @FXML
-    private void onClickDecline(ActionEvent event) {
+    private void onClickDecline(ActionEvent event) throws SQLException {
         commentSection.setVisible(true);
         commentLabel.setText("Add Optional Comments\nfor Operator");
+
+        orderManager.updateProductStatus(product.getProductId(), "Disapproved");
     }
 
     @FXML
-    private void onClickSendComment(ActionEvent event) {
+    private void onClickSendComment(ActionEvent event) throws SQLException {
         String comment = commentTextArea.getText();
         System.out.println("Declined with comment: " + comment);
         commentBox.setVisible(false);
