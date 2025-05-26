@@ -8,6 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -23,37 +27,77 @@ import java.util.List;
 import java.util.Map;
 
 public class QCDashboardController {
-
-    @FXML private Label userName;
-    @FXML private Button btnGenerateReport;
-    @FXML private Button logoutButton;
-    @FXML private ComboBox<String> searchComboBox;
-    @FXML private FlowPane pendingPane;
-    @FXML private FlowPane productPane;
-    @FXML private Button selectedOrderButton;
-
-    private Button selectedButton;
+    @FXML
+    private Label userName;
+    @FXML
+    private Button btnGenerateReport;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private ComboBox<String> searchComboBox;
+    @FXML
+    private FlowPane pendingPane;
+    @FXML
+    private FlowPane productPane;
+    @FXML
+    private Button selectedOrderButton;
+    @FXML
     private Order selectedOrder;
-    private final OrderManager orderManager = new OrderManager();
+    @FXML
+    private Button selectedButton = null;
+
+
     private final Map<String, VBox> orderVBoxMap = new HashMap<>();
+
+    private final OrderManager orderManager = new OrderManager();
+
     private final ObservableList<String> searchResults = FXCollections.observableArrayList();
+
+
+
+    @FXML
+    private void onOpenApproval(ActionEvent event) {
+        if (selectedOrder == null) {
+            showAlert("Please select an order first.");
+            return;
+        }
+
+        try {
+            // Optionally re-fetch from DB to ensure latest data
+            Order fullOrder = orderManager.getOrderById(selectedOrder.getOrderId());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
+            Parent root = loader.load();
+
+            ApprovalController controller = loader.getController();
+            controller.setOrder(fullOrder); // Pass the order with the correct ID
+
+            Stage stage = new Stage();
+            stage.setTitle("Approval Panel");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Failed to open report preview.");
+        }
+    }
 
     @FXML
     private void initialize() {
-        btnGenerateReport.setDisable(false);
-        searchComboBox.setEditable(true);
+        btnGenerateReport.setDisable(true);
+        searchComboBox.setEditable(true); // Allow text input
         searchComboBox.setPromptText("Search Order Number...");
         searchComboBox.setVisibleRowCount(8);
 
         searchComboBox.setItems(searchResults);
         searchComboBox.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.length() >= 1) {
+            if (newVal.length() >= 1) { //search with 1 digit
                 updateSearchResults(newVal);
             } else {
                 searchResults.clear();
             }
         });
-
         try {
             List<Order> orders = orderManager.getAllOrders();
             for (Order order : orders) {
@@ -139,25 +183,43 @@ public class QCDashboardController {
             orderBox.setUserData(order);
             orderBox.setStyle("-fx-padding: 15; -fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-radius: 5;");
 
+            double buttonWidth = 200;
+            double buttonHeight = 40;
+
             Label operatorLabel = new Label("Operator: " + order.getOperatorFirstName() + " " + order.getOperatorLastName());
             operatorLabel.setStyle("-fx-font-style: italic; -fx-font-size: 14px; -fx-text-fill: #333;");
             orderBox.getChildren().add(operatorLabel);
 
-            Button orderBtn = new Button("OrderID: " + order.getOrderId());
-            orderBtn.setPrefWidth(200);
-            orderBtn.setPrefHeight(40);
-            orderBtn.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15; -fx-font-weight: bold;");
-            orderBtn.setUserData(order);
-            orderBtn.setOnAction(e -> handleSelection(orderBtn, orderBox, order));
-            orderBox.getChildren().add(orderBtn);
+            Button orderButton = new Button("OrderID: " + order.getOrderId());
+            orderButton.setPrefWidth(200);
+            orderButton.setPrefHeight(40);
+            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15; -fx-font-weight: bold;");
+            orderButton.setUserData(order);
+            orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
+            orderBox.getChildren().add(orderButton);
+
+            orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
+            orderBox.getChildren().add(orderButton);
 
             for (Product product : order.getProducts()) {
+                //Button productButton = new Button(product.getProductName());
                 Button productButton = new Button(product.getProduct());
                 productButton.setPrefWidth(200);
                 productButton.setPrefHeight(40);
                 productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
+                productButton.setPrefWidth(buttonWidth);
+                productButton.setPrefHeight(buttonHeight);
 
+                // Apply status color:
+                String baseStyle = "-fx-padding: 15px; -fx-font-size: 16px; -fx-border-color: #333535;";
+                switch (product.getStatus()) {
+                    case "Approved" -> productButton.setStyle(baseStyle + " -fx-background-color: #338d71; -fx-text-fill: white;");
+                    case "Disapproved" -> productButton.setStyle(baseStyle + " -fx-background-color: #880000; -fx-text-fill: white;");
+                    default -> productButton.setStyle(baseStyle + " -fx-background-color: transparent;");
+                }
+
+                productButton.setOnAction(e -> handleSelection(productButton, orderBox, order));
                 productButton.setOnMouseClicked(e -> {
                     handleSelection(productButton, orderBox, order);
                     if (e.getClickCount() == 2) {
@@ -207,13 +269,24 @@ public class QCDashboardController {
                 }
             }
         }
-    }
 
+        btnGenerateReport.setDisable(false);
+    }
     private String getDefaultProductStyle(Button button) {
         if (button.getText().startsWith("OrderID:")) {
             return "-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;";
         } else {
             return "-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;";
+        }
+    }
+
+    private ObservableList<String> searchOrders(String query) {
+        try {
+            return FXCollections.observableArrayList(orderManager.searchOrders(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("An error occurred while fetching orders.");
+            return FXCollections.observableArrayList();
         }
     }
 
@@ -239,6 +312,24 @@ public class QCDashboardController {
         }
     }
 
+    public void updateProductColor(Product product) {
+        VBox box = orderVBoxMap.get(product.getOrderId());
+        if (box == null) return;
+
+        for (Node node : box.getChildren()) {
+            if (node instanceof Button btn && btn.getUserData() instanceof Product p) {
+                if (p.getProductName().equals(product.getProductName())) {
+                    String baseStyle = "-fx-padding: 15px; -fx-font-size: 16px; -fx-border-color: #333535;";
+                    switch (product.getStatus()) {
+                        case "Approved" -> btn.setStyle(baseStyle + " -fx-background-color: #338d71; -fx-text-fill: white;");
+                        case "Disapproved" -> btn.setStyle(baseStyle + " -fx-background-color: #880000; -fx-text-fill: white;");
+                        default -> btn.setStyle(baseStyle + " -fx-background-color: transparent;");
+                    }
+                }
+            }
+        }
+    }
+
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -250,8 +341,8 @@ public class QCDashboardController {
         Stage currentStage = (Stage) logoutButton.getScene().getWindow();
         currentStage.close();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/LoginView.fxml"));
-        Parent root = loader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/LoginView.fxml"));
+        Parent root = fxmlLoader.load();
         Stage loginStage = new Stage();
         loginStage.setTitle("Login");
         loginStage.setScene(new Scene(root));
@@ -263,12 +354,13 @@ public class QCDashboardController {
         userName.setStyle("-fx-font-size: 20");
     }
 
-    @FXML
-    private void onOpenApproval(ActionEvent event) {
-        if (selectedOrder == null) {
-            showAlert("Please select an order first.");
-            return;
-        }
-        openApprovalView(selectedOrder);
+    public void onClickGenerateReport(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = new Stage();
+        stage.setTitle("Report");
+        stage.setScene(new Scene(root));
+
+        stage.show();
     }
 }

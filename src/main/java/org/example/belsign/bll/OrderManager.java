@@ -2,15 +2,20 @@ package org.example.belsign.bll;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
+import org.example.belsign.dal.db.DBConnection;
 import org.example.belsign.dal.db.OrderDAODB;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.belsign.dal.db.DBConnection.getConnection;
 
@@ -31,7 +36,7 @@ public class OrderManager {
     }
 
     public ObservableList<String> searchOrders(String query) {
-        ObservableList<String> orderIDs = FXCollections.observableArrayList();
+        ObservableList<String> orderID = FXCollections.observableArrayList();
 
         String sql = "SELECT OrderID FROM [Order] WHERE Status = 'Done' AND OrderID LIKE ?";
 
@@ -42,7 +47,7 @@ public class OrderManager {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    orderIDs.add(rs.getString("OrderID"));
+                    orderID.add(rs.getString("OrderID"));
                 }
             }
 
@@ -50,7 +55,7 @@ public class OrderManager {
             e.printStackTrace();
         }
 
-        return orderIDs;
+        return orderID;
     }
 
     public List<Product> getProductsForOrder(String orderId) throws SQLException {
@@ -68,7 +73,7 @@ public class OrderManager {
                     Product product = new Product();
 
                     product.setOrderId(rs.getString("OrderID"));
-                    product.setProductId(rs.getString("ProductId"));
+                    product.setProductId(rs.getInt("ProductId"));
                     product.setProduct(rs.getString("Product"));
                     product.setStatus(rs.getString("Status"));
 
@@ -100,4 +105,26 @@ public class OrderManager {
             throw new RuntimeException("Failed to retrieve order", e);
         }
     }
+
+
+    public void updateProductStatus(int productId, String newStatus) throws SQLException {
+        String sql = "UPDATE Product SET status = ? WHERE productId = ?";
+        try (Connection conn =  getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public byte[] getImageData(String orderId, String columnName) throws IOException {
+        return orderDAO.getImageData(orderId, columnName);
+    }
+
+
+//    public List<Order> getOrdersFromProducts() throws SQLException {
+//        return orderDAO.getOrdersFromProducts();
+//    }
+
+
 }

@@ -4,6 +4,10 @@ import org.example.belsign.be.Product;
 import org.example.belsign.dal.IProductDAO;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,7 @@ public class ProductDAODB implements IProductDAO {
             while (rs.next()) {
                 Product product = new Product();
                 product.setOrderId(rs.getString("OrderID"));
-                product.setProductId(rs.getString("ProductId"));
+                product.setProductId(rs.getInt("ProductId"));
                 product.setProduct(rs.getString("Product"));
                 product.setStatus(rs.getString("Status"));
 
@@ -65,11 +69,21 @@ public class ProductDAODB implements IProductDAO {
             }
 
             ps.setString(2, product.getOrderId());
-            ps.setString(3, product.getProductId());
+            ps.setInt(3, product.getProductId());
             ps.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update image in column: " + columnName, e);
+        }
+    }
+    @Override
+    public void updateProductStatus(int productId, String newStatus) throws SQLException {
+        String sql = "UPDATE Product SET status = ? WHERE productId = ?";
+        try (Connection conn =  con.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
         }
     }
 }

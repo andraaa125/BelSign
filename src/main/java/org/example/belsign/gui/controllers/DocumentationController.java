@@ -9,33 +9,44 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
+import org.example.belsign.bll.OrderManager;
 import org.example.belsign.bll.ProductManager;
-import org.example.belsign.factory.ImageSlotFactory;
 import org.example.belsign.gui.model.ImageContext;
 import org.example.belsign.util.ImageColumn;
+import org.example.belsign.factory.ImageSlotFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class DocumentationController {
 
-    private Product product;
+    private Order order;
     private OperatorDashboardController operatorDashboardController;
 
-    @FXML private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
-    @FXML private GridPane imageGrid;
-    @FXML private Button btnAddImage;
+    @FXML
+    private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
+    @FXML
+    private GridPane imageGrid;
+    @FXML
+    private Button btnAddImage;
+
+    private Product product;
 
     private int nextSlotColumn = 0;
     private int nextSlotRow = 3;
@@ -45,6 +56,7 @@ public class DocumentationController {
             "Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
     );
 
+    private final OrderManager orderManager = new OrderManager();
     private final ProductManager productManager = new ProductManager();
 
     @FXML
@@ -91,9 +103,17 @@ public class DocumentationController {
             }
 
             ImageContext.capturedImages.clear();
+
+            product.setStatus("pending_approval");
+            productManager.updateProductStatus(product.getProductId(), "Pending approval");
+
+
             if (operatorDashboardController != null) {
                 operatorDashboardController.setStatusMessage("Images sent successfully to QC!");
             }
+
+//            orderManager.updateProductStatus(product.getProductId(), "Pending approval");
+
 
             ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
 
@@ -237,5 +257,45 @@ public class DocumentationController {
 
     private List<StackPane> getDefaultSlots() {
         return List.of(stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix);
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+        try {
+            // Load default slots
+            List<StackPane> slots = getDefaultSlots();
+            for (int i = 0; i < slots.size(); i++) {
+                String column = columnNames.get(i);
+                byte[] imageBytes = orderManager.getImageData(order.getOrderId(), column);
+                if (imageBytes != null) {
+                    Image image = new Image(new ByteArrayInputStream(imageBytes));
+                    StackPane slot = slots.get(i);
+                    loadImageIntoSlot(slot, image, column.replace("Image_", ""));
+                    ImageContext.capturedImages.put(slot, image);
+                }
+            }
+
+            // Load additional images
+            int additionalIndex = 1;
+            while (additionalIndex <= ImageColumn.MAX_ADDITIONAL_IMAGES) {
+                String column = ImageColumn.getAdditionalColumnName(additionalIndex);
+                byte[] imageBytes = orderManager.getImageData(order.getOrderId(), column);
+                if (imageBytes == null) break;
+
+                Image image = new Image(new ByteArrayInputStream(imageBytes));
+                String label = "Additional " + additionalIndex;
+                StackPane newSlot = createInteractiveSlot(label);
+                loadImageIntoSlot(newSlot, image, label);
+
+                addSlotToGrid(newSlot);
+                ImageContext.capturedImages.put(newSlot, image);
+
+                additionalIndex++;
+                additionalImageCount++;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

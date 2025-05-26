@@ -19,12 +19,13 @@ import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
 import org.example.belsign.bll.ProductManager;
-
+import org.example.belsign.factory.ReportPreviewFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.SQLException;
 
 public class ApprovalController {
 
@@ -36,6 +37,7 @@ public class ApprovalController {
     @FXML private TextArea commentTextArea;
     @FXML private Label commentLabel;
 
+    private Product product;
     private Order order;
     private final OrderManager orderManager = new OrderManager();
     private final List<VBox> disapprovedBoxes = new ArrayList<>();
@@ -163,28 +165,38 @@ public class ApprovalController {
         PauseTransition pause = new PauseTransition(Duration.seconds(7));
         pause.setOnFinished(e -> commentSection.setVisible(false));
         pause.play();
+        product.setStatus("Approved");
     }
 
 
 
     @FXML
-    private void onClickDisapprove(ActionEvent event) {
+    private void onClickDisapprove(ActionEvent event) throws SQLException {
         disapproveMode = true;
         commentSection.setVisible(true);
         commentLabel.setText("Add Optional Comments\nfor Operator");
         disapprovedBoxes.clear();
+        orderManager.updateProductStatus(product.getProductId(), "Disapproved");
     }
 
 
 
     @FXML
-    private void onClickSendComment(ActionEvent event) {
+    private void onClickSendComment(ActionEvent event) throws SQLException {
         String comment = commentTextArea.getText();
         System.out.println("Disapproved with comment: " + comment);
 
         // Clear the comment box UI
         commentTextArea.clear();
         commentSection.getChildren().clear();
+
+        orderManager.updateProductStatus(product.getProductId(), "Disapproved");
+        product.setStatus("Disapproved");
+
+        if (qcDashboardController != null) {
+            qcDashboardController.updateProductColor(product);
+        }
+
 
         // Show confirmation message
         Label confirmationLabel = new Label("✅ Sent successfully to the operator.");

@@ -34,8 +34,6 @@ public class OperatorDashboardController implements Initializable {
     @FXML
     private FlowPane donePane;
     @FXML
-    private Button btnDocument;
-    @FXML
     private Label userName;
     @FXML
     private Button logoutButton;
@@ -61,15 +59,6 @@ public class OperatorDashboardController implements Initializable {
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
 
-        btnDocument.setDisable(true);
-    }
-
-
-    public void onClickDocument(ActionEvent actionEvent) throws IOException {
-        if (selectedButton != null && !selectedButton.getText().startsWith("OrderID:")) {
-            Product selectedProduct = (Product) selectedButton.getUserData();
-            loadDocumentView(selectedProduct);
-        }
     }
 
 
@@ -78,19 +67,20 @@ public class OperatorDashboardController implements Initializable {
         userName.setStyle("-fx-font-size: 20");
     }
 
-    private void loadDocumentView(Product product) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/DocumentationView.fxml"));
-        Parent root = loader.load();
-
-        DocumentationController controller = loader.getController();
-        controller.setProduct(product);
-        controller.setOperatorDashboardController(this); // optional
-
+    private void loadDocumentView(Order order, Product product) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/DocumentationView.fxml"));
+        Parent root = fxmlLoader.load();
         Stage stage = new Stage();
         stage.setTitle("Photo Documentation");
         stage.setScene(new Scene(root));
+
+        DocumentationController controller = fxmlLoader.getController();
+        controller.setOrder(order);
+        controller.setProduct(product);
+        //controller.setOperatorDashboardController(this);
         stage.show();
     }
+
 
 
 
@@ -170,8 +160,6 @@ public class OperatorDashboardController implements Initializable {
 
         selectedOrder = null;
         selectedButton = null;
-
-        btnDocument.setDisable(true);
     }
 
     private void displayProductsForOrder(Order order) {
@@ -198,12 +186,32 @@ public class OperatorDashboardController implements Initializable {
             orderBox.getChildren().add(orderButton);
 
             for (Product product : order.getProducts()) {
-                Button productButton = new Button(product.getProduct());
-                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                Button productButton = new Button(product.getName());
+
+                String borderColor = switch (product.getStatus().toLowerCase()) {
+                    case "pending_approval" -> "#338d71";
+                    case "approved"         -> "#338d71";
+                    case "disapproved"      -> "#880000";
+                    default                 -> "#9ca3af";
+                };
+
+                productButton.setStyle("-fx-border-color: " + borderColor +
+                        "; -fx-padding: 15px;" +
+                        " -fx-background-color: transparent;" +
+                        " -fx-font-size: 16px;");
+
+//                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
                 productButton.setPrefWidth(buttonWidth);
                 productButton.setPrefHeight(buttonHeight);
-                productButton.setOnAction(e -> handleSelection(productButton, orderBox, order));
+                productButton.setOnAction(e -> {
+                    handleSelection(productButton, orderBox, order);
+                    try {
+                        loadDocumentView(order, product);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
                 orderBox.getChildren().add(productButton);
             }
 
@@ -229,7 +237,6 @@ public class OperatorDashboardController implements Initializable {
             }
             selectedButton = null;
             selectedOrder = null;
-            btnDocument.setDisable(true);
             return;
         }
 
@@ -248,10 +255,7 @@ public class OperatorDashboardController implements Initializable {
 
         selectedButton = clickedButton;
         selectedOrder = order;
-        btnDocument.setDisable(clickedButton.getText().startsWith("OrderID:")); // Only enable for product selection
     }
-
-
 
     public void onNumberClick(ActionEvent actionEvent) {
         Button clickedButton = (Button) actionEvent.getSource();
@@ -267,6 +271,25 @@ public class OperatorDashboardController implements Initializable {
         String currentText = searchField.getText();
         if (!currentText.isEmpty()) {
             searchField.setText(currentText.substring(0, currentText.length() - 1));
+        }
+    }
+
+    public void markProductAsSent(Product product) {
+        VBox orderBox = orderVBoxMap.get(product.getOrderId());
+        if (orderBox == null) return;
+
+        for (Node node : orderBox.getChildren()) {
+            if (node instanceof Button button && button.getUserData() instanceof Product p) {
+                if (p.getProductId() == product.getProductId()) {
+                    product.setStatus("Pending approval");
+                    button.setText(product.getName() + " (" + product.getStatus() + ")");
+                    button.setStyle("-fx-border-color: #338d71;" +
+                            " -fx-padding: 15px;" +
+                            " -fx-background-color: transparent;" +
+                            " -fx-font-size: 16px;");
+                    break;
+                }
+            }
         }
     }
 }

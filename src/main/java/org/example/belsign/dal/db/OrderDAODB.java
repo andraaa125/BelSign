@@ -1,6 +1,8 @@
 package org.example.belsign.dal.db;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
 
 import java.io.IOException;
@@ -138,6 +140,7 @@ public class OrderDAODB implements IOrderDAO {
         // Reuse your existing logic
         saveAdditionalImageData(orderId, columnName, imageData);
     }
+
     @Override
     public byte[] getImageData(String orderId, String columnName) throws IOException {
         String sql = "SELECT " + columnName + " FROM [Order] WHERE OrderID = ?";
@@ -153,6 +156,7 @@ public class OrderDAODB implements IOrderDAO {
         }
         return null;
     }
+
     public void deleteImageData(String orderId, String columnName) throws IOException {
         String sql = "UPDATE [Order] SET " + columnName + " = NULL WHERE OrderId = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -188,12 +192,6 @@ public class OrderDAODB implements IOrderDAO {
 
         return null;
     }
-
-
-
-
-
-
 
 }
 

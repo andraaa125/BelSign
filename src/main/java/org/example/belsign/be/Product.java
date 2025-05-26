@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Product {
+    private String productName;
     private String orderId;
-    private String productId;
     private String product;
     private String status;
+    private int productId;
 
     // Now use byte[] for images instead of String paths
     private byte[] imageFront;
@@ -17,46 +18,72 @@ public class Product {
     private byte[] imageTop;
     private byte[] imageBottom;
 
+    public Product(String productName, byte[] imageFront, byte[] imageBack, byte[] imageRight, byte[] imageLeft, byte[] imageTop,byte[] imageBottom, String status, int productId) {
+        this.productName = productName;
+        this.imageFront = imageFront;
+        this.imageBack = imageBack;
+        this.imageRight = imageRight;
+        this.imageLeft = imageLeft;
+        this.imageTop = imageTop;
+        this.imageBottom = imageBottom;
+        this.status = status;
+        this.productId = productId;
+    }
+
     private Map<String, byte[]> additionalImages = new HashMap<>();
 
     public Product() {}
 
-    public Product(String orderId, String product) {
+    public Product(String orderId, String productName, String status) {
         this.orderId = orderId;
-        this.product = product;
+        this.productName = productName;
+        this.status = status;
     }
 
     public String getOrderId() {
         return orderId;
     }
 
+    public Product(String orderId, String product, byte[] imageFront, byte[] imageBack, byte[] imageRight, byte[] imageLeft, byte[] imageTop, byte[] imageBottom, String status,  int productId) {
+        this.orderId = orderId;
+        this.product = product;
+        this.imageFront = imageFront;
+        this.imageBack = imageBack;
+        this.imageRight = imageRight;
+        this.imageLeft = imageLeft;
+        this.imageTop = imageTop;
+        this.imageBottom = imageBottom;
+        this.status = status;
+        this.productId = productId;
+    }
+
     public void setOrderId(String orderId) {
         this.orderId = orderId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
     }
 
     public String getProduct() {
         return product;
     }
 
-    public void setProduct(String product) {
+    public void setProduct(String product, String status,int productId) {
         this.product = product;
+        this.status = status;
+        this.productId = productId;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
+    public Product(String orderId, String product, byte[] imageFront, byte[] imageBack, byte[] imageRight, byte[] imageLeft, byte[] imageTop, byte[] imageBottom, int productId, String status) {
+        this.orderId = orderId;
+        this.product = product;
+        this.imageFront = imageFront;
+        this.imageBack = imageBack;
+        this.imageRight = imageRight;
+        this.imageLeft = imageLeft;
+        this.imageTop = imageTop;
+        this.imageBottom = imageBottom;
+        this.productId = productId;
         this.status = status;
     }
+
 
     public byte[] getImageFront() {
         return imageFront;
@@ -80,14 +107,6 @@ public class Product {
 
     public void setImageLeft(byte[] imageLeft) {
         this.imageLeft = imageLeft;
-    }
-
-    public byte[] getImageRight() {
-        return imageRight;
-    }
-
-    public void setImageRight(byte[] imageRight) {
-        this.imageRight = imageRight;
     }
 
     public byte[] getImageTop() {
@@ -122,6 +141,33 @@ public class Product {
         return this.additionalImages.get(key);
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getName() {
+        return  productName;
+        }
     @Override
     public String toString() {
         return "Product{" +
@@ -131,4 +177,19 @@ public class Product {
                 ", status='" + status + '\'' +
                 '}';
     }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public void setImageRight(byte[] imageRights) {
+        this.imageRight = imageRights;
+    }
+
+    public byte[] getImageRight() {
+       return imageRight;
+    }
+
+
 }
+
