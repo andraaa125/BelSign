@@ -78,19 +78,24 @@ public class CameraController implements Initializable {
         }
 
         Image fxImage = imageView.getImage();
-        if (ImageContext.selectedStackPane != null) {
+        if (ImageContext.selectedStackPane != null && ImageContext.currentProductId != null) {
             ImageView iv = new ImageView(fxImage);
             iv.setPreserveRatio(true);
             iv.setFitWidth(180);
             iv.setFitHeight(130);
 
             ImageContext.selectedStackPane.getChildren().setAll(iv);
-            ImageContext.capturedImages.put(ImageContext.selectedStackPane, fxImage);
+
+            // ✅ Store the image under the correct product ID
+            ImageContext.productCapturedImages
+                    .computeIfAbsent(ImageContext.currentProductId, k -> new java.util.HashMap<>())
+                    .put(ImageContext.selectedStackPane, fxImage);
         }
 
         Stage stage = (Stage) imageView.getScene().getWindow();
         stage.close();
     }
+
 
     @FXML
     public void btnCancel() {

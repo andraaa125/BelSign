@@ -15,12 +15,12 @@ public class ImageSlotFactory {
     private static final double PREF_WIDTH = 200.0;
     private static final double PREF_HEIGHT = 150.0;
 
-    // Creates an empty slot with a label and optional delete handler
     public static StackPane createSlot(String labelText, Consumer<StackPane> onDelete) {
         StackPane slot = createBaseSlot();
 
         Label label = new Label(labelText);
         label.setFont(new Font(16));
+        StackPane.setAlignment(label, Pos.CENTER);
 
         Button deleteBtn = createDeleteButton(onDelete, slot);
 
@@ -28,17 +28,20 @@ public class ImageSlotFactory {
         return slot;
     }
 
-    // Overload for slot without delete button
     public static StackPane createSlot(String labelText) {
-        return createSlot(labelText, stack -> {});
+        return createSlot(labelText, s -> {});
     }
 
-    // Creates a slot with an image and delete button
-    public static StackPane createImageSlot(ImageView imageView, Consumer<StackPane> onDelete) {
+    public static StackPane createImageSlot(ImageView imageView, String labelText, Consumer<StackPane> onDelete) {
         StackPane slot = createBaseSlot();
+
+        Label label = new Label(labelText);
+        label.setFont(new Font(16));
+        StackPane.setAlignment(label, Pos.CENTER);
+
         Button deleteBtn = createDeleteButton(onDelete, slot);
 
-        slot.getChildren().addAll(imageView, deleteBtn);
+        slot.getChildren().addAll(imageView, label, deleteBtn);
         return slot;
     }
 
