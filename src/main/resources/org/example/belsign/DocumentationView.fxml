@@ -42,8 +42,6 @@
             <rowConstraints>
                <RowConstraints minHeight="150.0" vgrow="NEVER" />
                <RowConstraints minHeight="150.0" vgrow="NEVER" />
-               <RowConstraints minHeight="150.0" vgrow="NEVER" />
-               <RowConstraints minHeight="150.0" vgrow="ALWAYS" />
             </rowConstraints>
 
             <!-- Default Image Slots -->

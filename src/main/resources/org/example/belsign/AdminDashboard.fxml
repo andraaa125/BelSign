@@ -21,7 +21,7 @@
    <left>
       <StackPane BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="207.0" style="-fx-background-color: dadada;">
+            <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="207.0" style="-fx-background-color: #7fa8c5;">
                <children>
                   <HBox alignment="CENTER">
                      <children>
@@ -72,7 +72,7 @@
                   <Region prefHeight="148.0" prefWidth="207.0" />
                   <StackPane prefHeight="117.0" prefWidth="207.0">
                      <children>
-                        <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="47.0" prefWidth="118.0" style="-fx-background-color: 575757; -fx-border-color: #9d9d9d;" text=" Logout">
+                        <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="47.0" prefWidth="118.0" style="-fx-background-color: 575757; -fx-border-color: black;" text=" Logout">
                            <graphic>
                               <ImageView fitHeight="41.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -81,7 +81,7 @@
                               </ImageView>
                            </graphic>
                            <font>
-                              <Font size="16.0" />
+                              <Font size="15.0" />
                            </font>
                         </Button>
                      </children>
