@@ -171,6 +171,8 @@ public class DocumentationController {
 
         Button deleteButton = new Button("✖");
         deleteButton.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
+        StackPane.setAlignment(deleteButton, Pos.TOP_RIGHT);
+
         deleteButton.setOnAction(e -> {
             try {
                 String column = ImageColumn.isAdditionalColumn(label)
@@ -183,23 +185,30 @@ public class DocumentationController {
                 ex.printStackTrace();
             }
 
-            StackPane replacementSlot = createInteractiveSlot(label);
-            VBox container = new VBox(replacementSlot);
-            container.setAlignment(Pos.CENTER);
-
-            int col = GridPane.getColumnIndex(slot.getParent());
-            int row = GridPane.getRowIndex(slot.getParent());
-
-            imageGrid.getChildren().remove(slot.getParent());
-            imageGrid.add(container, col, row);
-
+            // ✅ Only remove image and delete button — KEEP existing label
+            slot.getChildren().removeIf(node -> node instanceof ImageView || node instanceof Button);
             ImageContext.capturedImages.remove(slot);
+
+            // Re-enable image capturing on click
+            slot.setOnMouseClicked(ev -> {
+                try {
+                    openCameraView(ev);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            });
         });
 
-        StackPane.setAlignment(deleteButton, Pos.TOP_RIGHT);
-        slot.getChildren().clear();
+        // ✅ Remove any previous image and delete button (not the label!)
+        slot.getChildren().removeIf(node -> node instanceof ImageView || node instanceof Button);
         slot.getChildren().addAll(imageView, deleteButton);
+
+        // Prevent stacking multiple click listeners
+        slot.setOnMouseClicked(null);
     }
+
+
+
 
     private StackPane createInteractiveSlot(String labelText) {
         StackPane slot = ImageSlotFactory.createSlot("+ " + labelText, s -> {
