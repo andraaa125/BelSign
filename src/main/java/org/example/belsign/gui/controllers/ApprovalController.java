@@ -79,29 +79,30 @@ public class ApprovalController {
     }
 
     private void loadImagesForApproval() {
+        if (product == null) return;
+
         imageGrid.getChildren().clear();
         int col = 0, row = 0;
 
-        for (Product product : products) {
-            // Add standard images
-            String[] columns = {"Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"};
-            String[] labels = {"Front", "Back", "Left", "Right", "Top", "Bottom"};
+        // Standard images
+        String[] columns = {"Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"};
+        String[] labels = {"Front", "Back", "Left", "Right", "Top", "Bottom"};
 
-            for (int i = 0; i < columns.length; i++) {
-                addImageToGrid(product, columns[i], labels[i], col, row);
-                col++;
-                if (col > 2) { col = 0; row++; }
-            }
+        for (int i = 0; i < columns.length; i++) {
+            addImageToGrid(product, columns[i], labels[i], col, row);
+            col++;
+            if (col > 2) { col = 0; row++; }
+        }
 
-            // Add additional images
-            for (int i = 1; i <= 20; i++) {
-                String colName = "Additional_" + i;
-                addImageToGrid(product, colName, "Additional " + i, col, row);
-                col++;
-                if (col > 2) { col = 0; row++; }
-            }
+        // Additional images
+        for (int i = 1; i <= 20; i++) {
+            String colName = "Additional_" + i;
+            addImageToGrid(product, colName, "Additional " + i, col, row);
+            col++;
+            if (col > 2) { col = 0; row++; }
         }
     }
+
 
 
     private void addImageToGrid(Product product, String columnName, String labelText, int col, int row) {
