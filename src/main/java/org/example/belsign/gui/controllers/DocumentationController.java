@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class DocumentationController {
@@ -261,41 +262,55 @@ public class DocumentationController {
 
     public void setOrder(Order order) {
         this.order = order;
+
+        if (order.getProducts() == null || order.getProducts().isEmpty()) return;
+
+        // Use the first product for this order (adjust if needed)
+        Product product = order.getProducts().get(0);
+        this.product = product;
+
         try {
-            // Load default slots
             List<StackPane> slots = getDefaultSlots();
+            List<byte[]> images = Arrays.asList(
+                    product.getImageFront(),
+                    product.getImageBack(),
+                    product.getImageLeft(),
+                    product.getImageRight(),
+                    product.getImageTop(),
+                    product.getImageBottom()
+            );
+
+
             for (int i = 0; i < slots.size(); i++) {
-                String column = columnNames.get(i);
-                byte[] imageBytes = orderManager.getImageData(order.getOrderId(), column);
+                byte[] imageBytes = images.get(i);
                 if (imageBytes != null) {
                     Image image = new Image(new ByteArrayInputStream(imageBytes));
-                    StackPane slot = slots.get(i);
-                    loadImageIntoSlot(slot, image, column.replace("Image_", ""));
-                    ImageContext.capturedImages.put(slot, image);
+                    String label = columnNames.get(i).replace("Image_", "");
+                    loadImageIntoSlot(slots.get(i), image, label);
+                    ImageContext.capturedImages.put(slots.get(i), image);
                 }
             }
 
-            // Load additional images
+            // Load additional images from product's map
             int additionalIndex = 1;
             while (additionalIndex <= ImageColumn.MAX_ADDITIONAL_IMAGES) {
-                String column = ImageColumn.getAdditionalColumnName(additionalIndex);
-                byte[] imageBytes = orderManager.getImageData(order.getOrderId(), column);
+                String column = "Additional_" + additionalIndex;
+                byte[] imageBytes = product.getAdditionalImage(column);
                 if (imageBytes == null) break;
 
                 Image image = new Image(new ByteArrayInputStream(imageBytes));
                 String label = "Additional " + additionalIndex;
                 StackPane newSlot = createInteractiveSlot(label);
                 loadImageIntoSlot(newSlot, image, label);
-
                 addSlotToGrid(newSlot);
                 ImageContext.capturedImages.put(newSlot, image);
-
                 additionalIndex++;
                 additionalImageCount++;
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

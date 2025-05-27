@@ -74,7 +74,7 @@ public class OrderManager {
 
                     product.setOrderId(rs.getString("OrderID"));
                     product.setProductId(rs.getInt("ProductId"));
-                    product.setProduct(rs.getString("Product"));
+                    product.setProductName(rs.getString("Product"));
                     product.setStatus(rs.getString("Status"));
 
                     product.setImageFront(rs.getBytes("Image_FRONT"));

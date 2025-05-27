@@ -72,8 +72,9 @@
                   <Region prefHeight="148.0" prefWidth="207.0" />
                   <StackPane prefHeight="117.0" prefWidth="207.0">
                      <children>
-                        <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="47.0" prefWidth="118.0" style="-fx-background-color: 575757; -fx-border-color: black;" text=" Logout">
-                           <graphic>
+                        <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="47.0" prefWidth="118.0" style="-fx-background-color: #dadada; -fx-border-color: black;" text=" Logout">
+
+                        <graphic>
                               <ImageView fitHeight="41.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@Images/Images/logout.png" />

@@ -55,33 +55,7 @@ public class QCDashboardController {
 
 
 
-    @FXML
-    private void onOpenApproval(ActionEvent event) {
-        if (selectedOrder == null) {
-            showAlert("Please select an order first.");
-            return;
-        }
 
-        try {
-            // Optionally re-fetch from DB to ensure latest data
-            Order fullOrder = orderManager.getOrderById(selectedOrder.getOrderId());
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
-            Parent root = loader.load();
-
-            ApprovalController controller = loader.getController();
-            controller.setOrder(fullOrder); // Pass the order with the correct ID
-
-            Stage stage = new Stage();
-            stage.setTitle("Approval Panel");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Failed to open report preview.");
-        }
-    }
 
     @FXML
     private void initialize() {
@@ -198,12 +172,10 @@ public class QCDashboardController {
             orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
             orderBox.getChildren().add(orderButton);
 
-            orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
-            orderBox.getChildren().add(orderButton);
 
             for (Product product : order.getProducts()) {
                 //Button productButton = new Button(product.getProductName());
-                Button productButton = new Button(product.getProduct());
+                Button productButton = new Button(product.getName());
                 productButton.setPrefWidth(200);
                 productButton.setPrefHeight(40);
                 productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
@@ -219,13 +191,13 @@ public class QCDashboardController {
                     default -> productButton.setStyle(baseStyle + " -fx-background-color: transparent;");
                 }
 
-                productButton.setOnAction(e -> handleSelection(productButton, orderBox, order));
                 productButton.setOnMouseClicked(e -> {
                     handleSelection(productButton, orderBox, order);
                     if (e.getClickCount() == 2) {
-                        openApprovalView(order);
+                        openApprovalView(order, product.getProductName()); // not getName()
                     }
                 });
+
 
                 orderBox.getChildren().add(productButton);
             }
@@ -290,16 +262,29 @@ public class QCDashboardController {
         }
     }
 
-    private void openApprovalView(Order order) {
+    // New overloaded method that accepts the product button
+    private void openApprovalView(Order order, String productName) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
             Parent root = loader.load();
             ApprovalController controller = loader.getController();
+
             controller.setOrder(order);
 
-            if (selectedButton != null && !selectedButton.getText().startsWith("OrderID:")) {
-                controller.setProductButton(selectedButton);
+            // 🔍 Find the product by name (match against productName)
+            Product matchedProduct = order.getProducts()
+                    .stream()
+                    .filter(p -> productName.equals(p.getProductName()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (matchedProduct == null) {
+                showAlert("Product '" + productName + "' not found in this order.");
+                return;
             }
+
+            controller.setProduct(matchedProduct); // ✅ Ensure the product is passed
+            controller.setQCDashboardController(this); // Pass dashboard ref if needed
 
             Stage stage = new Stage();
             stage.setTitle("Approval Panel");
@@ -311,6 +296,9 @@ public class QCDashboardController {
             showAlert("Failed to open Approval View.");
         }
     }
+
+
+
 
     public void updateProductColor(Product product) {
         VBox box = orderVBoxMap.get(product.getOrderId());

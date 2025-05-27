@@ -188,6 +188,7 @@ public class OperatorDashboardController implements Initializable {
             for (Product product : order.getProducts()) {
                 Button productButton = new Button(product.getName());
 
+
                 String borderColor = switch (product.getStatus().toLowerCase()) {
                     case "pending_approval" -> "#338d71";
                     case "approved"         -> "#338d71";
@@ -228,13 +229,15 @@ public class OperatorDashboardController implements Initializable {
             for (Node node : orderBox.getChildren()) {
                 if (node instanceof Button) {
                     Button button = (Button) node;
-                    if (button.getText().startsWith("OrderID:")) {
+                    String text = button.getText();
+                    if (text != null && text.startsWith("OrderID:")) {
                         button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
                     } else {
                         button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                     }
                 }
             }
+
             selectedButton = null;
             selectedOrder = null;
             return;
@@ -243,7 +246,8 @@ public class OperatorDashboardController implements Initializable {
         for (Node node : orderBox.getChildren()) {
             if (node instanceof Button) {
                 Button button = (Button) node;
-                if (button.getText().startsWith("OrderID:")) {
+                String text = button.getText();
+                if (text != null && text.startsWith("OrderID:")) {
                     button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
                 } else {
                     button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");

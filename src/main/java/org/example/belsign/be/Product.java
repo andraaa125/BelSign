@@ -173,10 +173,11 @@ public class Product {
         return "Product{" +
                 "orderId='" + orderId + '\'' +
                 ", productId='" + productId + '\'' +
-                ", product='" + product + '\'' +
+                ", productName='" + productName + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }
+
 
     public void setProduct(String product) {
         this.product = product;

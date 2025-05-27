@@ -51,6 +51,10 @@ public class ApprovalController {
         this.productButton = productButton;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+        loadImagesForApproval();
+    }
 
 
     public void setOrder(Order order) {
@@ -113,7 +117,7 @@ public class ApprovalController {
                 borderedPane.setPrefSize(200, 150);
                 borderedPane.setStyle("-fx-border-color: #333333; -fx-border-width: 1; -fx-border-radius: 5;");
 
-                Label label = new Label(labelText + " (" + product.getProduct() + ")");
+                Label label = new Label(labelText + " (" + product.getProductName() + ")");
                 label.setMaxWidth(Double.MAX_VALUE);
                 label.setAlignment(Pos.CENTER);
 
@@ -165,7 +169,12 @@ public class ApprovalController {
         PauseTransition pause = new PauseTransition(Duration.seconds(7));
         pause.setOnFinished(e -> commentSection.setVisible(false));
         pause.play();
+        System.out.println("Before approval - Status: " + product.getStatus());
         product.setStatus("Approved");
+        System.out.println("After approval  - Product Name: " + product.getProductName() +
+                ", Product ID: " + product.getProductId() +
+                ", Status: " + product.getStatus());
+
     }
 
 
@@ -176,8 +185,17 @@ public class ApprovalController {
         commentSection.setVisible(true);
         commentLabel.setText("Add Optional Comments\nfor Operator");
         disapprovedBoxes.clear();
+
+        System.out.println("Before disapproval - Status: " + product.getStatus());
+
         orderManager.updateProductStatus(product.getProductId(), "Disapproved");
+        product.setStatus("Disapproved");  // ← sync local object with database
+
+        System.out.println("After disapproval  - Product Name: " + product.getProductName() +
+                ", Product ID: " + product.getProductId() +
+                ", Status: " + product.getStatus());
     }
+
 
 
 
