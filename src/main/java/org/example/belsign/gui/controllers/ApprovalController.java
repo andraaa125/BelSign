@@ -203,12 +203,25 @@ public class ApprovalController {
     @FXML
     private void onClickSendComment(ActionEvent event) throws SQLException {
         String comment = commentTextArea.getText();
-        System.out.println("Disapproved with comment: " + comment);
+        productManager.updateQcComment(product.getProductId(), comment);
+        product.setQcComment(comment);
 
-        // Clear the comment box UI
-        commentTextArea.clear();
-        commentSection.getChildren().clear();
+        List<String> rejectedImageLabels = new ArrayList<>();
+        for (VBox box : disapprovedBoxes) {
+            Label label = (Label) box.getChildren().get(0);
+            String labelText = label.getText();
+            String extracted = labelText.split(" ")[0].toUpperCase();
+            String columnName = extracted.startsWith("ADDITIONAL")
+                    ? "Additional_" + extracted.replaceAll("[^0-9]", "")
+                    : "Image_" + extracted;
 
+            rejectedImageLabels.add(columnName);
+        }
+
+        String rejectedString = String.join(",", rejectedImageLabels);
+        productManager.updateRejectedImages(product.getProductId(), rejectedString);
+
+        // Update status
         orderManager.updateProductStatus(product.getProductId(), "Disapproved");
         product.setStatus("Disapproved");
 
@@ -216,18 +229,19 @@ public class ApprovalController {
             qcDashboardController.updateProductColor(product);
         }
 
-
-        // Show confirmation message
+        // UI
+        commentTextArea.clear();
+        commentSection.getChildren().clear();
         Label confirmationLabel = new Label("✅ Sent successfully to the operator.");
         confirmationLabel.setStyle("-fx-text-fill: #057017; -fx-font-size: 14px; -fx-font-weight: bold;");
         commentSection.getChildren().add(confirmationLabel);
         commentSection.setVisible(true);
 
-        // Hide the message after 10 seconds
         PauseTransition pause = new PauseTransition(Duration.seconds(7));
         pause.setOnFinished(e -> commentSection.setVisible(false));
         pause.play();
     }
+
 
 
 }

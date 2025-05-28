@@ -10,6 +10,8 @@ public class Product {
     private String status;
     private int productId;
 
+    private String qcComment;
+
     // Now use byte[] for images instead of String paths
     private byte[] imageFront;
     private byte[] imageBack;
@@ -84,7 +86,13 @@ public class Product {
         this.status = status;
     }
 
+    public String getQcComment() {
+        return qcComment;
+    }
 
+    public void setQcComment(String qcComment) {
+        this.qcComment = qcComment;
+    }
     public byte[] getImageFront() {
         return imageFront;
     }

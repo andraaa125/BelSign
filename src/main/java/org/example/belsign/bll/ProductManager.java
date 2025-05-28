@@ -5,23 +5,17 @@ import org.example.belsign.dal.IProductDAO;
 import org.example.belsign.dal.db.DBConnection;
 import org.example.belsign.dal.db.ProductDAODB;
 
-import java.sql.SQLException;
-import java.util.Map;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ProductManager {
     private final IProductDAO productDAO = new ProductDAODB();
 
-    /**
-     * Save an image to the specified slot in the Product table.
-     * The slotType should match the database column (e.g., "Image_FRONT", "Additional_5").
-     */
     public void saveProductImage(Product product, String slotType, byte[] imageData) throws SQLException {
         productDAO.updateProductImage(product, slotType, imageData);
 
-        // Also update the in-memory product object
         if (slotType.startsWith("Additional_")) {
             product.setAdditionalImage(slotType, imageData);
         } else {
@@ -53,50 +47,68 @@ public class ProductManager {
         };
     }
 
-    /**
-     * Retrieves all products for a given orderId.
-     */
     public List<Product> getProductsForOrder(String orderId) throws SQLException {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT * FROM Product WHERE OrderID = ?";
-        {
 
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            try (Connection conn = DBConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, orderId);
 
-                stmt.setString(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Product product = new Product();
+                    product.setOrderId(rs.getString("OrderID"));
+                    product.setProductId(rs.getInt("ProductId"));
+                    product.setProduct(rs.getString("Product"));
+                    product.setStatus(rs.getString("Status"));
+                    product.setQcComment(rs.getString("QC_comment"));  // ✅ Load QC comment
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        Product product = new Product();
-                        product.setOrderId(rs.getString("OrderID"));
-                        product.setProductId(rs.getInt("ProductId"));
-                        product.setProduct(rs.getString("Product"));
-                        product.setStatus(rs.getString("Status"));
+                    product.setImageFront(rs.getBytes("Image_FRONT"));
+                    product.setImageBack(rs.getBytes("Image_BACK"));
+                    product.setImageLeft(rs.getBytes("Image_LEFT"));
+                    product.setImageRight(rs.getBytes("Image_RIGHT"));
+                    product.setImageTop(rs.getBytes("Image_TOP"));
+                    product.setImageBottom(rs.getBytes("Image_BOTTOM"));
 
-                        product.setImageFront(rs.getBytes("Image_FRONT"));
-                        product.setImageBack(rs.getBytes("Image_BACK"));
-                        product.setImageLeft(rs.getBytes("Image_LEFT"));
-                        product.setImageRight(rs.getBytes("Image_RIGHT"));
-                        product.setImageTop(rs.getBytes("Image_TOP"));
-                        product.setImageBottom(rs.getBytes("Image_BOTTOM"));
-
-                        for (int i = 1; i <= 20; i++) {
-                            String col = "Additional_" + i;
-                            product.setAdditionalImage(col, rs.getBytes(col));
-                        }
-
-                        products.add(product);
+                    for (int i = 1; i <= 20; i++) {
+                        String col = "Additional_" + i;
+                        product.setAdditionalImage(col, rs.getBytes(col));
                     }
+
+                    products.add(product);
                 }
             }
-
-            return products;
         }
+
+        return products;
     }
 
     public void updateProductStatus(int productId, String newStatus) throws SQLException {
         productDAO.updateProductStatus(productId, newStatus);
     }
+
+    // ✅ New method to update QC_comment in the DB
+    public void updateQcComment(int productId, String comment) throws SQLException {
+        String sql = "UPDATE Product SET QC_comment = ? WHERE ProductId = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, comment);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void updateRejectedImages(int productId, String columns) throws SQLException {
+        String sql = "UPDATE Product SET Rejected_Images = ? WHERE ProductId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, columns);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
+        }
+    }
+
 }
