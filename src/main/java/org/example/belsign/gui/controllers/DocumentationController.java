@@ -106,6 +106,9 @@ public class DocumentationController {
             product.setStatus("pending_approval");
             productManager.updateProductStatus(product.getProductId(), "Pending approval");
 
+            // ✅ Immediately mark order as Done in DB
+            orderManager.updateOrderStatus(order.getOrderId(), "Done");
+
             if (operatorDashboardController != null) {
                 operatorDashboardController.setStatusMessage("Images sent successfully to QC!");
             }
