@@ -25,42 +25,91 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class OperatorDashboardController implements Initializable {
-    @FXML
-    private FlowPane searchPane;
-    @FXML
-    private FlowPane productPane;
-    @FXML
-    private FlowPane inProgressPane;
-    @FXML
-    private FlowPane donePane;
-    @FXML
-    private Label userName;
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private Label incorrectOrderID;
-    @FXML
-    private Label lblError;
-    @FXML
-    private Button selectedOrderButton = null;
-    @FXML
-    private TextField searchField;
-
+    @FXML private FlowPane searchPane;
+    @FXML private FlowPane productPane;
+    @FXML private FlowPane inProgressPane;
+    @FXML private FlowPane donePane;
+    @FXML private Label userName;
+    @FXML private Button logoutButton;
+    @FXML private Label statusLabel;
+    @FXML private Label incorrectOrderID;
+    @FXML private Label lblError;
+    @FXML private Button selectedOrderButton = null;
+    @FXML private TextField searchField;
 
     private Button selectedButton = null;
-
     private Order selectedOrder = null;
     private final OrderManager orderManager = new OrderManager();
-
     private final Map<String, VBox> orderVBoxMap = new HashMap<>();
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-
+        refreshDonePane();
     }
 
+    private void displayOrderInDonePane(Order order) {
+        // Avoid duplicate buttons
+        for (Node node : donePane.getChildren()) {
+            if (node instanceof Button btn && btn.getUserData() instanceof Order o && o.getOrderId().equals(order.getOrderId())) {
+                return;
+            }
+        }
+
+        Button orderButton = new Button(order.getOrderId());
+        orderButton.setStyle(getStyleForStatus(order.getStatus())); // Default style
+        orderButton.setPrefWidth(200);
+        orderButton.setPrefHeight(40);
+        orderButton.setUserData(order);
+
+        orderButton.setOnAction(e -> {
+            // Reset styles for all buttons first
+            for (Node node : donePane.getChildren()) {
+                if (node instanceof Button btn) {
+                    btn.setStyle(getStyleForStatus(((Order) btn.getUserData()).getStatus()));
+                }
+            }
+
+            // Highlight the selected button
+            orderButton.setStyle(
+                    "-fx-background-color: #9d9d9d; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-padding: 15; " +
+                            "-fx-font-size: 15px; " +
+                            "-fx-border-width: 2; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-border-color: #9d9d9d;"
+            );
+
+            // Clear previously displayed products
+            hideOrderVBoxes();
+
+            // Display the selected order's products
+            if (!orderVBoxMap.containsKey(order.getOrderId())) {
+                try {
+                    displayProductsForOrder(order);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        donePane.getChildren().add(orderButton);
+    }
+
+
+
+    public void refreshDonePane() {
+        donePane.getChildren().clear();
+        try {
+            List<Order> doneOrders = orderManager.getOrdersWithDisapprovedProducts();
+            for (Order order : doneOrders) {
+                order.setProducts(orderManager.getProductsForOrder(order.getOrderId()));
+                displayOrderInDonePane(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void setUserName(String firstName, String lastName) {
         userName.setText("Welcome, " + firstName + " " + lastName + "!");
@@ -77,12 +126,9 @@ public class OperatorDashboardController implements Initializable {
         DocumentationController controller = fxmlLoader.getController();
         controller.setOrder(order);
         controller.setProduct(product);
-        //controller.setOperatorDashboardController(this);
+        controller.setOperatorDashboardController(this);
         stage.show();
     }
-
-
-
 
     public void setStatusMessage(String message) {
         statusLabel.setText(message);
@@ -100,14 +146,12 @@ public class OperatorDashboardController implements Initializable {
         Stage loginStage = new Stage();
         loginStage.setTitle("Login");
         loginStage.setScene(new Scene(root));
-
         loginStage.show();
     }
 
     public void onClickSearch(ActionEvent actionEvent) {
         lblError.setText("");
         incorrectOrderID.setText("");
-
 
         String searchId = searchField.getText().trim();
         if (searchId.isEmpty()) {
@@ -116,24 +160,15 @@ public class OperatorDashboardController implements Initializable {
             return;
         }
 
-
         if (orderVBoxMap.containsKey(searchId)) {
             lblError.setText(" Order already displayed!");
-            System.out.println("Order already displayed: " + searchId);
             return;
         }
 
-        Iterator<Map.Entry<String, VBox>> iterator = orderVBoxMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, VBox> entry = iterator.next();
-            VBox box = entry.getValue();
-            productPane.getChildren().remove(box);
-            iterator.remove();
-        }
+        hideOrderVBoxes();
 
         try {
             List<Order> allOrders = orderManager.getAllOrders();
-
             for (Order order : allOrders) {
                 if (order.getOrderId().equalsIgnoreCase(searchId)) {
                     displayProductsForOrder(order);
@@ -142,29 +177,25 @@ public class OperatorDashboardController implements Initializable {
             }
 
             incorrectOrderID.setText("Invalid Order ID");
-            System.out.println("Order not found: " + searchId);
-
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
     private void hideOrderVBoxes() {
-        Iterator<Map.Entry<String, VBox>> iterator = orderVBoxMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, VBox> entry = iterator.next();
-            VBox box = entry.getValue();
+        for (VBox box : orderVBoxMap.values()) {
             productPane.getChildren().remove(box);
-            iterator.remove();
         }
-
+        orderVBoxMap.clear();
         selectedOrder = null;
         selectedButton = null;
     }
 
-    private void displayProductsForOrder(Order order) {
-//        productPane.getChildren().clear();
+    private void displayProductsForOrder(Order order) throws SQLException {
         try {
+            // ✅ Remove previous order's products if any
+            hideOrderVBoxes();
+
             if (order.getProducts() == null || order.getProducts().isEmpty()) {
                 List<Product> products = orderManager.getProductsForOrder(order.getOrderId());
                 order.setProducts(products);
@@ -173,46 +204,27 @@ public class OperatorDashboardController implements Initializable {
             VBox orderBox = new VBox(15);
             orderBox.setStyle("-fx-padding: 15; -fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-radius: 5;");
 
-            double buttonWidth = 200;
-            double buttonHeight = 40;
-
-            // Order button
             Button orderButton = new Button("OrderID: " + order.getOrderId());
-
-// 🔴 Highlight order if it has disapproved product(s) and status is In Progress
-            orderButton.setStyle("-fx-font-size: 16px;" +
-                    " -fx-background-color: transparent;" +
-                    " -fx-border-color: #333535;" +
-                    " -fx-padding: 15;" +
-                    " -fx-font-weight: bold;");
-
-
+            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15; -fx-font-weight: bold;");
             orderButton.setUserData(order);
-            orderButton.setPrefWidth(buttonWidth);
-            orderButton.setPrefHeight(buttonHeight);
+            orderButton.setPrefWidth(200);
+            orderButton.setPrefHeight(40);
             orderButton.setOnAction(e -> handleSelection(orderButton, orderBox, order));
             orderBox.getChildren().add(orderButton);
 
             for (Product product : order.getProducts()) {
                 Button productButton = new Button(product.getName());
 
-
                 String borderColor = switch (product.getStatus().toLowerCase()) {
-                    case "pending_approval" -> "#338d71";
-                    case "approved"         -> "#338d71";
-                    case "disapproved"      -> "#880000";
-                    default                 -> "#9ca3af";
+                    case "pending_approval", "approved" -> "#338d71";
+                    case "disapproved" -> "#880000";
+                    default -> "#9ca3af";
                 };
 
-                productButton.setStyle("-fx-border-color: " + borderColor +
-                        "; -fx-padding: 15px;" +
-                        " -fx-background-color: transparent;" +
-                        " -fx-font-size: 16px;");
-
-//                productButton.setStyle("-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
+                productButton.setStyle("-fx-border-color: " + borderColor + "; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                 productButton.setUserData(product);
-                productButton.setPrefWidth(buttonWidth);
-                productButton.setPrefHeight(buttonHeight);
+                productButton.setPrefWidth(200);
+                productButton.setPrefHeight(40);
                 productButton.setOnAction(e -> {
                     handleSelection(productButton, orderBox, order);
                     try {
@@ -221,10 +233,12 @@ public class OperatorDashboardController implements Initializable {
                         ex.printStackTrace();
                     }
                 });
+
                 orderBox.getChildren().add(productButton);
             }
 
             productPane.getChildren().add(orderBox);
+            orderVBoxMap.clear(); // Since we're only showing one order at a time
             orderVBoxMap.put(order.getOrderId(), orderBox);
 
         } catch (SQLException e) {
@@ -232,47 +246,24 @@ public class OperatorDashboardController implements Initializable {
         }
     }
 
+
+
     private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
-        if (clickedButton.equals(selectedButton)) {
-            for (Node node : orderBox.getChildren()) {
-                if (node instanceof Button) {
-                    Button button = (Button) node;
-                    String text = button.getText();
-                    if (text != null && text.startsWith("OrderID:")) {
-                        button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
-                    } else {
-                        button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
-                    }
-                }
-            }
-
-            selectedButton = null;
-            selectedOrder = null;
-            return;
-        }
-
         for (Node node : orderBox.getChildren()) {
-            if (node instanceof Button) {
-                Button button = (Button) node;
-                String text = button.getText();
-                if (text != null && text.startsWith("OrderID:")) {
-                    button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;");
-                } else {
-                    button.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
-                }
+            if (node instanceof Button btn) {
+                boolean isOrderButton = btn.getText().startsWith("OrderID:");
+                btn.setStyle("-fx-border-color: #9d9d9d; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;" + (isOrderButton ? " -fx-font-weight: bold;" : ""));
             }
         }
 
         clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
-
         selectedButton = clickedButton;
         selectedOrder = order;
     }
 
     public void onNumberClick(ActionEvent actionEvent) {
         Button clickedButton = (Button) actionEvent.getSource();
-        String value = clickedButton.getText();
-        searchField.appendText(value);
+        searchField.appendText(clickedButton.getText());
     }
 
     public void onClickClear(ActionEvent actionEvent) {
@@ -295,13 +286,20 @@ public class OperatorDashboardController implements Initializable {
                 if (p.getProductId() == product.getProductId()) {
                     product.setStatus("Pending approval");
                     button.setText(product.getName() + " (" + product.getStatus() + ")");
-                    button.setStyle("-fx-border-color: #338d71;" +
-                            " -fx-padding: 15px;" +
-                            " -fx-background-color: transparent;" +
-                            " -fx-font-size: 16px;");
+                    button.setStyle("-fx-border-color: #338d71; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px;");
                     break;
                 }
             }
         }
     }
+
+    private String getStyleForStatus(String status) {
+        return "-fx-padding: 15;" +
+                " -fx-border-width: 2;" +
+                " -fx-border-radius: 5;" +
+                " -fx-background-color: transparent;" +
+                " -fx-border-color: #575757;" +
+                " -fx-font-size: 15px;";
+    }
+
 }

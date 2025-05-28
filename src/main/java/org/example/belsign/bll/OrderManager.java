@@ -127,4 +127,29 @@ public class OrderManager {
 //    }
 
 
+    public List<Order> getOrdersWithDisapprovedProducts() throws SQLException {
+        List<Order> orders = new ArrayList<>();
+
+        String sql = "SELECT DISTINCT o.* FROM [Order] o " +
+                "JOIN Product p ON o.OrderID = p.OrderID " +
+                "WHERE p.Status = 'Disapproved'";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getString("OrderID"));
+                order.setStatus(rs.getString("Status"));
+                // Set other fields as needed from the Order table
+
+                orders.add(order);
+            }
+        }
+
+        return orders;
+    }
+
+
 }
