@@ -225,11 +225,16 @@ public class ApprovalController {
         orderManager.updateProductStatus(product.getProductId(), "Disapproved");
         product.setStatus("Disapproved");
 
+        // Set the order status to 'In Progress' when any product is disapproved
+        orderManager.updateOrderStatus(order.getOrderId(), "In Progress");
+        order.setStatus("In Progress");
+
+
         if (qcDashboardController != null) {
             qcDashboardController.updateProductColor(product);
         }
 
-        // UI
+        // UI feedback
         commentTextArea.clear();
         commentSection.getChildren().clear();
         Label confirmationLabel = new Label("✅ Sent successfully to the operator.");

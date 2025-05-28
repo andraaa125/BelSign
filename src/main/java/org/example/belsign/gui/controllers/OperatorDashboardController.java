@@ -178,7 +178,15 @@ public class OperatorDashboardController implements Initializable {
 
             // Order button
             Button orderButton = new Button("OrderID: " + order.getOrderId());
-            orderButton.setStyle("-fx-font-size: 16px; -fx-background-color: transparent; -fx-border-color: #333535; -fx-padding: 15; -fx-font-weight: bold;");
+
+// 🔴 Highlight order if it has disapproved product(s) and status is In Progress
+            orderButton.setStyle("-fx-font-size: 16px;" +
+                    " -fx-background-color: transparent;" +
+                    " -fx-border-color: #333535;" +
+                    " -fx-padding: 15;" +
+                    " -fx-font-weight: bold;");
+
+
             orderButton.setUserData(order);
             orderButton.setPrefWidth(buttonWidth);
             orderButton.setPrefHeight(buttonHeight);
