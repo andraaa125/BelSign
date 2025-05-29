@@ -1,3 +1,17 @@
+/*
+ * This class is based on CameraController from WebcamFX by Houari Zegai
+ * Original source: https://github.com/HouariZegai/WebcamFX
+ * Licensed under the MIT License
+ *
+ * Modifications made by Andra Danielevici, May 2025:
+ * - Integrated with ImageContext model for product-based image capture
+ * - Bound image view resizing dynamically to container
+ * - Replaced file saving with in-memory capture per product ID
+ * - Reworked thread logic using custom inner class VideoTacker
+ * - Adapted UI flow using StackPane and JavaFX enhancements
+ */
+
+
 package org.example.belsign.gui.controllers;
 
 import com.github.sarxos.webcam.Webcam;
