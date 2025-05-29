@@ -21,7 +21,7 @@ import java.util.List;
 public class OrderListViewController {
 
     private BorderPane mainBorderPane;
-    private Node previousView;
+    private Node mainView;
 
     @FXML
     private TableView<Order> orderTable;
@@ -38,10 +38,6 @@ public class OrderListViewController {
 
     public void setMainBorderPane(BorderPane mainBorderPane) {
         this.mainBorderPane = mainBorderPane;
-    }
-
-    public void setPreviousView(Node previousView) {
-        this.previousView = previousView;
     }
 
     @FXML
@@ -66,8 +62,12 @@ public class OrderListViewController {
 
     @FXML
     public void onClickBack(ActionEvent event) {
-        if (mainBorderPane != null && previousView != null) {
-            mainBorderPane.setCenter(previousView);
+        if (mainBorderPane != null && mainView != null) {
+            mainBorderPane.setCenter(mainView);
         }
+    }
+
+    public void setMainView(Node dashboardMainView) {
+        this.mainView = dashboardMainView;
     }
 }

@@ -343,12 +343,22 @@ public class QCDashboardController {
     }
 
     public void onClickGenerateReport(ActionEvent actionEvent) throws IOException {
+        if (selectedButton == null || !(selectedButton.getUserData() instanceof Product)) {
+            showAlert("Please select a product before generating the report.");
+            return;
+        }
+
+        Product selectedProduct = (Product) selectedButton.getUserData();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
         Parent root = fxmlLoader.load();
+
+        ReportPreviewController controller = fxmlLoader.getController();
+        controller.setProduct(selectedProduct);
+
         Stage stage = new Stage();
         stage.setTitle("Report");
         stage.setScene(new Scene(root));
-
         stage.show();
     }
 }

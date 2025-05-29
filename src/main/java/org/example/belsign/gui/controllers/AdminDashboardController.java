@@ -38,9 +38,12 @@ public class AdminDashboardController {
     @FXML
     private Label lblMessage;
 
+    private Node dashboardMainView;
+
     @FXML
     public void initialize() {
         role.getItems().addAll("Admin", "QC", "Operator");
+        dashboardMainView = mainBorderPane.getCenter();
     }
 
     public void onClickOrder(ActionEvent actionEvent) {
@@ -50,9 +53,10 @@ public class AdminDashboardController {
 
             OrderListViewController orderListController = loader.getController();
             orderListController.setMainBorderPane(mainBorderPane);
-            orderListController.setPreviousView(mainBorderPane.getCenter());
+            orderListController.setMainView(dashboardMainView);
 
             mainBorderPane.setCenter(orderListView);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +70,7 @@ public class AdminDashboardController {
             UserListViewController userListController = loader.getController();
 
             userListController.setMainBorderPane(mainBorderPane);
-            userListController.setPreviousView(mainBorderPane.getCenter());
+            userListController.setMainView(dashboardMainView);
 
             mainBorderPane.setCenter(userListView);
         } catch (IOException e) {
@@ -137,8 +141,8 @@ public class AdminDashboardController {
     }
 
     public void setUserName(String firstName, String lastName) {
-        userName.setText("Welcome, " + lastName + "!");
-        userName.setStyle("-fx-font-size: 20");
+        userName.setText("Welcome, " + firstName + " " + lastName + "!");
+        userName.setStyle("-fx-font-size: 16");
     }
 
     public void onClickCancel(ActionEvent actionEvent) {

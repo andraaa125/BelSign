@@ -1,6 +1,7 @@
 package org.example.belsign.be;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Product {
@@ -10,6 +11,7 @@ public class Product {
     private String status;
     private int productId;
 
+    private List<Product> products;
     private String qcComment;
 
     // Now use byte[] for images instead of String paths
@@ -198,6 +200,15 @@ public class Product {
     public byte[] getImageRight() {
        return imageRight;
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
 
 
 }

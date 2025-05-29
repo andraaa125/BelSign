@@ -11,15 +11,18 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
+import org.example.belsign.bll.ProductManager;
 import org.example.belsign.util.PdfExporter;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,61 +30,100 @@ import java.util.List;
 
 public class ReportPreviewController {
 
-    @FXML private VBox rootVBox;
-    @FXML private FlowPane imageContainer;
-    @FXML private HBox exportButtons;
-    @FXML private Button btnSendEmail;
-    @FXML private Button btnExport;
-    @FXML private Label lblOrderNumber;
-    @FXML private Label lblProductName;
-    @FXML private Label lblInspector;
-    @FXML private TextArea txtComments;
+    @FXML
+    private VBox rootVBox;
+    @FXML
+    private FlowPane imageContainer;
+    @FXML
+    private HBox exportButtons;
+    @FXML
+    private Button btnSendEmail;
+    @FXML
+    private Button btnExport;
+    @FXML
+    private Label lblOrderNumber;
+    @FXML
+    private Label lblProductName;
+    @FXML
+    private TextArea txtComments;
 
-    private final OrderManager orderManager = new OrderManager();
-    private Order order;
+    private ProductManager productManager = new ProductManager();
+    private Product product;
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setProduct(Product product) {
+        this.product = product;
         loadReportData();
     }
 
+    @FXML
+    private void initialize() {
+        txtComments.setWrapText(true); // Make sure text wraps
+
+        txtComments.textProperty().addListener((obs, oldText, newText) -> {
+            Text text = new Text(newText);
+            text.setFont(txtComments.getFont());
+            text.setWrappingWidth(txtComments.getWidth() - 10); // account for padding
+
+            double height = text.getLayoutBounds().getHeight() + 20; // some padding
+            txtComments.setPrefHeight(height);
+        });
+
+        int MAX_CHARACTERS = 150;
+        int MAX_LINES = 2;
+
+        txtComments.setWrapText(true);
+
+        txtComments.textProperty().addListener((obs, oldText, newText) -> {
+            if (newText.length() > MAX_CHARACTERS) {
+                txtComments.setText(oldText);
+                return;
+            }
+
+            long lineCount = newText.chars().filter(ch -> ch == '\n').count() + 1;
+            if (lineCount > MAX_LINES) {
+                txtComments.setText(oldText);
+            }
+        });
+    }
+
     private void loadReportData() {
-        lblOrderNumber.setText(order.getOrderId());
+        lblOrderNumber.setText(product.getOrderId());
 
-        try {
-            if (order.getProducts() == null || order.getProducts().isEmpty()) {
-                order.setProducts(orderManager.getProductsForOrder(order.getOrderId()));
+        String productInfo = product.getProductName();
+        lblProductName.setText(productInfo);
+
+        imageContainer.setPrefWrapLength(480);
+        imageContainer.getChildren().clear();
+
+        addImageIfPresent(product.getImageFront());
+        addImageIfPresent(product.getImageBack());
+        addImageIfPresent(product.getImageLeft());
+        addImageIfPresent(product.getImageRight());
+        addImageIfPresent(product.getImageTop());
+        addImageIfPresent(product.getImageBottom());
+
+        if (product.getAdditionalImages() != null) {
+            for (byte[] additionalImage : product.getAdditionalImages().values()) {
+                addImageIfPresent(additionalImage);
             }
+        }
+    }
 
-            StringBuilder productNames = new StringBuilder();
-            imageContainer.setPrefWrapLength(480); // Ensure 3 images/row
-            imageContainer.getChildren().clear();
-
-            for (Product product : order.getProducts()) {
-                productNames.append(product.getProduct()).append(" (").append(product.getStatus()).append(")\n");
-
-                byte[] imageData = product.getImageFront();
-                if (imageData != null && imageData.length > 0) {
-                    try {
-                        Image image = new Image(new java.io.ByteArrayInputStream(imageData), 100, 100, true, true);
-                        ImageView imageView = new ImageView(image);
-                        imageContainer.getChildren().add(imageView);
-                    } catch (Exception e) {
-                        System.out.println("Failed to load image for product: " + product.getProductId());
-                        e.printStackTrace();
-                    }
-                }
+    private void addImageIfPresent(byte[] imageData) {
+        if (imageData != null && imageData.length > 0) {
+            try {
+                Image image = new Image(new java.io.ByteArrayInputStream(imageData), 150, 150, true, true);
+                ImageView imageView = new ImageView(image);
+                imageContainer.getChildren().add(imageView);
+            } catch (Exception e) {
+                System.out.println("Failed to load image.");
+                e.printStackTrace();
             }
-
-            lblProductName.setText(productNames.toString().trim());
-        } catch (Exception e) {
-            lblProductName.setText("N/A");
-            e.printStackTrace();
         }
     }
 
     @FXML
-    private void onExportAsPDF() {
+    private void onExportAsPDF() throws IOException {
         try {
             exportButtons.setVisible(false);
             exportButtons.setManaged(false);

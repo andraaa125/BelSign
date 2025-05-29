@@ -27,7 +27,7 @@ public class UserListViewController {
     @FXML
     private BorderPane mainBorderPane;
 
-    private Node previousView;
+    private Node mainView;
     private final UserDAODB userDAO = new UserDAODB();
 
     @FXML
@@ -51,8 +51,8 @@ public class UserListViewController {
 
     @FXML
     public void onClickBack() {
-        if (mainBorderPane != null && previousView != null) {
-            mainBorderPane.setCenter(previousView);
+        if (mainBorderPane != null && mainView != null) {
+            mainBorderPane.setCenter(mainView);
         }
     }
 
@@ -60,7 +60,7 @@ public class UserListViewController {
         this.mainBorderPane = mainBorderPane;
     }
 
-    public void setPreviousView(Node center) {
-        this.previousView = center;
+    public void setMainView(Node dashboardMainView) {
+        this.mainView = dashboardMainView;
     }
 }

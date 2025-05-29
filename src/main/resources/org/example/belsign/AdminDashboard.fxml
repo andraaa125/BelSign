@@ -111,9 +111,9 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Create New User" underline="true" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+            <Label style="-fx-text-fill: #004b88;" text="Create New User" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1">
                <font>
-                  <Font name="System Bold" size="20.0" />
+                  <Font name="System Bold" size="26.0" />
                </font>
             </Label>
             <Label text="First Name:" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
@@ -159,11 +159,7 @@
             </Button>
             <Label GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <Label prefHeight="17.0" prefWidth="59.0" GridPane.rowIndex="1" />
-            <Label fx:id="userName" prefHeight="49.0" prefWidth="180.0" GridPane.columnIndex="3">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
+            <Label fx:id="userName" prefHeight="49.0" prefWidth="190.0" GridPane.columnIndex="3" />
             <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onClickCancel" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-radius: 2;" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7">
                <font>
                   <Font size="20.0" />

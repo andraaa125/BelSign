@@ -5,19 +5,29 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="507.0" prefWidth="642.0" spacing="10.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.UserListViewController">
     <children>
         <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Users" />
-        <TableView fx:id="userTable" prefHeight="400.0" prefWidth="600.0">
+        <TableView fx:id="userTable" prefHeight="395.0" prefWidth="373.0">
             <columns>
                 <TableColumn fx:id="colFirstName" text="First Name" />
                 <TableColumn fx:id="colLastName" text="Last Name" />
                 <TableColumn fx:id="colUsername" text="Username" />
             </columns>
         </TableView>
-      <Button fx:id="backBtn" mnemonicParsing="false" onAction="#onClickBack" prefHeight="26.0" prefWidth="52.0" text="Back" />
+      <Button fx:id="backBtn" mnemonicParsing="false" onAction="#onClickBack" prefHeight="30.0" prefWidth="50.0" style="-fx-background-color: transparent; -fx-border-color: black;">
+         <graphic>
+            <ImageView fitHeight="32.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/Images/back-arrow.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
     </children>
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
