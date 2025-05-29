@@ -62,36 +62,43 @@ public class OperatorDashboardController implements Initializable {
         orderButton.setUserData(order);
 
         orderButton.setOnAction(e -> {
-            // Reset styles for all buttons first
-            for (Node node : donePane.getChildren()) {
-                if (node instanceof Button btn) {
-                    btn.setStyle(getStyleForStatus(((Order) btn.getUserData()).getStatus()));
+            if (selectedButton == orderButton) {
+                // Deselect if already selected
+                orderButton.setStyle(getStyleForStatus(order.getStatus()));
+                selectedButton = null;
+                hideOrderVBoxes();
+            } else {
+                // Reset styles on all buttons
+                for (Node node : donePane.getChildren()) {
+                    if (node instanceof Button btn) {
+                        btn.setStyle(getStyleForStatus(((Order) btn.getUserData()).getStatus()));
+                    }
                 }
-            }
 
-            // Highlight the selected button
-            orderButton.setStyle(
-                    "-fx-background-color: #9d9d9d; " +
-                            "-fx-text-fill: white; " +
-                            "-fx-padding: 15; " +
-                            "-fx-font-size: 15px; " +
-                            "-fx-border-width: 2; " +
-                            "-fx-border-radius: 5; " +
-                            "-fx-border-color: #9d9d9d;"
-            );
+                // Highlight current button
+                orderButton.setStyle(
+                        "-fx-background-color: #d3d3d3;" +  // Light grey
+                                "-fx-text-fill: black;" +
+                                "-fx-padding: 15;" +
+                                "-fx-font-size: 16px;" +
+                                "-fx-border-width: 2;" +
+                                "-fx-border-radius: 5;" +
+                                "-fx-border-color: #575757;" +
+                                "-fx-font-weight: bold;"
+                );
 
-            // Clear previously displayed products
-            hideOrderVBoxes();
-
-            // Display the selected order's products
-            if (!orderVBoxMap.containsKey(order.getOrderId())) {
+                // Clear previous and display new
+                hideOrderVBoxes();
                 try {
                     displayProductsForOrder(order);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+
+                selectedButton = orderButton;
             }
         });
+
 
         donePane.getChildren().add(orderButton);
     }
@@ -295,11 +302,14 @@ public class OperatorDashboardController implements Initializable {
 
     private String getStyleForStatus(String status) {
         return "-fx-padding: 15;" +
-                " -fx-border-width: 2;" +
-                " -fx-border-radius: 5;" +
-                " -fx-background-color: transparent;" +
-                " -fx-border-color: #575757;" +
-                " -fx-font-size: 15px;";
+                "-fx-border-width: 2;" +
+                "-fx-border-radius: 5;" +
+                "-fx-background-color: transparent;" +
+                "-fx-border-color: #575757;" +
+                "-fx-font-size: 16px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-text-fill: #333;";
     }
+
 
 }

@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -92,7 +93,14 @@
          <Button fx:id="btnCancel" onAction="#onClickCancel" prefHeight="60.0" prefWidth="195.0" style="-fx-background-color: transparent; -fx-border-color: #880000; -fx-border-width: 2; -fx-border-radius: 15;" text="Cancel">
             <font><Font name="System Bold" size="20.0" /></font>
          </Button>
-         <Region prefHeight="49.0" prefWidth="430.0" />
+         <Region prefHeight="88.0" prefWidth="70.0" />
+
+         <HBox fx:id="qcCommentSection" alignment="CENTER_LEFT" spacing="10.0" visible="false">
+            <Label style="-fx-text-fill: #004b88;" text="Comments from QC:" />
+            <TextArea fx:id="qcCommentArea" editable="false" prefHeight="88.0" prefWidth="300.0" style="-fx-control-inner-background: #ffffff; -fx-border-color: #575757;" wrapText="true" />
+         </HBox>
+
+         <Region prefHeight="88.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
 
 
          <Button fx:id="btnSend" onAction="#onClickSend" prefHeight="60.0" prefWidth="195.0" style="-fx-background-color: transparent; -fx-border-color: #338d71; -fx-border-width: 2; -fx-border-radius: 15;" text="Send">

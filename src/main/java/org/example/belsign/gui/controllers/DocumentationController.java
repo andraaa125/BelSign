@@ -9,12 +9,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
@@ -34,86 +33,72 @@ import java.util.*;
 public class DocumentationController {
 
     private Order order;
+    private Product product;
     private OperatorDashboardController operatorDashboardController;
 
-    @FXML
-    private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
-    @FXML
-    private GridPane imageGrid;
-    @FXML
-    private Button btnAddImage;
-
-    private Product product;
+    @FXML private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
+    @FXML private GridPane imageGrid;
+    @FXML private Button btnAddImage;
+    @FXML private HBox qcCommentSection;
+    @FXML private TextArea qcCommentArea;
 
     private int nextSlotColumn = 0;
     private int nextSlotRow = 3;
     private int additionalImageCount = 1;
 
+    private final OrderManager orderManager = new OrderManager();
+    private final ProductManager productManager = new ProductManager();
+
     private final List<String> columnNames = List.of(
             "Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
     );
 
-    private final OrderManager orderManager = new OrderManager();
-    private final ProductManager productManager = new ProductManager();
+    public void setOperatorDashboardController(OperatorDashboardController controller) {
+        this.operatorDashboardController = controller;
+    }
 
     @FXML
-    public void onClickAddImage(ActionEvent actionEvent) {
-        if (additionalImageCount > 20) {
-            operatorDashboardController.setStatusMessage("You can only add up to 20 additional images.");
-            return;
-        }
-
-        String labelText = "Additional " + additionalImageCount;
-        StackPane newSlot = createInteractiveSlot(labelText);
+    public void onClickAddImage(ActionEvent event) {
+        if (additionalImageCount > 20) return;
+        String label = "Additional " + additionalImageCount;
+        StackPane newSlot = createInteractiveSlot(label);
         addSlotToGrid(newSlot);
-
         getImageMap().put(newSlot, null);
         additionalImageCount++;
     }
 
     @FXML
-    public void onClickSend(ActionEvent actionEvent) {
+    public void onClickSend(ActionEvent event) {
         try {
             Map<StackPane, Image> imageMap = getImageMap();
-            List<StackPane> slots = getDefaultSlots();
-            for (int i = 0; i < slots.size(); i++) {
-                StackPane pane = slots.get(i);
-                Image image = imageMap.get(pane);
-                if (image != null) {
-                    String column = columnNames.get(i);
-                    productManager.saveProductImage(product, column, convertToBytes(image));
+            for (int i = 0; i < 6; i++) {
+                StackPane slot = getDefaultSlots().get(i);
+                Image img = imageMap.get(slot);
+                if (img != null) {
+                    productManager.saveProductImage(product, columnNames.get(i), convertToBytes(img));
                 }
             }
 
-            int additionalIndex = 1;
+            int addIdx = 1;
             for (Node node : imageGrid.getChildren()) {
                 if (node instanceof VBox vbox && vbox.getChildren().get(0) instanceof StackPane pane &&
                         !getDefaultSlots().contains(pane)) {
-
-                    if (additionalIndex > 20) break;
-
-                    Image image = imageMap.get(pane);
-                    if (image != null) {
-                        String column = "Additional_" + additionalIndex;
-                        productManager.saveProductImage(product, column, convertToBytes(image));
-                        additionalIndex++;
+                    Image img = imageMap.get(pane);
+                    if (img != null) {
+                        productManager.saveProductImage(product, "Additional_" + addIdx++, convertToBytes(img));
                     }
                 }
             }
 
             ImageContext.productCapturedImages.remove(product.getProductId());
-
-            product.setStatus("pending_approval");
             productManager.updateProductStatus(product.getProductId(), "Pending approval");
-
-            // ✅ Immediately mark order as Done in DB
             orderManager.updateOrderStatus(order.getOrderId(), "Done");
 
             if (operatorDashboardController != null) {
-                operatorDashboardController.setStatusMessage("Images sent successfully to QC!");
+                operatorDashboardController.markProductAsSent(product);
             }
 
-            ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
+            ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,16 +106,28 @@ public class DocumentationController {
     }
 
     @FXML
-    public void onClickCancel(ActionEvent actionEvent) {
+    public void onClickCancel(ActionEvent event) {
         ImageContext.productCapturedImages.remove(product.getProductId());
-        ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).close();
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+        if (order.getProducts() != null && !order.getProducts().isEmpty()) {
+            setProduct(order.getProducts().get(0));
+        }
     }
 
     public void setProduct(Product product) {
         this.product = product;
         ImageContext.currentProductId = product.getProductId();
+        getImageMap().clear();
 
-        // Clear grid of any dynamic additional images (but NOT the default 6)
+        Set<String> rejectedSet = new HashSet<>();
+        if (product.getRejectedImages() != null && !product.getRejectedImages().isBlank()) {
+            rejectedSet.addAll(Arrays.asList(product.getRejectedImages().split(",")));
+        }
+
         imageGrid.getChildren().removeIf(node -> {
             if (node instanceof VBox vbox && vbox.getChildren().get(0) instanceof StackPane slot) {
                 return !getDefaultSlots().contains(slot);
@@ -142,98 +139,50 @@ public class DocumentationController {
         nextSlotRow = 3;
         additionalImageCount = 1;
 
-        // Clear product image memory for this product
-        getImageMap().clear();
-
-        // Reload default images (reuse your prebuilt 6 StackPanes with labels)
         List<StackPane> slots = getDefaultSlots();
         for (int i = 0; i < slots.size(); i++) {
             StackPane slot = slots.get(i);
             String column = columnNames.get(i);
-            String label = column.replace("Image_", "");
-
             byte[] data = productManager.getImageData(product, column);
-
-            // Remove old image + delete button, keep label
-            slot.getChildren().removeIf(node -> node instanceof ImageView || node instanceof Button);
+            boolean isRejected = rejectedSet.contains(column);
+            slot.getChildren().removeIf(n -> n instanceof ImageView || n instanceof Button);
 
             if (data != null) {
-                Image image = new Image(new ByteArrayInputStream(data));
-                loadImageIntoSlot(slot, image, label);
-                getImageMap().put(slot, image);
-            }
-
-            // Re-enable click to open camera if no image
-            if (data == null) {
-                slot.setOnMouseClicked(ev -> {
-                    try {
-                        openCameraView(ev);
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                });
-            } else {
+                Image img = new Image(new ByteArrayInputStream(data));
+                loadImageIntoSlot(slot, img, column.replace("Image_", ""), isRejected);
+                getImageMap().put(slot, img);
                 slot.setOnMouseClicked(null);
+            } else {
+                slot.setOnMouseClicked(this::openCameraView);
             }
         }
 
-        // Reload additional dynamic images
-        int additionalIndex = 1;
-        while (additionalIndex <= 20) {
-            String column = "Additional_" + additionalIndex;
-            byte[] data = productManager.getImageData(product, column);
+        for (int i = 1; i <= 20; i++) {
+            String col = "Additional_" + i;
+            byte[] data = productManager.getImageData(product, col);
             if (data == null) break;
 
-            Image image = new Image(new ByteArrayInputStream(data));
-            String label = "Additional " + additionalIndex;
-            StackPane newSlot = createInteractiveSlot(label);
-            loadImageIntoSlot(newSlot, image, label);
-            addSlotToGrid(newSlot);
-            getImageMap().put(newSlot, image);
-
-            additionalIndex++;
+            Image img = new Image(new ByteArrayInputStream(data));
+            boolean isRejected = rejectedSet.contains(col);
+            StackPane slot = createInteractiveSlot("Additional " + i);
+            loadImageIntoSlot(slot, img, "Additional " + i, isRejected);
+            addSlotToGrid(slot);
+            getImageMap().put(slot, img);
             additionalImageCount++;
         }
-    }
 
+        if ("Disapproved".equalsIgnoreCase(product.getStatus()) &&
+                product.getQcComment() != null &&
+                !product.getQcComment().isBlank()) {
 
-    private void loadImageIntoSlot(StackPane slot, Image image, String label) {
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(180);
-        imageView.setFitHeight(120);
-        imageView.setPreserveRatio(true);
-
-        Button deleteButton = new Button("✖");
-        deleteButton.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
-        StackPane.setAlignment(deleteButton, Pos.TOP_RIGHT);
-
-        deleteButton.setOnAction(e -> {
-            try {
-                String column = ImageColumn.isAdditionalColumn(label)
-                        ? ImageColumn.getAdditionalColumnName(Integer.parseInt(label.replaceAll("[^0-9]", "")))
-                        : ImageColumn.getDefaultColumnName(label);
-
-                productManager.saveProductImage(product, column, null);
-                System.out.println("Deleted from DB: " + column);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            slot.getChildren().removeIf(node -> node instanceof ImageView || node instanceof Button);
-            getImageMap().remove(slot);
-
-            slot.setOnMouseClicked(ev -> {
-                try {
-                    openCameraView(ev);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            });
-        });
-
-        slot.getChildren().removeIf(node -> node instanceof ImageView || node instanceof Button);
-        slot.getChildren().addAll(imageView, deleteButton);
-        slot.setOnMouseClicked(null);
+            qcCommentArea.setText(product.getQcComment());
+            qcCommentSection.setVisible(true);
+            qcCommentSection.setManaged(true);
+        } else {
+            qcCommentArea.clear();
+            qcCommentSection.setVisible(false);
+            qcCommentSection.setManaged(false);
+        }
     }
 
     private StackPane createInteractiveSlot(String labelText) {
@@ -241,15 +190,7 @@ public class DocumentationController {
             imageGrid.getChildren().remove(((Node) s.getParent()));
             getImageMap().remove(s);
         });
-
-        slot.setOnMouseClicked(event -> {
-            try {
-                openCameraView(event);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
+        slot.setOnMouseClicked(this::openCameraView);
         return slot;
     }
 
@@ -257,39 +198,63 @@ public class DocumentationController {
         VBox container = new VBox(slot);
         container.setAlignment(Pos.CENTER);
         imageGrid.add(container, nextSlotColumn, nextSlotRow);
-        nextSlotColumn++;
-        if (nextSlotColumn > 2) {
+        if (++nextSlotColumn > 2) {
             nextSlotColumn = 0;
             nextSlotRow++;
         }
     }
 
-    public void setOperatorDashboardController(OperatorDashboardController controller) {
-        this.operatorDashboardController = controller;
+    private void loadImageIntoSlot(StackPane slot, Image image, String label, boolean isRejected) {
+        ImageView iv = new ImageView(image);
+        iv.setFitWidth(180);
+        iv.setFitHeight(120);
+        iv.setPreserveRatio(true);
+
+        Button deleteBtn = new Button("✖");
+        deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
+        StackPane.setAlignment(deleteBtn, Pos.TOP_RIGHT);
+
+        deleteBtn.setOnAction(e -> {
+            try {
+                String column = ImageColumn.isAdditionalColumn(label)
+                        ? ImageColumn.getAdditionalColumnName(Integer.parseInt(label.replaceAll("[^0-9]", "")))
+                        : ImageColumn.getDefaultColumnName(label);
+                productManager.saveProductImage(product, column, null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            slot.getChildren().removeIf(n -> n instanceof ImageView || n instanceof Button);
+            getImageMap().remove(slot);
+            slot.setOnMouseClicked(this::openCameraView);
+            slot.setStyle("-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;");
+        });
+
+        slot.getChildren().removeIf(n -> n instanceof ImageView || n instanceof Button);
+        slot.getChildren().addAll(iv, deleteBtn);
+        slot.setOnMouseClicked(null);
+
+        if (isRejected) {
+            slot.setStyle("-fx-border-color: red; -fx-border-width: 3; -fx-border-radius: 5;");
+        } else {
+            slot.setStyle("-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;");
+        }
     }
 
     @FXML
-    public void openCameraView(MouseEvent event) throws IOException {
-        StackPane clickedPane = (StackPane) event.getSource();
-        ImageContext.selectedStackPane = clickedPane;
-        ImageContext.currentProductId = product.getProductId();
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/CameraView.fxml"));
-        Parent root = fxmlLoader.load();
-        Stage stage = new Stage();
-        stage.setTitle("Open Camera");
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
-
-    private byte[] convertToBytes(Image fxImage) throws IOException {
-        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(fxImage, null);
-        if (bufferedImage == null) throw new IOException("BufferedImage is null");
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "png", baos);
-        baos.flush();
-        return baos.toByteArray();
+    public void openCameraView(MouseEvent event) {
+        try {
+            StackPane clickedPane = (StackPane) event.getSource();
+            ImageContext.selectedStackPane = clickedPane;
+            ImageContext.currentProductId = product.getProductId();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/CameraView.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Open Camera");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<StackPane> getDefaultSlots() {
@@ -301,9 +266,10 @@ public class DocumentationController {
                 .computeIfAbsent(product.getProductId(), k -> new HashMap<>());
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-        if (order.getProducts() == null || order.getProducts().isEmpty()) return;
-        setProduct(order.getProducts().get(0));
+    private byte[] convertToBytes(Image fxImage) throws IOException {
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(fxImage, null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos);
+        return baos.toByteArray();
     }
 }

@@ -19,6 +19,7 @@ public class Product {
     private byte[] imageRight;
     private byte[] imageTop;
     private byte[] imageBottom;
+    private String rejectedImages;
 
     public Product(String productName, byte[] imageFront, byte[] imageBack, byte[] imageRight, byte[] imageLeft, byte[] imageTop,byte[] imageBottom, String status, int productId) {
         this.productName = productName;
@@ -89,6 +90,16 @@ public class Product {
     public String getQcComment() {
         return qcComment;
     }
+
+
+    public String getRejectedImages() {
+        return rejectedImages;
+    }
+
+    public void setRejectedImages(String rejectedImages) {
+        this.rejectedImages = rejectedImages;
+    }
+
 
     public void setQcComment(String qcComment) {
         this.qcComment = qcComment;
