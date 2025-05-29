@@ -64,6 +64,8 @@ public class ProductManager {
                     product.setProduct(rs.getString("Product"));
                     product.setStatus(rs.getString("Status"));
                     product.setQcComment(rs.getString("QC_comment"));  // ✅ Load QC comment
+                    product.setRejectedImages(rs.getString("Rejected_Images"));  // ✅ Load rejected images
+
 
                     product.setImageFront(rs.getBytes("Image_FRONT"));
                     product.setImageBack(rs.getBytes("Image_BACK"));
