@@ -50,6 +50,36 @@ public class ReportPreviewController {
     private ProductManager productManager = new ProductManager();
     private Product product;
 
+    private Order order;
+
+    public void setOrder(Order order) {
+        this.order = order;
+        loadFullOrderReport();
+    }
+
+    private void loadFullOrderReport() {
+        lblOrderNumber.setText(order.getOrderId());
+        lblProductName.setText("All Products");
+
+        imageContainer.getChildren().clear();
+
+        for (Product product : order.getProducts()) {
+            addImageIfPresent(product.getImageFront());
+            addImageIfPresent(product.getImageBack());
+            addImageIfPresent(product.getImageLeft());
+            addImageIfPresent(product.getImageRight());
+            addImageIfPresent(product.getImageTop());
+            addImageIfPresent(product.getImageBottom());
+
+            if (product.getAdditionalImages() != null) {
+                for (byte[] img : product.getAdditionalImages().values()) {
+                    addImageIfPresent(img);
+                }
+            }
+        }
+    }
+
+
     public void setProduct(Product product) {
         this.product = product;
         loadReportData();

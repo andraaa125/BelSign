@@ -44,6 +44,8 @@ public class QCDashboardController {
     @FXML
     private Order selectedOrder;
     @FXML
+    private FlowPane donePane;
+    @FXML
     private Button selectedButton = null;
 
 
@@ -66,31 +68,52 @@ public class QCDashboardController {
 
         searchComboBox.setItems(searchResults);
         searchComboBox.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.length() >= 1) { //search with 1 digit
+            if (newVal.length() >= 1) {
                 updateSearchResults(newVal);
             } else {
                 searchResults.clear();
             }
         });
+
         try {
-            List<Order> orders = orderManager.getAllOrders();
-            for (Order order : orders) {
+            // Load DONE status orders to pendingPane
+            List<Order> doneOrders = orderManager.getAllOrders();
+            for (Order order : doneOrders) {
                 if ("Done".equals(order.getStatus())) {
                     Button orderButton = new Button(order.getOrderId());
                     orderButton.setUserData(order);
                     orderButton.setStyle(getStyleForStatus(order.getStatus()));
+                    orderButton.setPrefWidth(200);
+                    orderButton.setPrefHeight(40);
+
                     orderButton.setOnAction(e -> handleOrderClick(order));
                     pendingPane.getChildren().add(orderButton);
                 }
             }
+
+            // Load APPROVED orders (all products are approved) into donePane
+            List<Order> approvedOrders = orderManager.getFullyApprovedOrders();
+            for (Order order : approvedOrders) {
+                Button orderButton = new Button(order.getOrderId());
+                orderButton.setUserData(order);
+                orderButton.setStyle(getStyleForStatus("Approved"));
+                orderButton.setPrefWidth(200);
+                orderButton.setPrefHeight(40);
+
+                orderButton.setOnAction(e -> handleOrderClick(order));
+                donePane.getChildren().add(orderButton);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("An error occurred while loading orders.");
         }
     }
 
+
     private void handleOrderClick(Order order) {
-        if (!"Done".equals(order.getStatus())) return;
+        if (!"Done".equals(order.getStatus()) && !"Approved".equals(order.getStatus())) return;
+
 
         if (selectedOrderButton != null && selectedOrderButton.getUserData().equals(order)) {
             selectedOrderButton.setStyle(getStyleForStatus(order.getStatus()));
@@ -127,8 +150,15 @@ public class QCDashboardController {
                 if (order != null && order.getOrderId().equals(orderId)) return button;
             }
         }
+        for (Node node : donePane.getChildren()) {
+            if (node instanceof Button button) {
+                Order order = (Order) button.getUserData();
+                if (order != null && order.getOrderId().equals(orderId)) return button;
+            }
+        }
         return null;
     }
+
 
     private void updateSearchResults(String query) {
         searchResults.clear();
@@ -212,9 +242,7 @@ public class QCDashboardController {
     }
 
     private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
-        if (clickedButton.getText().startsWith("OrderID:")) {
-            return;
-        }
+        boolean isOrderButton = clickedButton.getText().startsWith("OrderID:");
 
         if (clickedButton.equals(selectedButton)) {
             resetButtonStyles(orderBox);
@@ -229,7 +257,33 @@ public class QCDashboardController {
         clickedButton.setStyle("-fx-border-color: #9d9d9d; -fx-background-color: #9d9d9d; -fx-text-fill: white; -fx-padding: 15px; -fx-font-size: 16px;");
         selectedButton = clickedButton;
         selectedOrder = order;
+
+        if (isOrderButton) {
+            try {
+                List<Product> products = orderManager.getProductsForOrder(order.getOrderId());
+                boolean allApproved = products.stream().allMatch(p -> "Approved".equals(p.getStatus()));
+
+                if (allApproved) {
+                    btnGenerateReport.setDisable(false);
+                    // Optionally store the products in selectedOrder for preview use
+                    order.setProducts(products);
+                    selectedOrder = order;
+                } else {
+                    btnGenerateReport.setDisable(true);
+                    showAlert("All products in this order must be approved to generate the report.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("Failed to load product data for this order.");
+            }
+
+        } else {
+            Product product = (Product) clickedButton.getUserData();
+            boolean isApproved = "Approved".equals(product.getStatus());
+            btnGenerateReport.setDisable(!isApproved);
+        }
     }
+
 
     private void resetButtonStyles(VBox orderBox) {
         for (Node node : orderBox.getChildren()) {
@@ -298,6 +352,24 @@ public class QCDashboardController {
     }
 
 
+    public void moveOrderToDonePane(Order order) {
+        // Remove from pendingPane
+        pendingPane.getChildren().removeIf(node ->
+                node instanceof Button btn && btn.getUserData() instanceof Order o && o.getOrderId().equals(order.getOrderId())
+        );
+
+        // Create new button
+        Button approvedButton = new Button(order.getOrderId());
+        approvedButton.setUserData(order);
+        approvedButton.setPrefWidth(200);
+        approvedButton.setPrefHeight(40);
+        approvedButton.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-padding: 15;");
+
+        approvedButton.setOnAction(e -> handleOrderClick(order));
+
+        // Add to donePane
+        donePane.getChildren().add(approvedButton);
+    }
 
 
     public void updateProductColor(Product product) {
@@ -343,22 +415,30 @@ public class QCDashboardController {
     }
 
     public void onClickGenerateReport(ActionEvent actionEvent) throws IOException {
-        if (selectedButton == null || !(selectedButton.getUserData() instanceof Product)) {
-            showAlert("Please select a product before generating the report.");
+        if (selectedButton == null) {
+            showAlert("Please select an approved product or order.");
             return;
         }
 
-        Product selectedProduct = (Product) selectedButton.getUserData();
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
         Parent root = fxmlLoader.load();
-
         ReportPreviewController controller = fxmlLoader.getController();
-        controller.setProduct(selectedProduct);
+
+        if (selectedButton.getText().startsWith("OrderID:")) {
+            // Order-level report
+            controller.setOrder(selectedOrder); // You must add setOrder method to ReportPreviewController
+        } else if (selectedButton.getUserData() instanceof Product selectedProduct) {
+            if (!"Approved".equals(selectedProduct.getStatus())) {
+                showAlert("Only approved products can generate reports.");
+                return;
+            }
+            controller.setProduct(selectedProduct);
+        }
 
         Stage stage = new Stage();
         stage.setTitle("Report");
         stage.setScene(new Scene(root));
         stage.show();
     }
+
 }

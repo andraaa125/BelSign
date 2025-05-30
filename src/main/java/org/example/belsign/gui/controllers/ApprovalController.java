@@ -157,25 +157,54 @@ public class ApprovalController {
 
     @FXML
     private void onClickApprove() {
-        if (productButton != null) {
-            productButton.setStyle("-fx-background-color: #338d71; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 15px;");
+        try {
+            // Update product status in DB and locally
+            orderManager.updateProductStatus(product.getProductId(), "Approved");
+            product.setStatus("Approved");
+
+            // Optional: style the button if it's linked
+            if (productButton != null) {
+                productButton.setStyle("-fx-background-color: #338d71; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 15px;");
+            }
+
+            // Update product button style on dashboard
+            if (qcDashboardController != null) {
+                qcDashboardController.updateProductColor(product);
+            }
+
+            // Now attempt to update the order if all products are approved
+            orderManager.updateOrderStatusIfAllProductsApproved(order.getOrderId());
+
+            // Show success feedback
+            commentSection.getChildren().clear();
+            Label confirmationLabel = new Label("✅ Product approved successfully.");
+            confirmationLabel.setStyle("-fx-text-fill: #057017; -fx-font-size: 14px; -fx-font-weight: bold;");
+            commentSection.getChildren().add(confirmationLabel);
+            commentSection.setVisible(true);
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(7));
+            pause.setOnFinished(e -> commentSection.setVisible(false));
+            pause.play();
+
+            // Refresh UI if order is now fully approved
+            Order updatedOrder = orderManager.getOrderById(order.getOrderId());
+            if ("Approved".equalsIgnoreCase(updatedOrder.getStatus()) && qcDashboardController != null) {
+                qcDashboardController.moveOrderToDonePane(updatedOrder);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("❌ Failed to approve product or update order.");
         }
+    }
 
-        commentSection.getChildren().clear();
-        Label confirmationLabel = new Label("✅ Product images approved successfully.");
-        confirmationLabel.setStyle("-fx-text-fill: #057017; -fx-font-size: 14px; -fx-font-weight: bold;");
-        commentSection.getChildren().add(confirmationLabel);
-        commentSection.setVisible(true);
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(7));
-        pause.setOnFinished(e -> commentSection.setVisible(false));
-        pause.play();
-        System.out.println("Before approval - Status: " + product.getStatus());
-        product.setStatus("Approved");
-        System.out.println("After approval  - Product Name: " + product.getProductName() +
-                ", Product ID: " + product.getProductId() +
-                ", Status: " + product.getStatus());
 
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 

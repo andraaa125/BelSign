@@ -151,5 +151,66 @@ public class OrderManager {
         return orders;
     }
 
+    public void updateOrderStatusIfAllProductsApproved(String orderId) throws SQLException {
+        String sql = """
+        UPDATE [Order]
+        SET Status = 'Approved'
+        WHERE OrderID = ?
+        AND NOT EXISTS (
+            SELECT 1 FROM Product
+            WHERE OrderID = ? AND Status != 'Approved'
+        )
+        AND EXISTS (
+            SELECT 1 FROM Product
+            WHERE OrderID = ?
+        )
+    """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, orderId);
+            stmt.setString(2, orderId);
+            stmt.setString(3, orderId);
+            stmt.executeUpdate();
+        }
+    }
+
+
+    public List<Order> getFullyApprovedOrders() throws SQLException {
+        List<Order> orders = new ArrayList<>();
+
+        String sql = """
+        SELECT o.OrderID, o.Status, o.Operator_First_Name, o.Operator_Last_Name
+        FROM [Order] o
+        WHERE NOT EXISTS (
+            SELECT 1 FROM Product p
+            WHERE p.OrderID = o.OrderID AND p.Status != 'Approved'
+        )
+        AND EXISTS (
+            SELECT 1 FROM Product p2
+            WHERE p2.OrderID = o.OrderID
+        )
+        AND o.Status != 'Done';
+        """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getString("OrderID"));
+                order.setStatus("Approved");
+                order.setOperatorFirstName(rs.getString("Operator_First_Name"));
+                order.setOperatorLastName(rs.getString("Operator_Last_Name"));
+                orders.add(order);
+            }
+        }
+
+        return orders;
+    }
+
+
 
 }
