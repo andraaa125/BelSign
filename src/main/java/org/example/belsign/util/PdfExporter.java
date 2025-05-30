@@ -5,57 +5,52 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.embed.swing.SwingFXUtils;
-
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Region;
 import javafx.scene.transform.Transform;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class PdfExporter {
+
+    // Higher scaling for higher quality (3.0 = approx. 216 DPI)
+    private static final double DPI_SCALE = 3.0;
+
     public static void exportNodeToPDF(Node node, File file) throws IOException {
-        try {
+        if (node instanceof Parent parent) {
+            parent.applyCss();
+            parent.layout();
+        }
 
-            if (node instanceof Parent parent) {
-                parent.applyCss();
-                parent.layout();
-            }
+        double nodeWidth = node.getBoundsInParent().getWidth();
+        double nodeHeight = node.getBoundsInParent().getHeight();
 
-            double nodeWidth = node.getBoundsInParent().getWidth();
-            double nodeHeight = node.getBoundsInParent().getHeight();
+        double scaledWidth = nodeWidth * DPI_SCALE;
+        double scaledHeight = nodeHeight * DPI_SCALE;
 
-            // PDF page size in points (A4 = 595 x 842 points)
-            double maxPdfWidth = PageSize.A4.getWidth() - 40;  // 20pt margin each side
-            double maxPdfHeight = PageSize.A4.getHeight() - 40;
+        WritableImage fxImage = new WritableImage((int) scaledWidth, (int) scaledHeight);
+        SnapshotParameters params = new SnapshotParameters();
+        params.setTransform(Transform.scale(DPI_SCALE, DPI_SCALE));
+        WritableImage snapshot = node.snapshot(params, fxImage);
 
-            // Determine scale factor to fit content in one page
-            double widthScale = maxPdfWidth / nodeWidth;
-            double heightScale = maxPdfHeight / nodeHeight;
-            double scale = Math.min(widthScale, heightScale);
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(snapshot, null);
 
-            int imageWidth = (int) Math.ceil(nodeWidth * scale);
-            int imageHeight = (int) Math.ceil(nodeHeight * scale);
+        // Save the image as lossless PNG to a temp file
+        File tempImageFile = File.createTempFile("snapshot", ".png");
+        ImageIO.write(bufferedImage, "png", tempImageFile);
 
-            WritableImage fxImage = new WritableImage(imageWidth, imageHeight);
-            SnapshotParameters params = new SnapshotParameters();
-            params.setTransform(Transform.scale(scale, scale));
-            node.snapshot(params, fxImage);
-
-            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(fxImage, null);
-
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             Document document = new Document(PageSize.A4, 20, 20, 20, 20);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+            PdfWriter writer = PdfWriter.getInstance(document, fos);
             document.open();
 
-            com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(bufferedImage, null);
-            pdfImage.scaleToFit((float) maxPdfWidth, (float) maxPdfHeight);
+            Image pdfImage = Image.getInstance(tempImageFile.getAbsolutePath());
+            pdfImage.scaleToFit(PageSize.A4.getWidth() - 40, PageSize.A4.getHeight() - 40);
+            pdfImage.setAlignment(Image.ALIGN_CENTER);
             document.add(pdfImage);
 
             PdfContentByte cb = writer.getDirectContent();
@@ -65,13 +60,13 @@ public class PdfExporter {
             cb.endText();
 
             document.close();
-            System.out.println("PDF exported successfully to: " + file.getAbsolutePath());
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("PDF export failed: " + ex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("Failed to generate PDF", e);
+        } finally {
+            tempImageFile.delete(); // Clean up temp image
         }
+
+        System.out.println("✅ PDF exported in high resolution to: " + file.getAbsolutePath());
     }
 }
-
-

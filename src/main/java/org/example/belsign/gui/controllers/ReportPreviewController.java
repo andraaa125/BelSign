@@ -1,32 +1,22 @@
 package org.example.belsign.gui.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
-import org.example.belsign.bll.OrderManager;
-import org.example.belsign.bll.ProductManager;
-import org.example.belsign.util.PdfExporter;
+import org.example.belsign.command.ExportReportCommand;
 
-import java.awt.*;
-import java.io.File;
+import java.awt.Desktop;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class ReportPreviewController {
 
@@ -47,9 +37,7 @@ public class ReportPreviewController {
     @FXML
     private TextArea txtComments;
 
-    private ProductManager productManager = new ProductManager();
     private Product product;
-
     private Order order;
 
     public void setOrder(Order order) {
@@ -57,71 +45,36 @@ public class ReportPreviewController {
         loadFullOrderReport();
     }
 
-    private void loadFullOrderReport() {
-        lblOrderNumber.setText(order.getOrderId());
-        lblProductName.setText("All Products");
-
-        imageContainer.getChildren().clear();
-
-        for (Product product : order.getProducts()) {
-            addImageIfPresent(product.getImageFront());
-            addImageIfPresent(product.getImageBack());
-            addImageIfPresent(product.getImageLeft());
-            addImageIfPresent(product.getImageRight());
-            addImageIfPresent(product.getImageTop());
-            addImageIfPresent(product.getImageBottom());
-
-            if (product.getAdditionalImages() != null) {
-                for (byte[] img : product.getAdditionalImages().values()) {
-                    addImageIfPresent(img);
-                }
-            }
-        }
-    }
-
-
     public void setProduct(Product product) {
         this.product = product;
-        loadReportData();
+        loadSingleProductReport();
     }
 
     @FXML
     private void initialize() {
-        txtComments.setWrapText(true); // Make sure text wraps
-
-        txtComments.textProperty().addListener((obs, oldText, newText) -> {
-            Text text = new Text(newText);
-            text.setFont(txtComments.getFont());
-            text.setWrappingWidth(txtComments.getWidth() - 10); // account for padding
-
-            double height = text.getLayoutBounds().getHeight() + 20; // some padding
-            txtComments.setPrefHeight(height);
-        });
-
-        int MAX_CHARACTERS = 150;
-        int MAX_LINES = 2;
-
         txtComments.setWrapText(true);
 
         txtComments.textProperty().addListener((obs, oldText, newText) -> {
-            if (newText.length() > MAX_CHARACTERS) {
+            int MAX_CHARACTERS = 150;
+            int MAX_LINES = 2;
+
+            if (newText.length() > MAX_CHARACTERS || newText.lines().count() > MAX_LINES) {
                 txtComments.setText(oldText);
                 return;
             }
 
-            long lineCount = newText.chars().filter(ch -> ch == '\n').count() + 1;
-            if (lineCount > MAX_LINES) {
-                txtComments.setText(oldText);
-            }
+            Text text = new Text(newText);
+            text.setFont(txtComments.getFont());
+            text.setWrappingWidth(txtComments.getWidth() - 10);
+
+            double height = text.getLayoutBounds().getHeight() + 20;
+            txtComments.setPrefHeight(height);
         });
     }
 
-    private void loadReportData() {
+    private void loadSingleProductReport() {
         lblOrderNumber.setText(product.getOrderId());
-
-        String productInfo = product.getProductName();
-        lblProductName.setText(productInfo);
-
+        lblProductName.setText(product.getProductName());
         imageContainer.setPrefWrapLength(480);
         imageContainer.getChildren().clear();
 
@@ -133,8 +86,29 @@ public class ReportPreviewController {
         addImageIfPresent(product.getImageBottom());
 
         if (product.getAdditionalImages() != null) {
-            for (byte[] additionalImage : product.getAdditionalImages().values()) {
-                addImageIfPresent(additionalImage);
+            for (byte[] image : product.getAdditionalImages().values()) {
+                addImageIfPresent(image);
+            }
+        }
+    }
+
+    private void loadFullOrderReport() {
+        lblOrderNumber.setText(order.getOrderId());
+        lblProductName.setText("All Products");
+        imageContainer.getChildren().clear();
+
+        for (Product p : order.getProducts()) {
+            addImageIfPresent(p.getImageFront());
+            addImageIfPresent(p.getImageBack());
+            addImageIfPresent(p.getImageLeft());
+            addImageIfPresent(p.getImageRight());
+            addImageIfPresent(p.getImageTop());
+            addImageIfPresent(p.getImageBottom());
+
+            if (p.getAdditionalImages() != null) {
+                for (byte[] img : p.getAdditionalImages().values()) {
+                    addImageIfPresent(img);
+                }
             }
         }
     }
@@ -142,9 +116,8 @@ public class ReportPreviewController {
     private void addImageIfPresent(byte[] imageData) {
         if (imageData != null && imageData.length > 0) {
             try {
-                Image image = new Image(new java.io.ByteArrayInputStream(imageData), 150, 150, true, true);
-                ImageView imageView = new ImageView(image);
-                imageContainer.getChildren().add(imageView);
+                Image image = new Image(new ByteArrayInputStream(imageData), 150, 150, true, true);
+                imageContainer.getChildren().add(new ImageView(image));
             } catch (Exception e) {
                 System.out.println("Failed to load image.");
                 e.printStackTrace();
@@ -153,7 +126,13 @@ public class ReportPreviewController {
     }
 
     @FXML
-    private void onExportAsPDF() throws IOException {
+    private void onExportAsPDF() {
+        Window window = (rootVBox.getScene() != null) ? rootVBox.getScene().getWindow() : null;
+        if (window == null) {
+            System.err.println("Scene not initialized. Cannot export.");
+            return;
+        }
+
         try {
             exportButtons.setVisible(false);
             exportButtons.setManaged(false);
@@ -162,17 +141,9 @@ public class ReportPreviewController {
             rootVBox.applyCss();
             rootVBox.layout();
 
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save QC Report");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-            fileChooser.setInitialFileName("QC_Report_" + System.currentTimeMillis() + ".pdf");
+            ExportReportCommand command = new ExportReportCommand(rootVBox, window);
+            command.execute();
 
-            Window window = rootVBox.getScene().getWindow();
-            File selectedFile = fileChooser.showSaveDialog(window);
-
-            if (selectedFile != null) {
-                PdfExporter.exportNodeToPDF(rootVBox, selectedFile);
-            }
         } finally {
             exportButtons.setVisible(true);
             exportButtons.setManaged(true);
