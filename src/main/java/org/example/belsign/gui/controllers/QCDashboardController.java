@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
 import org.example.belsign.bll.OrderManager;
+import org.example.belsign.factory.ReportPreviewFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -414,31 +415,29 @@ public class QCDashboardController {
         userName.setStyle("-fx-font-size: 20");
     }
 
-    public void onClickGenerateReport(ActionEvent actionEvent) throws IOException {
+    public void onClickGenerateReport(ActionEvent actionEvent) {
         if (selectedButton == null) {
             showAlert("Please select an approved product or order.");
             return;
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/belsign/ReportPreview.fxml"));
-        Parent root = fxmlLoader.load();
-        ReportPreviewController controller = fxmlLoader.getController();
-
         if (selectedButton.getText().startsWith("OrderID:")) {
-            // Order-level report
-            controller.setOrder(selectedOrder); // You must add setOrder method to ReportPreviewController
+            if (selectedOrder == null || selectedOrder.getProducts() == null || selectedOrder.getProducts().isEmpty()) {
+                showAlert("Order is not fully loaded.");
+                return;
+            }
+
+            ReportPreviewFactory.showReportWindow(selectedOrder);
+
         } else if (selectedButton.getUserData() instanceof Product selectedProduct) {
             if (!"Approved".equals(selectedProduct.getStatus())) {
                 showAlert("Only approved products can generate reports.");
                 return;
             }
-            controller.setProduct(selectedProduct);
-        }
 
-        Stage stage = new Stage();
-        stage.setTitle("Report");
-        stage.setScene(new Scene(root));
-        stage.show();
+            ReportPreviewFactory.showReportWindow(selectedProduct);
+        }
     }
+
 
 }

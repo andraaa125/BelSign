@@ -24,7 +24,26 @@ public class ReportPreviewFactory {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to open Report Preview: " + e.getMessage());
         }
     }
+
+    public static void showReportWindow(Order order) {
+        try {
+            FXMLLoader loader = new FXMLLoader(ReportPreviewFactory.class.getResource("/org/example/belsign/ReportPreview.fxml"));
+            Parent root = loader.load();
+
+            ReportPreviewController controller = loader.getController();
+            controller.setOrder(order);
+
+            Stage stage = new Stage();
+            stage.setTitle("Order QC Report");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+
