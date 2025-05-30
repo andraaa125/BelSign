@@ -1,5 +1,5 @@
 /*
- * This class is based on CameraController from WebcamFX by Houari Zegai
+ * This class is based on CameraController from WebcamFX by Houari Zegai.
  * Original source: https://github.com/HouariZegai/WebcamFX
  * Licensed under the MIT License
  *
