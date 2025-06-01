@@ -50,7 +50,7 @@ public class ImageSlotFactory {
         slot.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
         slot.setMinSize(PREF_WIDTH, PREF_HEIGHT);
         slot.setMaxSize(PREF_WIDTH, PREF_HEIGHT);
-        slot.setStyle("-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;");
+        slot.setStyle("-fx-background-color: #dadada; -fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;");
         return slot;
     }
 
