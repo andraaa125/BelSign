@@ -14,10 +14,10 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="650.0" prefWidth="950.0" style="-fx-background-color: #dadada;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.DocumentationController">
+<BorderPane prefHeight="650.0" prefWidth="950.0" style="-fx-background-color: #dadada;" stylesheets="@Images/CSS/PhotoDocumentation.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.belsign.gui.controllers.DocumentationController">
 
    <top>
-      <HBox alignment="CENTER_LEFT" spacing="20.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #dadada;" BorderPane.alignment="CENTER">
          <padding><Insets bottom="20.0" left="20.0" right="20.0" top="15.0" /></padding>
 
          <Label style="-fx-text-fill: #004b88;" text="Photo Documentation">
@@ -46,37 +46,37 @@
             </rowConstraints>
 
             <!-- Default Image Slots -->
-            <StackPane fx:id="stackOne" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <StackPane fx:id="stackOne" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="0" GridPane.rowIndex="0">
                <children>
                   <Label text="+ Front "><font><Font size="16.0" /></font></Label>
                </children>
             </StackPane>
 
-            <StackPane fx:id="stackTwo" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <StackPane fx:id="stackTwo" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="1" GridPane.rowIndex="0">
                <children>
                   <Label text="+ Back "><font><Font size="16.0" /></font></Label>
                </children>
             </StackPane>
 
-            <StackPane fx:id="stackThree" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <StackPane fx:id="stackThree" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="2" GridPane.rowIndex="0">
                <children>
                   <Label text="+ Left "><font><Font size="16.0" /></font></Label>
                </children>
             </StackPane>
 
-            <StackPane fx:id="stackFour" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <StackPane fx:id="stackFour" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="0" GridPane.rowIndex="1">
                <children>
                   <Label text="+ Right "><font><Font size="16.0" /></font></Label>
                </children>
             </StackPane>
 
-            <StackPane fx:id="stackFive" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <StackPane fx:id="stackFive" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Label text="+ Top "><font><Font size="16.0" /></font></Label>
                </children>
             </StackPane>
 
-            <StackPane fx:id="stackSix" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <StackPane fx:id="stackSix" onMouseClicked="#openCameraView" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: #333535; -fx-border-width: 2; -fx-border-radius: 5; -fx-border-style: dashed;" styleClass="image-box" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
                   <Label text="+ Bottom "><font><Font size="16.0" /></font></Label>
                </children>

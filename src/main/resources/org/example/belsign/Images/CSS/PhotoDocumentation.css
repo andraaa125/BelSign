@@ -3,7 +3,9 @@
     -fx-border-color: #e3e3e3;
     -fx-cursor: hand;
 }
-
+.image-box {
+    -fx-background-color: #dadada;
+}
 /*.cancelBtn {*/
 /*    -fx-background-color: #33880000;*/
 /*}*/
