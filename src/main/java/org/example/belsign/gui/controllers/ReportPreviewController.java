@@ -13,7 +13,6 @@ import org.example.belsign.command.ExportReportCommand;
 
 import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -26,10 +25,6 @@ public class ReportPreviewController {
     private FlowPane imageContainer;
     @FXML
     private HBox exportButtons;
-    @FXML
-    private Button btnSendEmail;
-    @FXML
-    private Button btnExport;
     @FXML
     private Label lblOrderNumber;
     @FXML

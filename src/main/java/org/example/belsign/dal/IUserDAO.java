@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface IUserDAO {
     List<User> getAllUsers() throws SQLException, IOException;
-
 }

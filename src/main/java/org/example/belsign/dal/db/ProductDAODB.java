@@ -38,7 +38,6 @@ public class ProductDAODB implements IProductDAO {
                 product.setImageTop(rs.getBytes("Image_TOP"));
                 product.setImageBottom(rs.getBytes("Image_BOTTOM"));
 
-                // Load all additional images dynamically
                 for (int i = 1; i <= 20; i++) {
                     String col = "Additional_" + i;
                     byte[] data = rs.getBytes(col);
@@ -56,7 +55,6 @@ public class ProductDAODB implements IProductDAO {
 
     @Override
     public void updateProductImage(Product product, String columnName, byte[] imageData) {
-        // Accepts full column name like "Image_FRONT" or "Additional_5"
         String sql = "UPDATE [Product] SET " + columnName + " = ? WHERE OrderID = ? AND ProductId = ?";
 
         try (Connection connection = con.getConnection();
@@ -76,6 +74,7 @@ public class ProductDAODB implements IProductDAO {
             throw new RuntimeException("Failed to update image in column: " + columnName, e);
         }
     }
+
     @Override
     public void updateProductStatus(int productId, String newStatus) throws SQLException {
         String sql = "UPDATE Product SET status = ? WHERE productId = ?";

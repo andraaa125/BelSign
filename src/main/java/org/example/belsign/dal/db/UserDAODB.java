@@ -1,6 +1,5 @@
 package org.example.belsign.dal.db;
 
-import org.example.belsign.be.Order;
 import org.example.belsign.be.User;
 import org.example.belsign.dal.IUserDAO;
 
@@ -33,11 +32,8 @@ public class UserDAODB implements IUserDAO {
                 String last_name = rs.getString("Last_Name");
                 String role = rs.getString("Role");
 
-
-                // Debugging output
                 System.out.println("Fetched user ID: " + first_name + last_name);
 
-                // Create Order object with more fields, including images
                 user.add(new User(userId, username, password, first_name, last_name, role));
             }
         } catch (SQLException e) {
@@ -46,7 +42,6 @@ public class UserDAODB implements IUserDAO {
 
         return user;
     }
-
 
     public void insertUser(User user) throws SQLException {
         String sql = "INSERT INTO [User] (Username, Password, First_Name, Last_Name, Role) VALUES (?, ?, ?, ?, ?)";
@@ -77,6 +72,4 @@ public class UserDAODB implements IUserDAO {
         }
         return false;
     }
-
-
 }

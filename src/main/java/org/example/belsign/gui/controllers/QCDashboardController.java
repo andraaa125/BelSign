@@ -12,7 +12,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -56,14 +55,10 @@ public class QCDashboardController {
 
     private final ObservableList<String> searchResults = FXCollections.observableArrayList();
 
-
-
-
-
     @FXML
     private void initialize() {
         btnGenerateReport.setDisable(true);
-        searchComboBox.setEditable(true); // Allow text input
+        searchComboBox.setEditable(true);
         searchComboBox.setPromptText("Search Order Number...");
         searchComboBox.setVisibleRowCount(8);
 
@@ -77,7 +72,6 @@ public class QCDashboardController {
         });
 
         try {
-            // Load DONE status orders to pendingPane
             List<Order> doneOrders = orderManager.getAllOrders();
             for (Order order : doneOrders) {
                 if ("Done".equals(order.getStatus())) {
@@ -92,7 +86,6 @@ public class QCDashboardController {
                 }
             }
 
-            // Load APPROVED orders (all products are approved) into donePane
             List<Order> approvedOrders = orderManager.getFullyApprovedOrders();
             for (Order order : approvedOrders) {
                 Button orderButton = new Button(order.getOrderId());
@@ -110,7 +103,6 @@ public class QCDashboardController {
             showAlert("An error occurred while loading orders.");
         }
     }
-
 
     private void handleOrderClick(Order order) {
         if (!"Done".equals(order.getStatus()) && !"Approved".equals(order.getStatus())) return;
@@ -160,7 +152,6 @@ public class QCDashboardController {
         return null;
     }
 
-
     private void updateSearchResults(String query) {
         searchResults.clear();
         try {
@@ -205,7 +196,6 @@ public class QCDashboardController {
 
 
             for (Product product : order.getProducts()) {
-                //Button productButton = new Button(product.getProductName());
                 Button productButton = new Button(product.getName());
                 productButton.setPrefWidth(200);
                 productButton.setPrefHeight(40);
@@ -214,7 +204,6 @@ public class QCDashboardController {
                 productButton.setPrefWidth(buttonWidth);
                 productButton.setPrefHeight(buttonHeight);
 
-                // Apply status color:
                 String baseStyle = "-fx-padding: 15px; -fx-font-size: 16px; -fx-border-color: #333535;";
                 switch (product.getStatus()) {
                     case "Approved" -> productButton.setStyle(baseStyle + " -fx-background-color: #338d71; -fx-text-fill: white;");
@@ -228,7 +217,6 @@ public class QCDashboardController {
                         openApprovalView(order, product.getProductName()); // not getName()
                     }
                 });
-
 
                 orderBox.getChildren().add(productButton);
             }
@@ -266,7 +254,6 @@ public class QCDashboardController {
 
                 if (allApproved) {
                     btnGenerateReport.setDisable(false);
-                    // Optionally store the products in selectedOrder for preview use
                     order.setProducts(products);
                     selectedOrder = order;
                 } else {
@@ -299,6 +286,7 @@ public class QCDashboardController {
 
         btnGenerateReport.setDisable(false);
     }
+
     private String getDefaultProductStyle(Button button) {
         if (button.getText().startsWith("OrderID:")) {
             return "-fx-border-color: #333535; -fx-padding: 15px; -fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: bold;";
@@ -317,7 +305,6 @@ public class QCDashboardController {
         }
     }
 
-    // New overloaded method that accepts the product button
     private void openApprovalView(Order order, String productName) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/belsign/ApprovalView.fxml"));
@@ -326,7 +313,6 @@ public class QCDashboardController {
 
             controller.setOrder(order);
 
-            // 🔍 Find the product by name (match against productName)
             Product matchedProduct = order.getProducts()
                     .stream()
                     .filter(p -> productName.equals(p.getProductName()))
@@ -338,8 +324,8 @@ public class QCDashboardController {
                 return;
             }
 
-            controller.setProduct(matchedProduct); // ✅ Ensure the product is passed
-            controller.setQCDashboardController(this); // Pass dashboard ref if needed
+            controller.setProduct(matchedProduct);
+            controller.setQCDashboardController(this);
 
             Stage stage = new Stage();
             stage.setTitle("Approval Panel");
@@ -352,14 +338,11 @@ public class QCDashboardController {
         }
     }
 
-
     public void moveOrderToDonePane(Order order) {
-        // Remove from pendingPane
         pendingPane.getChildren().removeIf(node ->
                 node instanceof Button btn && btn.getUserData() instanceof Order o && o.getOrderId().equals(order.getOrderId())
         );
 
-        // Create new button
         Button approvedButton = new Button(order.getOrderId());
         approvedButton.setUserData(order);
         approvedButton.setPrefWidth(200);
@@ -368,7 +351,6 @@ public class QCDashboardController {
 
         approvedButton.setOnAction(e -> handleOrderClick(order));
 
-        // Add to donePane
         donePane.getChildren().add(approvedButton);
     }
 
@@ -438,6 +420,4 @@ public class QCDashboardController {
             ReportPreviewFactory.showReportWindow(selectedProduct);
         }
     }
-
-
 }

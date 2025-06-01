@@ -29,20 +29,27 @@ import java.sql.SQLException;
 
 public class ApprovalController {
 
-    @FXML private GridPane imageGrid;
-    @FXML private Button btnApprove;
-    @FXML private Button btnDisapprove;
-    @FXML private HBox commentSection;
-    @FXML private VBox commentBox;
-    @FXML private TextArea commentTextArea;
-    @FXML private Label commentLabel;
+    @FXML
+    private GridPane imageGrid;
+    @FXML
+    private HBox commentSection;
+    @FXML
+    private TextArea commentTextArea;
+    @FXML
+    private Label commentLabel;
 
     private Product product;
+
     private Order order;
+
     private final OrderManager orderManager = new OrderManager();
+
     private final List<VBox> disapprovedBoxes = new ArrayList<>();
+
     private boolean disapproveMode = false;
+
     private final ProductManager productManager = new ProductManager();
+
     private List<Product> products;
 
     private Button productButton;
@@ -55,7 +62,6 @@ public class ApprovalController {
         this.product = product;
         loadImagesForApproval();
     }
-
 
     public void setOrder(Order order) {
         this.order = order;
@@ -71,7 +77,6 @@ public class ApprovalController {
         loadImagesForApproval();
     }
 
-
     private QCDashboardController qcDashboardController;
 
     public void setQCDashboardController(QCDashboardController controller) {
@@ -84,7 +89,6 @@ public class ApprovalController {
         imageGrid.getChildren().clear();
         int col = 0, row = 0;
 
-        // Standard images
         String[] columns = {"Image_FRONT", "Image_BACK", "Image_LEFT", "Image_RIGHT", "Image_TOP", "Image_BOTTOM"};
         String[] labels = {"Front", "Back", "Left", "Right", "Top", "Bottom"};
 
@@ -94,7 +98,6 @@ public class ApprovalController {
             if (col > 2) { col = 0; row++; }
         }
 
-        // Additional images
         for (int i = 1; i <= 20; i++) {
             String colName = "Additional_" + i;
             addImageToGrid(product, colName, "Additional " + i, col, row);
@@ -102,8 +105,6 @@ public class ApprovalController {
             if (col > 2) { col = 0; row++; }
         }
     }
-
-
 
     private void addImageToGrid(Product product, String columnName, String labelText, int col, int row) {
         try {
@@ -132,10 +133,10 @@ public class ApprovalController {
 
                     if (disapprovedBoxes.contains(vbox)) {
                         disapprovedBoxes.remove(vbox);
-                        imagePane.setStyle("-fx-border-color: #333333;");
+                        imagePane.setStyle("-fx-background-color: #333333;");
                     } else {
                         disapprovedBoxes.add(vbox);
-                        imagePane.setStyle("-fx-border-color: red;");
+                        imagePane.setStyle("-fx-background-color:  #880000;");
                     }
                 });
 
@@ -156,24 +157,19 @@ public class ApprovalController {
     @FXML
     private void onClickApprove() {
         try {
-            // Update product status in DB and locally
             orderManager.updateProductStatus(product.getProductId(), "Approved");
             product.setStatus("Approved");
 
-            // Optional: style the button if it's linked
             if (productButton != null) {
                 productButton.setStyle("-fx-background-color: #338d71; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 15px;");
             }
 
-            // Update product button style on dashboard
             if (qcDashboardController != null) {
                 qcDashboardController.updateProductColor(product);
             }
 
-            // Now attempt to update the order if all products are approved
             orderManager.updateOrderStatusIfAllProductsApproved(order.getOrderId());
 
-            // Show success feedback
             commentSection.getChildren().clear();
             Label confirmationLabel = new Label("✅ Product approved successfully.");
             confirmationLabel.setStyle("-fx-text-fill: #057017; -fx-font-size: 14px; -fx-font-weight: bold;");
@@ -184,7 +180,6 @@ public class ApprovalController {
             pause.setOnFinished(e -> commentSection.setVisible(false));
             pause.play();
 
-            // Refresh UI if order is now fully approved
             Order updatedOrder = orderManager.getOrderById(order.getOrderId());
             if ("Approved".equalsIgnoreCase(updatedOrder.getStatus()) && qcDashboardController != null) {
                 qcDashboardController.moveOrderToDonePane(updatedOrder);
@@ -196,16 +191,12 @@ public class ApprovalController {
         }
     }
 
-
-
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
 
     @FXML
     private void onClickDisapprove(ActionEvent event) throws SQLException {
@@ -217,7 +208,7 @@ public class ApprovalController {
         System.out.println("Before disapproval - Status: " + product.getStatus());
 
         orderManager.updateProductStatus(product.getProductId(), "Disapproved");
-        product.setStatus("Disapproved");  // ← sync local object with database
+        product.setStatus("Disapproved");
 
         System.out.println("After disapproval  - Product Name: " + product.getProductName() +
                 ", Product ID: " + product.getProductId() +
@@ -245,11 +236,9 @@ public class ApprovalController {
         String rejectedString = String.join(",", rejectedImageLabels);
         productManager.updateRejectedImages(product.getProductId(), rejectedString);
 
-        // Update status
         orderManager.updateProductStatus(product.getProductId(), "Disapproved");
         product.setStatus("Disapproved");
 
-        // Set the order status to 'In Progress' when any product is disapproved
         orderManager.updateOrderStatus(order.getOrderId(), "In Progress");
         order.setStatus("In Progress");
 
@@ -258,7 +247,6 @@ public class ApprovalController {
             qcDashboardController.updateProductColor(product);
         }
 
-        // UI feedback
         commentTextArea.clear();
         commentSection.getChildren().clear();
         Label confirmationLabel = new Label("✅ Sent successfully to the operator.");

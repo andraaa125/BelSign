@@ -19,14 +19,12 @@ public interface IOrderDAO {
 
     void saveAdditionalImageData(String orderId, String columnName, byte[] imageData) throws IOException;
 
-    // In IOrderDAO.java
     void deleteImageData(String orderId, String columnName) throws IOException;
 
     void addColumnToOrderTable(String columnName) throws IOException;
 
     boolean doesColumnExist(String columnName) throws IOException;
 
-    // ✅ New method added
     void updateOrderImageColumn(String orderId, String columnName, byte[] imageData) throws IOException;
 
     Order getOrderById(String orderId) throws IOException;

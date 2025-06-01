@@ -1,21 +1,16 @@
 package org.example.belsign.gui.controllers;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
 import org.example.belsign.be.Order;
 import org.example.belsign.dal.db.OrderDAODB;
 
-import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.List;
 
 public class OrderListViewController {

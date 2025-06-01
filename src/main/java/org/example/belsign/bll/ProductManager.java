@@ -8,7 +8,6 @@ import org.example.belsign.dal.db.ProductDAODB;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ProductManager {
     private final IProductDAO productDAO = new ProductDAODB();
@@ -91,7 +90,6 @@ public class ProductManager {
         productDAO.updateProductStatus(productId, newStatus);
     }
 
-    // ✅ New method to update QC_comment in the DB
     public void updateQcComment(int productId, String comment) throws SQLException {
         String sql = "UPDATE Product SET QC_comment = ? WHERE ProductId = ?";
 
@@ -112,5 +110,4 @@ public class ProductManager {
             stmt.executeUpdate();
         }
     }
-
 }

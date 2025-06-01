@@ -10,7 +10,6 @@ public class Order {
     private List<Product> products;
 
     public Order() {
-        // For DAO or serialization
     }
 
     public Order(String orderId, String status, String operatorFirstName, String operatorLastName) {

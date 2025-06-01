@@ -27,7 +27,6 @@ import javafx.scene.image.Image;
 import org.example.belsign.gui.model.ImageContext;
 
 import java.awt.*;
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -37,9 +36,12 @@ public class CameraController implements Initializable {
     public static Webcam webcam;
     public static boolean isCapture = false;
 
-    @FXML private StackPane imgContainer;
-    @FXML private ImageView imageView;
-    @FXML private Button cancelButton;
+    @FXML
+    private StackPane imgContainer;
+    @FXML
+    private ImageView imageView;
+    @FXML
+    private Button cancelButton;
 
     private VideoTacker videoThread;
 
@@ -99,7 +101,6 @@ public class CameraController implements Initializable {
 
             ImageContext.selectedStackPane.getChildren().setAll(iv);
 
-            // ✅ Store the image under the correct product ID
             ImageContext.productCapturedImages
                     .computeIfAbsent(ImageContext.currentProductId, k -> new java.util.HashMap<>())
                     .put(ImageContext.selectedStackPane, fxImage);
@@ -108,7 +109,6 @@ public class CameraController implements Initializable {
         Stage stage = (Stage) imageView.getScene().getWindow();
         stage.close();
     }
-
 
     @FXML
     public void btnCancel() {

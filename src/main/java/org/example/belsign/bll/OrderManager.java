@@ -2,20 +2,15 @@ package org.example.belsign.bll;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
-import org.example.belsign.dal.db.DBConnection;
 import org.example.belsign.dal.db.OrderDAODB;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.example.belsign.dal.db.DBConnection.getConnection;
 
@@ -121,12 +116,6 @@ public class OrderManager {
         return orderDAO.getImageData(orderId, columnName);
     }
 
-
-//    public List<Order> getOrdersFromProducts() throws SQLException {
-//        return orderDAO.getOrdersFromProducts();
-//    }
-
-
     public List<Order> getOrdersWithDisapprovedProducts() throws SQLException {
         List<Order> orders = new ArrayList<>();
 
@@ -176,13 +165,11 @@ public class OrderManager {
         }
     }
 
-
     public List<Order> getFullyApprovedOrders() throws SQLException {
         List<Order> orders = new ArrayList<>();
 
         String sql = """
-        SELECT o.OrderID, o.Status, o.Operator_First_Name, o.Operator_Last_Name
-        FROM [Order] o
+        SELECT o.OrderID, o.Status, o.Operator_First_Name, o.Operator_Last_Name FROM [Order] o
         WHERE NOT EXISTS (
             SELECT 1 FROM Product p
             WHERE p.OrderID = o.OrderID AND p.Status != 'Approved'
@@ -210,7 +197,4 @@ public class OrderManager {
 
         return orders;
     }
-
-
-
 }

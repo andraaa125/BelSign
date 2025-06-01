@@ -36,11 +36,14 @@ public class DocumentationController {
     private Product product;
     private OperatorDashboardController operatorDashboardController;
 
-    @FXML private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
-    @FXML private GridPane imageGrid;
-    @FXML private Button btnAddImage;
-    @FXML private HBox qcCommentSection;
-    @FXML private TextArea qcCommentArea;
+    @FXML
+    private StackPane stackOne, stackTwo, stackThree, stackFour, stackFive, stackSix;
+    @FXML
+    private GridPane imageGrid;
+    @FXML
+    private HBox qcCommentSection;
+    @FXML
+    private TextArea qcCommentArea;
 
     private int nextSlotColumn = 0;
     private int nextSlotRow = 3;

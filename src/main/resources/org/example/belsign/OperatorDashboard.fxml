@@ -203,7 +203,7 @@
             </ScrollPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
                <content>
-                  <FlowPane prefHeight="478.0" prefWidth="0.0">
+                  <FlowPane alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                      <children>
                         <VBox alignment="TOP_CENTER" spacing="10.0">
                            <children>
@@ -211,6 +211,9 @@
                                  <font>
                                     <Font name="System Bold" size="20.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
                               </Label>
                               <FlowPane fx:id="donePane" alignment="TOP_CENTER" hgap="10.0" prefHeight="0.0" prefWidth="0.0" vgap="10.0">
                                  <padding>
@@ -219,9 +222,10 @@
                               </FlowPane>
                            </children>
                         </VBox>
-                        <!-- You can keep this Region for spacing, if needed -->
-                        <Region prefHeight="46.0" prefWidth="79.0" />
                      </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </FlowPane>
                </content>
             </ScrollPane>

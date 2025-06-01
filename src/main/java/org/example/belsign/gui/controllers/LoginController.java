@@ -6,8 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.example.belsign.be.User;
 import org.example.belsign.bll.UserManager;
@@ -20,8 +18,6 @@ public class LoginController {
     private PasswordField loginPassword;
     @FXML
     private TextField loginUsername;
-    @FXML
-    private Button loginBtn;
     @FXML
     private TextField visiblePassword;
     @FXML
@@ -96,7 +92,6 @@ public class LoginController {
             stage.setScene(new Scene(root));
             stage.show();
 
-            // Close login window
             Stage loginStage = (Stage) loginUsername.getScene().getWindow();
             loginStage.close();
         } catch (Exception e) {
@@ -109,7 +104,7 @@ public class LoginController {
     public void onPasswordVisibility(ActionEvent actionEvent) {
         passwordVisible = !passwordVisible;
         if (passwordVisible) {
-            // Show plain text field
+
             visiblePassword.setText(loginPassword.getText());
             visiblePassword.setVisible(true);
             visiblePassword.setManaged(true);
@@ -117,13 +112,13 @@ public class LoginController {
             loginPassword.setManaged(false);
             eyeIcon.setIconLiteral("bi-eye-slash");
         } else {
-            // Hide plain text field, show PasswordField again
+
             loginPassword.setText(visiblePassword.getText());
             loginPassword.setVisible(true);
             loginPassword.setManaged(true);
             visiblePassword.setVisible(false);
             visiblePassword.setManaged(false);
-            // Change icon back to "eye"
+
             eyeIcon.setIconLiteral("bi-eye");
         }
     }

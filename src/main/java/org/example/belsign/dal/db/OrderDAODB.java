@@ -1,8 +1,6 @@
 package org.example.belsign.dal.db;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.example.belsign.be.Order;
-import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
 
 import java.io.IOException;
@@ -18,14 +16,14 @@ public class OrderDAODB implements IOrderDAO {
 
     @Override
     public void updateOrderStatus(String orderId, String newStatus) throws IOException {
-        String sql = "UPDATE [Order] SET Status = ? WHERE OrderID = ?"; // Use your actual table and column names
-        System.out.println("Updating OrderID: " + orderId + " with new Status: " + newStatus); // Debug log
+        String sql = "UPDATE [Order] SET Status = ? WHERE OrderID = ?";
+        System.out.println("Updating OrderID: " + orderId + " with new Status: " + newStatus);
         try (Connection connection = con.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, newStatus);
             ps.setString(2, orderId);
             int affectedRows = ps.executeUpdate();
-            System.out.println("Affected rows: " + affectedRows); // Debug log for affected rows
+            System.out.println("Affected rows: " + affectedRows);
             if (affectedRows == 0) {
                 System.out.println("No rows were updated, check if OrderID exists.");
             }
@@ -61,7 +59,6 @@ public class OrderDAODB implements IOrderDAO {
 
         return orders;
     }
-
 
     @Override
     public void saveDefaultImage(String orderId, String columnName, byte[] imageData) throws IOException {
@@ -137,7 +134,6 @@ public class OrderDAODB implements IOrderDAO {
 
     @Override
     public void updateOrderImageColumn(String orderId, String columnName, byte[] imageData) throws IOException {
-        // Reuse your existing logic
         saveAdditionalImageData(orderId, columnName, imageData);
     }
 
@@ -192,7 +188,4 @@ public class OrderDAODB implements IOrderDAO {
 
         return null;
     }
-
 }
-
-

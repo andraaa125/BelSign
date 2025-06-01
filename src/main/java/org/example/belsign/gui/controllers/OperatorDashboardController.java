@@ -25,17 +25,22 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class OperatorDashboardController implements Initializable {
-    @FXML private FlowPane searchPane;
-    @FXML private FlowPane productPane;
-    @FXML private FlowPane inProgressPane;
-    @FXML private FlowPane donePane;
-    @FXML private Label userName;
-    @FXML private Button logoutButton;
-    @FXML private Label statusLabel;
-    @FXML private Label incorrectOrderID;
-    @FXML private Label lblError;
-    @FXML private Button selectedOrderButton = null;
-    @FXML private TextField searchField;
+    @FXML
+    private FlowPane productPane;
+    @FXML
+    private FlowPane donePane;
+    @FXML
+    private Label userName;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label incorrectOrderID;
+    @FXML
+    private Label lblError;
+    @FXML
+    private TextField searchField;
 
     private Button selectedButton = null;
     private Order selectedOrder = null;
@@ -48,7 +53,6 @@ public class OperatorDashboardController implements Initializable {
     }
 
     private void displayOrderInDonePane(Order order) {
-        // Avoid duplicate buttons
         for (Node node : donePane.getChildren()) {
             if (node instanceof Button btn && btn.getUserData() instanceof Order o && o.getOrderId().equals(order.getOrderId())) {
                 return;
@@ -56,28 +60,25 @@ public class OperatorDashboardController implements Initializable {
         }
 
         Button orderButton = new Button(order.getOrderId());
-        orderButton.setStyle(getStyleForStatus(order.getStatus())); // Default style
+        orderButton.setStyle(getStyleForStatus(order.getStatus()));
         orderButton.setPrefWidth(200);
         orderButton.setPrefHeight(40);
         orderButton.setUserData(order);
 
         orderButton.setOnAction(e -> {
             if (selectedButton == orderButton) {
-                // Deselect if already selected
                 orderButton.setStyle(getStyleForStatus(order.getStatus()));
                 selectedButton = null;
                 hideOrderVBoxes();
             } else {
-                // Reset styles on all buttons
                 for (Node node : donePane.getChildren()) {
                     if (node instanceof Button btn) {
                         btn.setStyle(getStyleForStatus(((Order) btn.getUserData()).getStatus()));
                     }
                 }
 
-                // Highlight current button
                 orderButton.setStyle(
-                        "-fx-background-color: #d3d3d3;" +  // Light grey
+                        "-fx-background-color: #d3d3d3;" +
                                 "-fx-text-fill: black;" +
                                 "-fx-padding: 15;" +
                                 "-fx-font-size: 16px;" +
@@ -87,7 +88,6 @@ public class OperatorDashboardController implements Initializable {
                                 "-fx-font-weight: bold;"
                 );
 
-                // Clear previous and display new
                 hideOrderVBoxes();
                 try {
                     displayProductsForOrder(order);
@@ -99,11 +99,8 @@ public class OperatorDashboardController implements Initializable {
             }
         });
 
-
         donePane.getChildren().add(orderButton);
     }
-
-
 
     public void refreshDonePane() {
         donePane.getChildren().clear();
@@ -200,7 +197,6 @@ public class OperatorDashboardController implements Initializable {
 
     private void displayProductsForOrder(Order order) throws SQLException {
         try {
-            // ✅ Remove previous order's products if any
             hideOrderVBoxes();
 
             if (order.getProducts() == null || order.getProducts().isEmpty()) {
@@ -245,15 +241,13 @@ public class OperatorDashboardController implements Initializable {
             }
 
             productPane.getChildren().add(orderBox);
-            orderVBoxMap.clear(); // Since we're only showing one order at a time
+            orderVBoxMap.clear();
             orderVBoxMap.put(order.getOrderId(), orderBox);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-
 
     private void handleSelection(Button clickedButton, VBox orderBox, Order order) {
         for (Node node : orderBox.getChildren()) {
@@ -310,6 +304,4 @@ public class OperatorDashboardController implements Initializable {
                 "-fx-font-weight: bold;" +
                 "-fx-text-fill: #333;";
     }
-
-
 }

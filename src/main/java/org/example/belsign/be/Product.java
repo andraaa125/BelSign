@@ -14,7 +14,6 @@ public class Product {
     private List<Product> products;
     private String qcComment;
 
-    // Now use byte[] for images instead of String paths
     private byte[] imageFront;
     private byte[] imageBack;
     private byte[] imageLeft;
@@ -93,7 +92,6 @@ public class Product {
         return qcComment;
     }
 
-
     public String getRejectedImages() {
         return rejectedImages;
     }
@@ -102,10 +100,10 @@ public class Product {
         this.rejectedImages = rejectedImages;
     }
 
-
     public void setQcComment(String qcComment) {
         this.qcComment = qcComment;
     }
+
     public byte[] getImageFront() {
         return imageFront;
     }
@@ -189,16 +187,6 @@ public class Product {
     public String getName() {
         return  productName;
         }
-    @Override
-    public String toString() {
-        return "Product{" +
-                "orderId='" + orderId + '\'' +
-                ", productId='" + productId + '\'' +
-                ", productName='" + productName + '\'' +
-                ", status='" + status + '\'' +
-                '}';
-    }
-
 
     public void setProduct(String product) {
         this.product = product;
@@ -209,7 +197,7 @@ public class Product {
     }
 
     public byte[] getImageRight() {
-       return imageRight;
+        return imageRight;
     }
 
     public List<Product> getProducts() {
@@ -220,7 +208,13 @@ public class Product {
         this.products = products;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Product{" +
+                "orderId='" + orderId + '\'' +
+                ", productId='" + productId + '\'' +
+                ", productName='" + productName + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
-

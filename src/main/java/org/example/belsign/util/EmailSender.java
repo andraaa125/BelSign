@@ -8,8 +8,8 @@ import java.util.Properties;
 public class EmailSender {
 
     public static void sendEmailWithAttachment(String toEmail, File pdfFile) throws Exception {
-        final String fromEmail = "your_email@gmail.com";        // <-- Replace with your email
-        final String password = "your_app_password";            // <-- Use App Password, not your main password
+        final String fromEmail = "your_email@gmail.com";
+        final String password = "your_app_password";
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -28,11 +28,9 @@ public class EmailSender {
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
         message.setSubject("QC Report");
 
-        // Body
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setText("Please find the attached QC report PDF.");
 
-        // Attachment
         MimeBodyPart attachmentPart = new MimeBodyPart();
         attachmentPart.attachFile(pdfFile);
 
