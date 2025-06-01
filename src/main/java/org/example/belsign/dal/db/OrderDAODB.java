@@ -1,6 +1,8 @@
 package org.example.belsign.dal.db;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.example.belsign.be.Order;
+import org.example.belsign.be.Product;
 import org.example.belsign.dal.IOrderDAO;
 
 import java.io.IOException;
@@ -37,7 +39,7 @@ public class OrderDAODB implements IOrderDAO {
     @Override
     public List<Order> getAllOrders() throws IOException {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name, Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM FROM [Order]";
+        String sql = "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name FROM [Order]";
 
         try (Connection connection = con.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
@@ -46,25 +48,12 @@ public class OrderDAODB implements IOrderDAO {
             while (rs.next()) {
                 String orderId = rs.getString("OrderID");
                 String status = rs.getString("Status");
-                String operator_first_name = rs.getString("Operator_First_Name");
-                String operator_last_name = rs.getString("Operator_Last_Name");
-                String image_front = rs.getString("Image_FRONT");
-                String image_back = rs.getString("Image_BACK");
-                String image_right = rs.getString("Image_RIGHT");
-                String image_left = rs.getString("Image_LEFT");
-                String image_top = rs.getString("Image_TOP");
-                String image_bottom = rs.getString("Image_BOTTOM");
+                String firstName = rs.getString("Operator_First_Name");
+                String lastName = rs.getString("Operator_Last_Name");
 
-                // Debugging output
-                System.out.println("Fetched order ID: " + orderId + ", Status: " + status);
+                if (status == null) status = "Unknown";
 
-                // If status is null, set a default value
-                if (status == null) {
-                    status = "Unknown";
-                }
-
-                // Create Order object with more fields, including images
-                orders.add(new Order(orderId, status, operator_first_name, operator_last_name, image_front, image_back, image_right, image_left, image_top, image_bottom));
+                orders.add(new Order(orderId, status, firstName, lastName));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to fetch orders", e);
@@ -72,6 +61,7 @@ public class OrderDAODB implements IOrderDAO {
 
         return orders;
     }
+
 
     @Override
     public void saveDefaultImage(String orderId, String columnName, byte[] imageData) throws IOException {
@@ -150,6 +140,7 @@ public class OrderDAODB implements IOrderDAO {
         // Reuse your existing logic
         saveAdditionalImageData(orderId, columnName, imageData);
     }
+
     @Override
     public byte[] getImageData(String orderId, String columnName) throws IOException {
         String sql = "SELECT " + columnName + " FROM [Order] WHERE OrderID = ?";
@@ -165,6 +156,7 @@ public class OrderDAODB implements IOrderDAO {
         }
         return null;
     }
+
     public void deleteImageData(String orderId, String columnName) throws IOException {
         String sql = "UPDATE [Order] SET " + columnName + " = NULL WHERE OrderId = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -178,11 +170,10 @@ public class OrderDAODB implements IOrderDAO {
 
     @Override
     public Order getOrderById(String orderId) throws IOException {
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name, " +
-                             "Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM " +
-                             "FROM [Order] WHERE OrderID = ?")) {
+        String sql = "SELECT OrderID, Status, Operator_First_Name, Operator_Last_Name FROM [Order] WHERE OrderID = ?";
+
+        try (Connection conn = con.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, orderId);
             ResultSet rs = stmt.executeQuery();
@@ -192,25 +183,15 @@ public class OrderDAODB implements IOrderDAO {
                         rs.getString("OrderID"),
                         rs.getString("Status"),
                         rs.getString("Operator_First_Name"),
-                        rs.getString("Operator_Last_Name"),
-                        rs.getString("Image_FRONT"),
-                        rs.getString("Image_BACK"),
-                        rs.getString("Image_RIGHT"),
-                        rs.getString("Image_LEFT"),
-                        rs.getString("Image_TOP"),
-                        rs.getString("Image_BOTTOM")
+                        rs.getString("Operator_Last_Name")
                 );
             }
         } catch (SQLException e) {
             throw new IOException("Failed to fetch order by ID", e);
         }
+
         return null;
     }
-
-
-
-
-
 
 }
 

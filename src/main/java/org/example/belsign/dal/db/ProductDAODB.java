@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,54 +18,72 @@ public class ProductDAODB implements IProductDAO {
     @Override
     public List<Product> getAllProduct() throws SQLException, IOException {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT OrderID, Product, Image_FRONT, Image_BACK, Image_RIGHT, Image_LEFT, Image_TOP, Image_BOTTOM FROM [Product]";
+        String sql = "SELECT * FROM [Product]";
 
         try (Connection connection = con.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                String orderId = rs.getString("OrderID");
-                String product = rs.getString("Product");
-                String image_front = rs.getString("Image_FRONT");
-                String image_back = rs.getString("Image_BACK");
-                String image_right = rs.getString("Image_RIGHT");
-                String image_left = rs.getString("Image_LEFT");
-                String image_top = rs.getString("Image_TOP");
-                String image_bottom = rs.getString("Image_BOTTOM");
+                Product product = new Product();
+                product.setOrderId(rs.getString("OrderID"));
+                product.setProductId(rs.getInt("ProductId"));
+                product.setProduct(rs.getString("Product"));
+                product.setStatus(rs.getString("Status"));
 
-                System.out.println("Fetched order ID: " + orderId + ", Product: " + product);
+                product.setImageFront(rs.getBytes("Image_FRONT"));
+                product.setImageBack(rs.getBytes("Image_BACK"));
+                product.setImageRight(rs.getBytes("Image_RIGHT"));
+                product.setImageLeft(rs.getBytes("Image_LEFT"));
+                product.setImageTop(rs.getBytes("Image_TOP"));
+                product.setImageBottom(rs.getBytes("Image_BOTTOM"));
 
-                products.add(new Product(orderId, product, image_front, image_back, image_right, image_left, image_top, image_bottom));
+                // Load all additional images dynamically
+                for (int i = 1; i <= 20; i++) {
+                    String col = "Additional_" + i;
+                    byte[] data = rs.getBytes(col);
+                    product.setAdditionalImage(col, data);
+                }
+
+                products.add(product);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to fetch orders", e);
+            throw new RuntimeException("Failed to fetch products", e);
         }
 
         return products;
     }
 
-    public void updateProductImage(Product product, String slotType, String imagePath) {
-        String columnName = switch (slotType) {
-            case "FRONT" -> "Image_FRONT";
-            case "BACK" -> "Image_BACK";
-            case "LEFT" -> "Image_LEFT";
-            case "RIGHT" -> "Image_RIGHT";
-            case "TOP" -> "Image_TOP";
-            case "BOTTOM" -> "Image_BOTTOM";
-            default -> throw new IllegalArgumentException("Invalid slot type: " + slotType);
-        };
-
-        String sql = "UPDATE [Product] SET " + columnName + " = ? WHERE OrderID = ? AND Product = ?";
+    @Override
+    public void updateProductImage(Product product, String columnName, byte[] imageData) {
+        // Accepts full column name like "Image_FRONT" or "Additional_5"
+        String sql = "UPDATE [Product] SET " + columnName + " = ? WHERE OrderID = ? AND ProductId = ?";
 
         try (Connection connection = con.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, imagePath);
+
+            if (imageData != null) {
+                ps.setBytes(1, imageData);
+            } else {
+                ps.setNull(1, Types.VARBINARY);
+            }
+
             ps.setString(2, product.getOrderId());
-            ps.setString(3, product.getName());
+            ps.setInt(3, product.getProductId());
             ps.executeUpdate();
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to update image in column: " + columnName, e);
+        }
+    }
+    @Override
+    public void updateProductStatus(int productId, String newStatus) throws SQLException {
+        String sql = "UPDATE Product SET status = ? WHERE productId = ?";
+        try (Connection conn =  con.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
         }
     }
 }

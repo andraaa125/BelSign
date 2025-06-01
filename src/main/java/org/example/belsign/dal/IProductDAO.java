@@ -9,5 +9,7 @@ import java.util.List;
 public interface IProductDAO {
     List<Product> getAllProduct() throws SQLException, IOException;
 
-    void updateProductImage(Product product, String slotType, String imagePath);
+    void updateProductImage(Product product, String slotType, byte[] imageData);
+
+    void updateProductStatus(int productId, String newStatus) throws SQLException;
 }

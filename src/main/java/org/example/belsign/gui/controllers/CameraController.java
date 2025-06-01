@@ -1,14 +1,29 @@
+/*
+ * This class is based on CameraController from WebcamFX by Houari Zegai.
+ * Original source: https://github.com/HouariZegai/WebcamFX
+ * Licensed under the MIT License
+ *
+ * Modifications made by Andra Danielevici, May 2025:
+ * - Integrated with ImageContext model for product-based image capture
+ * - Bound image view resizing dynamically to container
+ * - Replaced file saving with in-memory capture per product ID
+ * - Reworked thread logic using custom inner class VideoTacker
+ * - Adapted UI flow using StackPane and JavaFX enhancements
+ */
+
+
 package org.example.belsign.gui.controllers;
 
 import com.github.sarxos.webcam.Webcam;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.image.Image;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 import org.example.belsign.gui.model.ImageContext;
 
 import java.awt.*;
@@ -26,6 +41,8 @@ public class CameraController implements Initializable {
     @FXML private ImageView imageView;
     @FXML private Button cancelButton;
 
+    private VideoTacker videoThread;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         imageView.fitWidthProperty().bind(imgContainer.widthProperty());
@@ -39,7 +56,17 @@ public class CameraController implements Initializable {
 
         webcam.setViewSize(new Dimension(640, 480));
         webcam.open();
-        new VideoTacker().start();
+        startCamera();
+    }
+
+    private void startCamera() {
+        isCapture = false;
+        if (videoThread != null && videoThread.isAlive()) {
+            return;
+        }
+        videoThread = new VideoTacker();
+        videoThread.setDaemon(true);
+        videoThread.start();
     }
 
     @FXML
@@ -49,30 +76,35 @@ public class CameraController implements Initializable {
 
     @FXML
     private void btnReload() {
-        isCapture = false;
-        webcam.open();
-        new VideoTacker().start();
+        if (!webcam.isOpen()) {
+            webcam.open();
+        }
+        startCamera();
     }
 
     @FXML
     private void btnSave() {
         isCapture = true;
-        webcam.close();
 
-        javafx.scene.image.Image fxImage = imageView.getImage();
+        if (webcam.isOpen()) {
+            webcam.close();
+        }
 
-        if (ImageContext.selectedStackPane != null) {
+        Image fxImage = imageView.getImage();
+        if (ImageContext.selectedStackPane != null && ImageContext.currentProductId != null) {
             ImageView iv = new ImageView(fxImage);
             iv.setPreserveRatio(true);
             iv.setFitWidth(180);
             iv.setFitHeight(130);
 
-            // Replace label and store image
             ImageContext.selectedStackPane.getChildren().setAll(iv);
-            ImageContext.capturedImages.put(ImageContext.selectedStackPane, fxImage);
+
+            // ✅ Store the image under the correct product ID
+            ImageContext.productCapturedImages
+                    .computeIfAbsent(ImageContext.currentProductId, k -> new java.util.HashMap<>())
+                    .put(ImageContext.selectedStackPane, fxImage);
         }
 
-        // ✅ Close the camera window immediately
         Stage stage = (Stage) imageView.getScene().getWindow();
         stage.close();
     }
@@ -80,7 +112,9 @@ public class CameraController implements Initializable {
 
     @FXML
     public void btnCancel() {
-        webcam.close();
+        if (webcam != null && webcam.isOpen()) {
+            webcam.close();
+        }
         ((Stage) cancelButton.getScene().getWindow()).close();
     }
 
@@ -91,14 +125,14 @@ public class CameraController implements Initializable {
                 try {
                     java.awt.image.BufferedImage bimg = webcam.getImage();
                     if (bimg != null) {
-                        imageView.setImage(SwingFXUtils.toFXImage(bimg, null));
+                        Platform.runLater(() -> imageView.setImage(SwingFXUtils.toFXImage(bimg, null)));
                     }
                     sleep(30);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CameraController.class.getName()).log(Level.SEVERE, null, ex);
+                    break;
                 }
             }
         }
     }
-
 }

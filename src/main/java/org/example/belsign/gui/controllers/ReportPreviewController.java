@@ -1,141 +1,149 @@
 package org.example.belsign.gui.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
 import org.example.belsign.be.Order;
 import org.example.belsign.be.Product;
-import org.example.belsign.bll.OrderManager;
-import org.example.belsign.util.PdfExporter;
+import org.example.belsign.command.ExportReportCommand;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class ReportPreviewController {
 
-    @FXML private VBox rootVBox;
-    @FXML private FlowPane imageContainer;
-    @FXML private HBox exportButtons;
-    @FXML private Button btnSendEmail;
-    @FXML private Button btnExport;
-    @FXML private Label lblOrderNumber;
-    @FXML private Label lblProductName;
-    @FXML private Label lblInspector;
-    @FXML private TextArea txtComments;
+    @FXML
+    private VBox rootVBox;
+    @FXML
+    private FlowPane imageContainer;
+    @FXML
+    private HBox exportButtons;
+    @FXML
+    private Button btnSendEmail;
+    @FXML
+    private Button btnExport;
+    @FXML
+    private Label lblOrderNumber;
+    @FXML
+    private Label lblProductName;
+    @FXML
+    private TextArea txtComments;
 
-    private final OrderManager orderManager = new OrderManager();
+    private Product product;
     private Order order;
 
     public void setOrder(Order order) {
         this.order = order;
-        loadReportData();
+        loadFullOrderReport();
     }
 
-    private void loadReportData() {
-        lblOrderNumber.setText(order.getOrderId());
-        lblInspector.setText(order.getOperatorFirstName() + " " + order.getOperatorLastName());
+    public void setProduct(Product product) {
+        this.product = product;
+        loadSingleProductReport();
+    }
 
-        try {
-            if (order.getProducts() == null || order.getProducts().isEmpty()) {
-                order.setProducts(orderManager.getProductsForOrder(order.getOrderId()));
+    @FXML
+    private void initialize() {
+        txtComments.setWrapText(true);
+
+        txtComments.textProperty().addListener((obs, oldText, newText) -> {
+            int MAX_CHARACTERS = 150;
+            int MAX_LINES = 2;
+
+            if (newText.length() > MAX_CHARACTERS || newText.lines().count() > MAX_LINES) {
+                txtComments.setText(oldText);
+                return;
             }
 
-            StringBuilder productNames = new StringBuilder();
-            for (Product product : order.getProducts()) {
-                productNames.append(product.getProductName()).append("\n");
-            }
-            lblProductName.setText(productNames.toString().trim());
-        } catch (Exception e) {
-            lblProductName.setText("N/A");
-            e.printStackTrace();
-        }
+            Text text = new Text(newText);
+            text.setFont(txtComments.getFont());
+            text.setWrappingWidth(txtComments.getWidth() - 10);
 
-        imageContainer.setPrefWrapLength(480); // Ensure 3 images/row
+            double height = text.getLayoutBounds().getHeight() + 20;
+            txtComments.setPrefHeight(height);
+        });
+    }
+
+    private void loadSingleProductReport() {
+        lblOrderNumber.setText(product.getOrderId());
+        lblProductName.setText(product.getProductName());
+        imageContainer.setPrefWrapLength(480);
         imageContainer.getChildren().clear();
 
-        String[] defaultCols = {
-                "Image_FRONT", "Image_BACK", "Image_LEFT",
-                "Image_RIGHT", "Image_TOP", "Image_BOTTOM"
-        };
-        String[] defaultLabels = {
-                "Front", "Back", "Left", "Right", "Top", "Bottom"
-        };
+        addImageIfPresent(product.getImageFront());
+        addImageIfPresent(product.getImageBack());
+        addImageIfPresent(product.getImageLeft());
+        addImageIfPresent(product.getImageRight());
+        addImageIfPresent(product.getImageTop());
+        addImageIfPresent(product.getImageBottom());
 
-        try {
-            for (int i = 0; i < defaultCols.length; i++) {
-                byte[] data = orderManager.getImageData(order.getOrderId(), defaultCols[i]);
-                if (data != null && data.length > 0) {
-                    addImageWithLabel(defaultLabels[i] + " Image", data);
-                }
+        if (product.getAdditionalImages() != null) {
+            for (byte[] image : product.getAdditionalImages().values()) {
+                addImageIfPresent(image);
             }
-
-            for (int i = 1; i <= 20; i++) {
-                String column = "Additional_" + i;
-                byte[] data = orderManager.getImageData(order.getOrderId(), column);
-                if (data != null && data.length > 0) {
-                    addImageWithLabel("Additional Image", data);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private void addImageWithLabel(String labelText, byte[] imageData) {
-        Image image = new Image(new ByteArrayInputStream(imageData));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(120);
-        imageView.setPreserveRatio(true);
+    private void loadFullOrderReport() {
+        lblOrderNumber.setText(order.getOrderId());
+        lblProductName.setText("All Products");
+        imageContainer.getChildren().clear();
 
-        Label label = new Label(labelText);
-        label.setStyle("-fx-font-size: 12px; -fx-text-fill: #333;");
-        label.setMaxWidth(120);
-        label.setWrapText(true);
-        label.setAlignment(Pos.CENTER);
+        for (Product p : order.getProducts()) {
+            addImageIfPresent(p.getImageFront());
+            addImageIfPresent(p.getImageBack());
+            addImageIfPresent(p.getImageLeft());
+            addImageIfPresent(p.getImageRight());
+            addImageIfPresent(p.getImageTop());
+            addImageIfPresent(p.getImageBottom());
 
-        VBox imageBox = new VBox(5, label, imageView);
-        imageBox.setAlignment(Pos.CENTER);
-        imageBox.setPadding(new Insets(5));
-        imageBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1;");
-        imageContainer.getChildren().add(imageBox);
+            if (p.getAdditionalImages() != null) {
+                for (byte[] img : p.getAdditionalImages().values()) {
+                    addImageIfPresent(img);
+                }
+            }
+        }
+    }
+
+    private void addImageIfPresent(byte[] imageData) {
+        if (imageData != null && imageData.length > 0) {
+            try {
+                Image image = new Image(new ByteArrayInputStream(imageData), 150, 150, true, true);
+                imageContainer.getChildren().add(new ImageView(image));
+            } catch (Exception e) {
+                System.out.println("Failed to load image.");
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     private void onExportAsPDF() {
+        Window window = (rootVBox.getScene() != null) ? rootVBox.getScene().getWindow() : null;
+        if (window == null) {
+            System.err.println("Scene not initialized. Cannot export.");
+            return;
+        }
+
         try {
             exportButtons.setVisible(false);
             exportButtons.setManaged(false);
 
+            rootVBox.requestFocus();
             rootVBox.applyCss();
             rootVBox.layout();
 
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save QC Report");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-            fileChooser.setInitialFileName("QC_Report_" + System.currentTimeMillis() + ".pdf");
+            ExportReportCommand command = new ExportReportCommand(rootVBox, window);
+            command.execute();
 
-            Window window = rootVBox.getScene().getWindow();
-            File selectedFile = fileChooser.showSaveDialog(window);
-
-            if (selectedFile != null) {
-                PdfExporter.exportNodeToPDF(rootVBox, selectedFile);
-            }
         } finally {
             exportButtons.setVisible(true);
             exportButtons.setManaged(true);

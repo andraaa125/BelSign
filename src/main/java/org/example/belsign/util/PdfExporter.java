@@ -1,6 +1,8 @@
 package org.example.belsign.util;
 
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -11,59 +13,60 @@ import javafx.scene.transform.Transform;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 
 public class PdfExporter {
 
-    public static void exportNodeToPDF(Node node, File file) {
-        try {
-            if (node instanceof Parent parent) {
-                parent.applyCss();
-                parent.layout();
-            }
+    // Higher scaling for higher quality (3.0 = approx. 216 DPI)
+    private static final double DPI_SCALE = 3.0;
 
-            double scale = 2.0; // High quality
-            double width = node.getBoundsInParent().getWidth();
-            double height = node.getBoundsInParent().getHeight();
+    public static void exportNodeToPDF(Node node, File file) throws IOException {
+        if (node instanceof Parent parent) {
+            parent.applyCss();
+            parent.layout();
+        }
 
-            int imageWidth = (int) Math.ceil(width * scale);
-            int imageHeight = (int) Math.ceil(height * scale);
+        double nodeWidth = node.getBoundsInParent().getWidth();
+        double nodeHeight = node.getBoundsInParent().getHeight();
 
-            WritableImage fxImage = new WritableImage(imageWidth, imageHeight);
-            SnapshotParameters params = new SnapshotParameters();
-            params.setTransform(Transform.scale(scale, scale));
-            node.snapshot(params, fxImage);
+        double scaledWidth = nodeWidth * DPI_SCALE;
+        double scaledHeight = nodeHeight * DPI_SCALE;
 
-            BufferedImage fullImage = SwingFXUtils.fromFXImage(fxImage, null);
+        WritableImage fxImage = new WritableImage((int) scaledWidth, (int) scaledHeight);
+        SnapshotParameters params = new SnapshotParameters();
+        params.setTransform(Transform.scale(DPI_SCALE, DPI_SCALE));
+        WritableImage snapshot = node.snapshot(params, fxImage);
 
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(snapshot, null);
+
+        // Save the image as lossless PNG to a temp file
+        File tempImageFile = File.createTempFile("snapshot", ".png");
+        ImageIO.write(bufferedImage, "png", tempImageFile);
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             Document document = new Document(PageSize.A4, 20, 20, 20, 20);
-            PdfWriter.getInstance(document, new FileOutputStream(file));
+            PdfWriter writer = PdfWriter.getInstance(document, fos);
             document.open();
 
-            float pdfWidth = PageSize.A4.getWidth() - 40;
-            float pdfHeight = PageSize.A4.getHeight() - 40;
+            Image pdfImage = Image.getInstance(tempImageFile.getAbsolutePath());
+            pdfImage.scaleToFit(PageSize.A4.getWidth() - 40, PageSize.A4.getHeight() - 40);
+            pdfImage.setAlignment(Image.ALIGN_CENTER);
+            document.add(pdfImage);
 
-            int y = 0;
-            while (y < fullImage.getHeight()) {
-                int remainingHeight = fullImage.getHeight() - y;
-                int sliceHeight = Math.min(remainingHeight, (int) (pdfHeight));
-
-                BufferedImage slice = fullImage.getSubimage(0, y, fullImage.getWidth(), sliceHeight);
-                com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(slice, null);
-                pdfImage.scaleToFit(pdfWidth, pdfHeight);
-                document.add(pdfImage);
-                document.newPage();
-
-                y += sliceHeight;
-            }
+            PdfContentByte cb = writer.getDirectContent();
+            cb.beginText();
+            cb.setFontAndSize(BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED), 12);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "Page 1 of 1", PageSize.A4.getWidth() / 2, 15, 0);
+            cb.endText();
 
             document.close();
-            System.out.println("PDF exported successfully to: " + file.getAbsolutePath());
-
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("PDF export failed: " + e.getMessage());
+            throw new IOException("Failed to generate PDF", e);
+        } finally {
+            tempImageFile.delete(); // Clean up temp image
         }
+
+        System.out.println("✅ PDF exported in high resolution to: " + file.getAbsolutePath());
     }
 }
